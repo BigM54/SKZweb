@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import useIsAdmin from '../hooks/useIsAdmin';
+
 
 export default function NavBarComponent() {
   const [expanded, setExpanded] = useState(false);
@@ -9,6 +11,7 @@ export default function NavBarComponent() {
   const [session, setSession] = useState(null);
   const [profil, setProfil] = useState(null);
   const navigate = useNavigate();
+  const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -51,7 +54,8 @@ export default function NavBarComponent() {
     { to: '/login', label: 'Connexion', protected: false, hideIfAuth: true },
     { to: '/register', label: 'Inscription', protected: false, hideIfAuth: true },
     { to: '/formulaire', label: 'Mes Choix', protected: true },
-    { to: '/paiements', label: 'Mes Paiements', protected: true }
+    { to: '/paiements', label: 'Mes Paiements', protected: true },
+    { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true }
   ];
 
   return (
@@ -65,6 +69,7 @@ export default function NavBarComponent() {
               .filter(link => {
                 if (link.protected && !session) return false;
                 if (link.hideIfAuth && session) return false;
+                if (link.hiseIfNotAdmin && !isAdmin) return false;
                 return true;
               })
               .map(({ to, label }) => (

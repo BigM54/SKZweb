@@ -9,7 +9,8 @@ import UpdatePassword from './pages/password-update';
 import PasswordSuccess from './pages/password-success';
 import PasswordRequest from './pages/password-request';
 import Paiements from './pages/Paiements';
-import Navbar from './components/Navbar'; // ✅ Assure-toi que ce fichier contient ta navbar Bootstrap
+import Navbar from './components/Navbar'; 
+import AdminPanel from './pages/AdminPanel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           <Route path="/password-request" element={<PasswordRequest />} />
           <Route path='/paiements' element={<Paiements/>} />
           <Route path="/formulaire" element={<Formulaire/>} />
+          <Route path="/admin" element={<AdminPanel/>} />
         </Routes>
       </main>
     </>
