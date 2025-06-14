@@ -1,23 +1,25 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import { Container, Card, CardBody, CardTitle, CardText, Button } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
 
 export default function PasswordSuccess() {
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate('/')
-    }, 2000)
-
-    return () => clearTimeout(timer)
-  }, [navigate])
+  const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center text-black px-4">
-      <div className="bg-green-100 border border-green-300 text-green-800 rounded p-6 shadow-md">
-        <h1 className="text-2xl font-bold mb-2">✅ Mot de passe changé avec succès !</h1>
-        <p className="text-sm">Redirection vers l’accueil...</p>
-      </div>
-    </div>
-  )
+    <Container className="mt-5 d-flex justify-content-center">
+      <Card className="shadow" style={{ maxWidth: 500 }}>
+        <CardBody className="text-center">
+          <CardTitle tag="h4" className="text-success mb-3">
+            ✅ Mot de passe mis à jour
+          </CardTitle>
+          <CardText>
+            Ton mot de passe a bien été changé. Tu peux maintenant te connecter avec tes nouvelles informations.
+          </CardText>
+          <Button color="primary" className="mt-3" onClick={() => navigate('/login')}>
+            Retour à la connexion
+          </Button>
+        </CardBody>
+      </Card>
+    </Container>
+  );
 }

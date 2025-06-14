@@ -1,74 +1,70 @@
-import { Routes, Route } from 'react-router-dom'
-import { useEffect } from 'react'
-import { supabase } from './supabaseClient'
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Formulaire from './pages/Formulaire'
-import ProtectedRoute from './components/ProtectedRoute'
-import Sidebar from './components/Sidebar'
-import RequireAuth from './components/RequireAuth'
-import UpdatePassword from './pages/update-password'
-import PasswordSuccess from './pages/password-success'
+import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { supabase } from './supabaseClient';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Formulaire from './pages/Formulaire';
+import UpdatePassword from './pages/password-update';
+import PasswordSuccess from './pages/password-success';
+import PasswordRequest from './pages/password-request';
+import Paiements from './pages/Paiements';
+import Navbar from './components/Navbar'; // ✅ Assure-toi que ce fichier contient ta navbar Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
-          const { email, id, user_metadata } = session.user
-
-          // Vérifie si l'utilisateur a déjà un profil
+          const { email, id, user_metadata } = session.user;
           const { data: profil, error } = await supabase
             .from('profils')
             .select('id')
             .eq('email', email)
-            .maybeSingle()
+            .maybeSingle();
 
           if (!profil && !error) {
-            const { prenom, nom, numero, nums, tabagns, proms, bucque, peks} = user_metadata
-            console.log(user_metadata)
-            console.log(id)
+            const { prenom, nom, numero, nums, tabagns, proms, bucque, peks } = user_metadata;
             await supabase.from('profils').insert({
-              id : id,
-              email: email,
+              id,
+              email,
               prenom,
               nom,
               numero,
-              nums: nums,
-              bucque: bucque,
-              proms : proms,
-              tabagns : tabagns,
-              peks : peks
-            })
+              nums,
+              bucque,
+              proms,
+              tabagns,
+              peks
+            });
           }
         }
       }
-    )
+    );
 
     return () => {
-      listener.subscription.unsubscribe()
-    }
-  }, [])
-
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-grow p-4 md:ml-64 w-full">
+    <>
+      <Navbar />
+      <main className="p-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/update-password" element={<UpdatePassword />} />
+          <Route path="/password-update" element={<UpdatePassword />} />
           <Route path="/password-success" element={<PasswordSuccess />} />
-          <Route path="/formulaire" element={<RequireAuth>
-                                                <Formulaire />
-                                              </RequireAuth>
-                                            } />
+          <Route path="/password-request" element={<PasswordRequest />} />
+          <Route path='/paiements' element={<Paiements/>} />
+          <Route path="/formulaire" element={<Formulaire/>} />
         </Routes>
       </main>
-    </div>
-  )
+    </>
+  );
 }
-export default App
+
+export default App;
