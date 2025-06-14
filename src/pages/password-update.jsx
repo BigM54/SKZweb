@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Container, Form, FormGroup, Label, Input, Button, Alert, Spinner
 } from 'reactstrap';
@@ -21,31 +21,30 @@ export default function UpdatePassword() {
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [urlInvalid, setUrlInvalid] = useState(false);
+  const initialHash = useRef(window.location.hash);
   const navigate = useNavigate();
   const location = useLocation();
 
   // Vérifie que l'URL contient bien un token de récupération
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '?'); // transforme en query
-    const params = new URLSearchParams(hash);
+    const rawHash = initialHash.current;
+    if (!rawHash) {
+      setUrlInvalid(true);
+      return;
+    }
 
+    const params = new URLSearchParams(rawHash.slice(1)); // slice '#' away
     const hasRecoveryType = params.get('type') === 'recovery';
     const hasAccessToken = params.get('access_token');
-    console.log(hash)
-    if (!hash) {
-      // attend un peu avant de tricher
-      const timeout = setTimeout(() => {
-        if (!window.location.hash) setUrlInvalid(true);
-      }, 1000);
-      return () => clearTimeout(timeout);
-    }
 
     if (!hasRecoveryType || !hasAccessToken) {
       setUrlInvalid(true);
     }
 
     if (success) {
+      supabase.auth.refreshSession();
       const timeout = setTimeout(() => navigate('/'), 2000);
+      window.location.reload();
       return () => clearTimeout(timeout);
     }
   }, [success, navigate,location]);
