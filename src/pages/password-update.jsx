@@ -44,6 +44,7 @@ export default function UpdatePassword() {
     if (success) {
       supabase.auth.refreshSession();
       const timeout = setTimeout(() => navigate('/'), 2000);
+      supabase.auth.refreshSession();
       window.location.reload();
       return () => clearTimeout(timeout);
     }
