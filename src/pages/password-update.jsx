@@ -14,6 +14,10 @@ function withTimeout(promise, timeout) {
   ]);
 }
 
+function homeRefresh() {
+
+}
+
 export default function UpdatePassword() {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
@@ -43,9 +47,13 @@ export default function UpdatePassword() {
 
     if (success) {
       supabase.auth.refreshSession();
-      const timeout = setTimeout(() => navigate('/'), 2000);
-      supabase.auth.refreshSession();
-      window.location.reload();
+
+      const timeout = setTimeout(() => {
+        navigate('/');
+        // Rafraîchir juste après la redirection
+        setTimeout(() => window.location.reload(), 100);
+      }, 2000);
+
       return () => clearTimeout(timeout);
     }
   }, [success, navigate,location]);
