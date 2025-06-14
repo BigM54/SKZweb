@@ -26,7 +26,7 @@ export default function UpdatePassword() {
 
   // Vérifie que l'URL contient bien un token de récupération
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.href.split('?')[1]);
     const hasRecoveryType = params.get('type') === 'recovery';
     const hasAccessToken = params.get('access_token');
 
