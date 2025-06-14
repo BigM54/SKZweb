@@ -40,18 +40,13 @@ export default function ChoixOptions() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (form.materiel_location == 'aucun') form.pack_location = 'aucun' 
     const champsRequis = ['type_place', 'pack_location', 'materiel_location', 'forfait_bouffe_seul', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
     const champsNonRemplis = champsRequis.filter(champ => !form[champ]);
     if (champsNonRemplis.length > 0) {
       alert(`Merci de compléter tous les champs : ${champsNonRemplis.join(', ')}`);
-      return;
-    }
-
-    setLoading(true);
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    if (sessionError || !session?.user) {
-      alert("Pas connecté");
-      setLoading(false);
       return;
     }
 
@@ -92,12 +87,18 @@ export default function ChoixOptions() {
     <Form onSubmit={handleSubmit}>
       {renderSelect("Tu es :", "type_place", ["PGs", "Archi", "Pek’ss"])}
       {renderSelect("Tu souhaite uniquement le pack bouffe ou le forfait", "forfait_bouffe_seul", ["Je veux les 2", "Pack bouffe seulement (PAS DE FORFAIT)", "Forfait seulement (PAS DE BOUFFE)"])}
-      {renderSelect("Pack location", "pack_location", ["aucun", "bronze", "argent", "or", "platine"])}
-      {form.pack_location !== 'aucun' && (
+      {renderSelect("Matériel", "materiel_location", ["aucun","complet", "ski", "chaussures"])}
+      {form.materiel_location !== 'aucun' ? (
         <Form.Group className="mb-3">
-          {renderSelect("Matériel", "materiel_location", ["complet", "ski", "chaussures"])}
+          {renderSelect("Pack location", "pack_location", ["bronze", "argent", "or", "platine"])}
         </Form.Group>
-      )}
+      ) : (
+        <Form.Group className="mb-3">
+          <Form.Label>Pack location</Form.Label>
+          <Form.Control disabled placeholder='Pas de location'/>
+        </Form.Group>
+      )
+      }
       {renderSelect("Tu veux louer un casque ?", "casque", ["oui", "non"])}
       {renderSelect("Choisi ton forfait", "type_forfait", ["standard", "étendu"])}
       {renderSelect("Quels assurance veux tu prendre ?", "assurance", ["aucune", "zen", "skieur", "zen+skieur"])}
