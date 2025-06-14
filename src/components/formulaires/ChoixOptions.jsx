@@ -9,6 +9,7 @@ export default function ChoixOptions() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       const { data, error: fetchError } = await supabase
         .from('options')
         .select('*')
