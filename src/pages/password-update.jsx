@@ -32,6 +32,13 @@ export default function UpdatePassword() {
     const hasRecoveryType = params.get('type') === 'recovery';
     const hasAccessToken = params.get('access_token');
     console.log(hash)
+    if (!hash) {
+      // attend un peu avant de tricher
+      const timeout = setTimeout(() => {
+        if (!window.location.hash) setUrlInvalid(true);
+      }, 1000);
+      return () => clearTimeout(timeout);
+    }
 
     if (!hasRecoveryType || !hasAccessToken) {
       setUrlInvalid(true);
