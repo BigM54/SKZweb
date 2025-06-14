@@ -33,13 +33,12 @@ export default function UpdatePassword() {
     if (!hasRecoveryType || !hasAccessToken) {
       setUrlInvalid(true);
     }
-  }, [location]);
 
     if (success) {
       const timeout = setTimeout(() => navigate('/'), 2000);
       return () => clearTimeout(timeout);
     }
-  }, [success, navigate]);
+  }, [success, navigate,location]);
 
   const validatePassword = (password) => {
     const hasUpper = /[A-Z]/.test(password);
