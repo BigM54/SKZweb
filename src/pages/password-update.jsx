@@ -31,6 +31,7 @@ export default function UpdatePassword() {
 
     const hasRecoveryType = params.get('type') === 'recovery';
     const hasAccessToken = params.get('access_token');
+    console.log(hash)
 
     if (!hasRecoveryType || !hasAccessToken) {
       setUrlInvalid(true);
