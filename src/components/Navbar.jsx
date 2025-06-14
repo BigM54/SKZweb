@@ -41,7 +41,8 @@ export default function NavBarComponent() {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: 'local' })
+    await supabase.auth.refreshSession();
     navigate('/');
   };
 

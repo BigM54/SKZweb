@@ -26,7 +26,15 @@ export default function UpdatePassword() {
 
   // Vérifie que l'URL contient bien un token de récupération
   useEffect(() => {
+    const hash = window.location.hash.replace('#', '?'); // transforme en query
+    const params = new URLSearchParams(hash);
 
+    const hasRecoveryType = params.get('type') === 'recovery';
+    const hasAccessToken = params.get('access_token');
+
+    if (!hasRecoveryType || !hasAccessToken) {
+      setUrlInvalid(true);
+    }
 
     if (success) {
       const timeout = setTimeout(() => navigate('/'), 2000);
