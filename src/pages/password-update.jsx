@@ -35,7 +35,6 @@ export default function UpdatePassword() {
     }
   }, [location]);
 
-  useEffect(() => {
     if (success) {
       const timeout = setTimeout(() => navigate('/'), 2000);
       return () => clearTimeout(timeout);
