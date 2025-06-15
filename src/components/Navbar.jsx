@@ -1,52 +1,54 @@
 import { useEffect, useState } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 import useIsAdmin from '../hooks/useIsAdmin';
+import { createClient } from '@supabase/supabase-js';
 
 
 export default function NavBarComponent() {
   const [expanded, setExpanded] = useState(false);
   const { pathname } = useLocation();
-  const [user, setUser] = useState(null);
-  const [session, setSession] = useState(null);
-  const [profil, setProfil] = useState(null);
   const navigate = useNavigate();
+  const { user, isSignedIn } = useUser();
+  const { getToken } = useAuth();
+  const { signOut } = useClerk();
   const { isAdmin } = useIsAdmin();
+  const [profil, setProfil] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      setUser(user);
-      if (user) {
-        const { data: profil } = await supabase
-          .from('profils')
-          .select('prenom')
-          .eq('id', user.id)
-          .single();
-        setProfil(profil);
-      }
-    });
+    const fetchProfil = async () => {
+      if (!user) return;
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      if (session?.user) {
-        const { data: profil } = await supabase
-          .from('profils')
-          .select('prenom')
-          .eq('id', session.user.id)
-          .single();
-        setProfil(profil);
+      const token = await getToken({ template: 'supabase' });
+
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      });
+
+      const { data, error } = await supabase
+        .from('profils')
+        .select('prenom')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Erreur chargement profil :', error.message);
       } else {
-        setProfil(null);
+        setProfil(data);
       }
-    });
+    };
 
-    return () => listener.subscription.unsubscribe();
-  }, []);
+    fetchProfil();
+  }, [user, getToken]);
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut()
-    await supabase.auth.refreshSession();
+    await signOut();
+    navigate('/');
   };
 
   const links = [
@@ -67,8 +69,8 @@ export default function NavBarComponent() {
           <Nav className="me-auto">
             {links
               .filter(link => {
-                if (link.protected && !session) return false;
-                if (link.hideIfAuth && session) return false;
+                if (link.protected && !isSignedIn) return false;
+                if (link.hideIfAuth && isSignedIn) return false;
                 if (link.hiseIfNotAdmin && !isAdmin) return false;
                 return true;
               })
@@ -87,7 +89,7 @@ export default function NavBarComponent() {
           {profil?.prenom && (
             <span className="me-3">👋 {profil.prenom}</span>
           )}
-          {session && (
+          {isSignedIn && (
             <Button variant="danger" onClick={handleLogout}>Se déconnecter</Button>
           )}
         </Navbar.Collapse>

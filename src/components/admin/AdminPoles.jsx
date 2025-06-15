@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Container, Form, Spinner, Table } from 'react-bootstrap';
-import { supabase } from '../../supabaseClient';
+import { useAuth } from '@clerk/clerk-react';
+import { createClient } from '@supabase/supabase-js';
 import useIsAdmin from '../../hooks/useIsAdmin';
 
 export default function AdminPoles() {
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({});
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -15,6 +17,14 @@ export default function AdminPoles() {
 
   const fetchStats = async () => {
     setLoading(true);
+    const token = await getToken({ template: 'supabase' });
+
+    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+      global: {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    });
+
     const { data: options, error } = await supabase
       .from('options')
       .select('*');

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Container, InputGroup, FormControl, Table, Spinner } from 'react-bootstrap';
-import { supabase } from '../../supabaseClient';
+import { useAuth } from '@clerk/clerk-react';
+import { createClient } from '@supabase/supabase-js';
 import useIsAdmin from '../../hooks/useIsAdmin';
 
 export default function AdminUtilisateurs() {
@@ -9,6 +10,7 @@ export default function AdminUtilisateurs() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [optionsMap, setOptionsMap] = useState({});
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if (searchTerm.trim().length === 0) {
@@ -26,12 +28,22 @@ export default function AdminUtilisateurs() {
 
   const fetchUsers = async () => {
     setLoading(true);
-    const { data: profils } = await supabase
+    const token = await getToken({ template: 'supabase' });
+
+    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+      global: {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    });
+    
+
+    const { data: profils, error } = await supabase
       .from('profils')
       .select('*')
       .or(`prenom.ilike.%${searchTerm}%,nom.ilike.%${searchTerm}%,bucque.ilike.%${searchTerm}%`)
       .limit(20);
-
+    
+      
     if (profils?.length > 0) {
       setResults(profils);
 

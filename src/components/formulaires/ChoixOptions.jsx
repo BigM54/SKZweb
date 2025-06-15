@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
-import { supabase } from '../../supabaseClient';
+import { useAuth, useUser } from '@clerk/clerk-react';
+import { createClient } from '@supabase/supabase-js';
 
 export default function ChoixOptions() {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modeAffichage, setModeAffichage] = useState(false);
+  const {getToken} = useAuth()
+  const { user} = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: { user } } = await supabase.auth.getuser();
-      const { data, error: fetchError } = await supabase
+      const token = await getToken({ template: 'supabase' });
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: { headers: { Authorization: `Bearer ${token}` } },
+      });
+
+      const { data, error } = await supabase
         .from('options')
         .select('*')
         .eq('id', user.id)
@@ -24,8 +31,7 @@ export default function ChoixOptions() {
           type_place: '', forfait_bouffe_seul: '', pack_location: '',
           materiel_location: '', casque: '', type_forfait: '', assurance: '',
           masque: '', pack_fumeur: '', pack_soiree: '', pack_grand_froid: '',
-          pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '0', bus: ''
-        });
+          pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '0', bus: ''})
         setModeAffichage(false);
       }
       setLoading(false);
@@ -38,11 +44,12 @@ export default function ChoixOptions() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data: { user } } = await supabase.auth.getuser();
 
-    if (form.materiel_location == 'aucun') form.pack_location = 'aucun' 
+    if (form.materiel_location === 'aucun') form.pack_location = 'aucun';
+
     const champsRequis = ['type_place', 'pack_location', 'materiel_location', 'forfait_bouffe_seul', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
     const champsNonRemplis = champsRequis.filter(champ => !form[champ]);
     if (champsNonRemplis.length > 0) {
@@ -50,7 +57,16 @@ export default function ChoixOptions() {
       return;
     }
 
-    const { error } = await supabase.from('options').insert({ id: user.id, ...form });
+    const token = await getToken({ template: 'supabase' });
+    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+
+    const { error } = await supabase.from('options').insert({
+      ...form,
+      id: user.id
+    });
+
     setLoading(false);
     if (error) {
       alert('Erreur lors de la sauvegarde');

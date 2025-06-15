@@ -4,17 +4,18 @@ import { Container, Tabs, Tab, Card } from 'react-bootstrap';
 import ChoixOptions from '../components/formulaires/ChoixOptions';
 import ChoixAnims from '../components/formulaires/ChoixAnims';
 import ChoixRes from '../components/formulaires/ChoixRes';
-import { supabase } from '../supabaseClient';
+import { useUser } from '@clerk/clerk-react';
 
 export default function Formulaires() {
   const navigate = useNavigate()
-  useEffect(() => { //redirection en cas d'user deja co
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) {
-        navigate('/');
-      }
-    });
-  }, [navigate]);
+  const { isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      navigate('/');
+    }
+  }, [isSignedIn, navigate]);
+
   const [ongletActif, setOngletActif] = useState('Options');
 
   return (

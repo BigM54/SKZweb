@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useSignIn, useUser } from '@clerk/clerk-react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react'
+import { supabase } from '../supabaseClient'
+import { useNavigate, Link } from 'react-router-dom'
+import useAuthStatus from '../hooks/useAuthStatus'
 import {
   Form,
   Button,
@@ -8,61 +9,55 @@ import {
   Alert,
   Spinner,
   Container,
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const { isSignedIn } = useUser();
-  const { signIn, setActive } = useSignIn();
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: '', password: '' })
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const {user} = useAuthStatus()
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    if (isSignedIn) {
-      navigate('/');
+  useEffect(() => { //redirection en cas d'user deja co 
+    const checkAuth = async () => {
+      if (user) {
+        navigate('/');
+      }
     }
-  }, [isSignedIn, navigate]);
+  });
+  
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
 
-    const { email, password } = formData;
+    const { email, password } = formData
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError("L'adresse email est invalide.");
-      setLoading(false);
-      return;
+      setError("L'adresse email est invalide.")
+      setLoading(false)
+      return
     }
 
     if (!password.trim()) {
-      setError("Veuillez entrer votre mot de passe.");
-      setLoading(false);
-      return;
+      setError("Veuillez entrer votre mot de passe.")
+      setLoading(false)
+      return
     }
+    console.log('douille')
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    console.log('keblo')
+    setLoading(false)
 
-    try {
-      const result = await signIn.create({
-        identifier: email,
-        password,
-      });
-
-      await setActive({ session: result.createdSessionId });
-      navigate('/');
-    } catch (err) {
-      const msg = err?.errors?.[0]?.message || 'Erreur de connexion.';
-      setError(msg);
-    }
-
-    setLoading(false);
-  };
+    if (error) setError("Identifiants incorrects ou utilisateur non inscrit.")
+    else navigate('/')
+  }
 
   return (
     <Container style={{ maxWidth: 450 }} className="mt-5">
@@ -111,14 +106,18 @@ export default function Login() {
 
           <div className="text-center mt-4">
             <span className="text-dark">Tu n’as pas de compte ? </span>
-            <Card.Link href="/register">Crée un compte ici</Card.Link>
+            <Card.Link href="/register">
+              Crée un compte ici
+            </Card.Link>
           </div>
 
           <div className="text-center mt-2">
-            <Card.Link href="/password-request">Mot de passe oublié ?</Card.Link>
+            <Card.Link href="/password-request">
+              Mot de passe oublié ?
+            </Card.Link>
           </div>
         </Card.Body>
       </Card>
     </Container>
-  );
+  )
 }
