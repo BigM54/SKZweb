@@ -9,11 +9,11 @@ export default function ChoixOptions() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { user } } = await supabase.auth.getuser();
       const { data, error: fetchError } = await supabase
         .from('options')
         .select('*')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
 
       if (data) {
@@ -40,7 +40,7 @@ export default function ChoixOptions() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getuser();
 
     if (form.materiel_location == 'aucun') form.pack_location = 'aucun' 
     const champsRequis = ['type_place', 'pack_location', 'materiel_location', 'forfait_bouffe_seul', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
@@ -50,7 +50,7 @@ export default function ChoixOptions() {
       return;
     }
 
-    const { error } = await supabase.from('options').insert({ id: session.user.id, ...form });
+    const { error } = await supabase.from('options').insert({ id: user.id, ...form });
     setLoading(false);
     if (error) {
       alert('Erreur lors de la sauvegarde');

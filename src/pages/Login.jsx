@@ -17,27 +17,12 @@ export default function Login() {
   const navigate = useNavigate()
 
   useEffect(() => { //redirection en cas d'user deja co
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
         navigate('/');
       }
     });
   }, [navigate]);
-
-  const handleResetPassword = async () => {
-    const email = prompt("Entre ton adresse email pour réinitialiser ton mot de passe :")
-    if (!email) return
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:5173/update-password'
-    })
-
-    if (error) {
-      alert("Erreur : " + error.message)
-    } else {
-      alert("Un email de réinitialisation a été envoyé si ton mail est dans la base de données.")
-    }
-  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })

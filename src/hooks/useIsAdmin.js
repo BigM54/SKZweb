@@ -6,12 +6,11 @@ export default function useIsAdmin() {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const userId = sessionData?.session?.user?.id;
+      const { data: {user} } = await supabase.auth.getUser();
+      const userId = user?.id;
 
       if (!userId) {
         setIsAdmin(false);
-        setLoading(false);
         return;
       }
 

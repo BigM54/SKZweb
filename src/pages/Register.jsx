@@ -9,8 +9,8 @@ export default function Register() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
         navigate('/');
       }
     });

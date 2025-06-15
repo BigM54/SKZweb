@@ -9,8 +9,8 @@ import { supabase } from '../supabaseClient';
 export default function Formulaires() {
   const navigate = useNavigate()
   useEffect(() => { //redirection en cas d'user deja co
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session?.user) {
+    supabase.auth.UgetUser().then(({ data: { user } }) => {
+      if (!user) {
         navigate('/');
       }
     });

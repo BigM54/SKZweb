@@ -6,11 +6,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Formulaire from './pages/Formulaire';
 import UpdatePassword from './pages/password-update';
-import PasswordSuccess from './pages/password-success';
-import PasswordRequest from './pages/password-request';
 import Paiements from './pages/Paiements';
 import Navbar from './components/Navbar'; 
 import AdminPanel from './pages/AdminPanel';
+import PasswordRequest from './pages/password-request';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -58,7 +57,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/password-update" element={<UpdatePassword />} />
-          <Route path="/password-success" element={<PasswordSuccess />} />
           <Route path="/password-request" element={<PasswordRequest />} />
           <Route path='/paiements' element={<Paiements/>} />
           <Route path="/formulaire" element={<Formulaire/>} />

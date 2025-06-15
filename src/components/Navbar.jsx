@@ -8,19 +8,20 @@ import useIsAdmin from '../hooks/useIsAdmin';
 export default function NavBarComponent() {
   const [expanded, setExpanded] = useState(false);
   const { pathname } = useLocation();
+  const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [profil, setProfil] = useState(null);
   const navigate = useNavigate();
   const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      setUser(user);
+      if (user) {
         const { data: profil } = await supabase
           .from('profils')
           .select('prenom')
-          .eq('id', session.user.id)
+          .eq('id', user.id)
           .single();
         setProfil(profil);
       }
@@ -44,9 +45,8 @@ export default function NavBarComponent() {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut({ scope: 'local' })
+    const { error } = await supabase.auth.signOut()
     await supabase.auth.refreshSession();
-    navigate('/');
   };
 
   const links = [
