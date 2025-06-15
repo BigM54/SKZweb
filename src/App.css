@@ -4,6 +4,7 @@
   padding: 2rem;
   text-align: center;
   display: flex;
+  height: 100%;
 }
 
 .logo {
@@ -18,6 +19,15 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
+.full-height-card {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white; /* facultatif: fond gris clair autour */
+}
+
 
 @keyframes logo-spin {
   from {
