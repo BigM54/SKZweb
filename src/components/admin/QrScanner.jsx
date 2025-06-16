@@ -28,6 +28,7 @@ const fieldMap = {
 };
 
 function QrScanner() {
+const [scanResult, setScanResult] = useState('');
   const [selectedType, setSelectedType] = useState('profils');
   const [scanning, setScanning] = useState(false);
   const typeRef = useRef('profils');
@@ -82,12 +83,12 @@ function QrScanner() {
             .eq('id', decodedText)
             .single();
 
-          if (error || !data) {
-            window.alert('Données non trouvées');
-          } else {
-            const message = fields.map((f) => `${f}: ${data[f] ?? 'N/A'}`).join('\n');
-            window.alert(`Informations ${type}:\n${message}`);
-          }
+        if (error || !data) {
+        setScanResult('❌ Données non trouvées');
+        } else {
+        const message = fields.map((f) => `${f}: ${data[f] ?? 'N/A'}`).join('\n');
+        setScanResult(`✅ Informations ${type} :\n${message}`);
+        }
 
           await html5QrCode.resume();
         },
@@ -143,6 +144,20 @@ function QrScanner() {
           Stop Scan
         </Button>
       </div>
+    {scanResult && (
+        <div
+            style={{
+            whiteSpace: 'pre-line',
+            marginBottom: '1rem',
+            padding: '1rem',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '0.25rem',
+            border: '1px solid #ccc',
+            }}
+        >
+            {scanResult}
+        </div>
+        )}
 
       <div
         id="reader"
