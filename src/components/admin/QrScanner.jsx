@@ -28,6 +28,7 @@ const fieldMap = {
 };
 
 function QrScanner() {
+const hasStartedRef = useRef(false);
 const [scanResult, setScanResult] = useState('');
   const [selectedType, setSelectedType] = useState('profils');
   const [scanning, setScanning] = useState(false);
@@ -39,17 +40,35 @@ const [scanResult, setScanResult] = useState('');
     typeRef.current = selectedType;
   }, [selectedType]);
 
-  useEffect(() => {
+    useEffect(() => {
     scannerRef.current = new Html5Qrcode('reader');
+
     return () => {
-      if (scannerRef.current) {
-        scannerRef.current.stop().catch(() => {});
-        scannerRef.current.clear();
-      }
+        const cleanup = async () => {
+        if (scannerRef.current && hasStartedRef.current) {
+            try {
+            await scannerRef.current.stop();      // ⬅️ Stop obligatoire avant
+            } catch (err) {
+            console.warn('Erreur lors du stop :', err.message);
+            }
+
+            try {
+            await scannerRef.current.clear();     // ⬅️ Ensuite seulement clear
+            } catch (err) {
+            console.warn('Erreur lors du clear :', err.message);
+            }
+
+            hasStartedRef.current = false;
+        }
+        };
+
+        cleanup();
     };
-  }, []);
+    }, []);
+
 
   const startScan = async () => {
+    hasStartedRef.current = true;
     const html5QrCode = scannerRef.current;
     const cameras = await Html5Qrcode.getCameras();
     if (!cameras.length) {
@@ -108,14 +127,23 @@ const [scanResult, setScanResult] = useState('');
     }
   };
 
-  const stopScan = async () => {
+    const stopScan = async () => {
     const html5QrCode = scannerRef.current;
-    if (scanning) {
-      await html5QrCode.stop();
-      await html5QrCode.clear();
-      scannerRef.current = new Html5Qrcode('reader'); // reinit pour futur start
-      setScanning(false);
+
+    if (scanning && hasStartedRef.current && html5QrCode) {
+        try {
+        await html5QrCode.stop();
+        await html5QrCode.clear();
+        scannerRef.current = new Html5Qrcode('reader');
+        hasStartedRef.current = false; // ✅ ici
+        setScanning(false);
+        } catch (err) {
+        console.warn('Erreur lors de l\'arrêt du scanner :', err);
+        }
     }
+    
+
+
   };
 
   return (
