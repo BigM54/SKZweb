@@ -50,7 +50,7 @@ export default function ChoixOptions() {
 
     if (form.materiel_location === 'aucun') form.pack_location = 'aucun';
 
-    const champsRequis = ['materiel_location', 'forfait_bouffe_seul', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
+    const champsRequis = ['materiel_location', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
     const champsNonRemplis = champsRequis.filter(champ => !form[champ]);
     if (champsNonRemplis.length > 0) {
       alert(`Merci de compléter tous les champs : ${champsNonRemplis.join(', ')}`);
@@ -117,7 +117,7 @@ export default function ChoixOptions() {
       {renderSelect("🛡️ Quelle assurance tu prends ?", "assurance", ["aucune", "zen", "skieur", "zen+skieur"])}
       {renderSelect("😎 Tu veux un masque SKZ stylé ?", "masque", ["oui", "non"])}
       {renderSelect("🚬 Pack fumeur : tu fumes ?", "pack_fumeur", ["oui", "non"])}
-      {renderSelect("🎉 Tu veux accéder aux soirées ?", "pack_soiree", ["oui", "non"])}
+      {renderSelect("🎉 Tu veux le pack soirée ?", "pack_soiree", ["oui", "non"])}
       {renderSelect("🧣 Tu veux le pack grand froid ?", "pack_grand_froid", ["oui", "non"])}
       {renderSelect("🥖 Combien de baguettes par jour ?", "pain", ['0', '1', '2', '3'])}
       {renderSelect("🥐 Combien de croissants par jour ?", "croissant", ['0', '1', '2', '3'])}
