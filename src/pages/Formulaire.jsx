@@ -4,6 +4,7 @@ import { Container, Tabs, Tab, Card } from 'react-bootstrap';
 import ChoixOptions from '../components/formulaires/ChoixOptions';
 import ChoixAnims from '../components/formulaires/ChoixAnims';
 import ChoixRes from '../components/formulaires/ChoixRes';
+import QrCode from '../components/formulaires/QrCode';
 import { useUser } from '@clerk/clerk-react';
 
 export default function Formulaires() {
@@ -29,6 +30,7 @@ export default function Formulaires() {
           <Tab eventKey="Options" title="Options" />
           <Tab eventKey="Anim's" title="Anim's" />
           <Tab eventKey="Res'" title="Res'" />
+          <Tab eventKey="QrCode" title="QrCode" />
         </Tabs>
 
         <Card className="shadow">
@@ -36,6 +38,7 @@ export default function Formulaires() {
             {ongletActif === 'Options' && <ChoixOptions />}
             {ongletActif === "Anim's" && <ChoixAnims />}
             {ongletActif === "Res'" && <ChoixRes />}
+            {ongletActif === "QrCode" && <QrCode />}
           </Card.Body>
         </Card>
       </Container>

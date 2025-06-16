@@ -28,7 +28,7 @@ export default function ChoixOptions() {
         setModeAffichage(true);
       } else {
         setForm({
-          type_place: '', forfait_bouffe_seul: '', pack_location: '',
+          pack_location: '',
           materiel_location: '', casque: '', type_forfait: '', assurance: '',
           masque: '', pack_fumeur: '', pack_soiree: '', pack_grand_froid: '',
           pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '0', bus: ''})
@@ -50,7 +50,7 @@ export default function ChoixOptions() {
 
     if (form.materiel_location === 'aucun') form.pack_location = 'aucun';
 
-    const champsRequis = ['type_place', 'pack_location', 'materiel_location', 'forfait_bouffe_seul', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
+    const champsRequis = ['materiel_location', 'forfait_bouffe_seul', 'casque', 'type_forfait', 'assurance', 'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'];
     const champsNonRemplis = champsRequis.filter(champ => !form[champ]);
     if (champsNonRemplis.length > 0) {
       alert(`Merci de compléter tous les champs : ${champsNonRemplis.join(', ')}`);
@@ -101,37 +101,37 @@ export default function ChoixOptions() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      {renderSelect("Tu es :", "type_place", ["PGs", "Archi", "Pek’ss"])}
-      {renderSelect("Tu souhaite uniquement le pack bouffe ou le forfait", "forfait_bouffe_seul", ["Je veux les 2", "Pack bouffe seulement (PAS DE FORFAIT)", "Forfait seulement (PAS DE BOUFFE)"])}
-      {renderSelect("Matériel", "materiel_location", ["aucun","complet", "ski", "chaussures"])}
+      {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski", "chaussures"])}
       {form.materiel_location !== 'aucun' ? (
         <Form.Group className="mb-3">
-          {renderSelect("Pack location", "pack_location", ["bronze", "argent", "or", "platine"])}
+          {renderSelect("📦 Choisis ton pack location (qualité du matos)", "pack_location", ["bronze", "argent", "or", "platine"])}
         </Form.Group>
       ) : (
         <Form.Group className="mb-3">
-          <Form.Label>Pack location</Form.Label>
+          <Form.Label>📦 Choisis ton pack location (qualité du matos)</Form.Label>
           <Form.Control disabled placeholder='Pas de location'/>
         </Form.Group>
-      )
-      }
-      {renderSelect("Tu veux louer un casque ?", "casque", ["oui", "non"])}
-      {renderSelect("Choisi ton forfait", "type_forfait", ["standard", "étendu"])}
-      {renderSelect("Quels assurance veux tu prendre ?", "assurance", ["aucune", "zen", "skieur", "zen+skieur"])}
-      {renderSelect("Veux-tu un masque SKZ ?", "masque", ["oui", "non"])}
-      {renderSelect("Ah batard tu fumes ? (pack fumeur)", "pack_fumeur", ["oui", "non"])}
-      {renderSelect("Pack Soirée", "pack_soiree", ["oui", "non"])}
-      {renderSelect("Pack Grand froid", "pack_grand_froid", ["oui", "non"])}
-      {renderSelect("Combien tu veux de baguette par jour ?", "pain", ['0', '1', '2', '3'])}
-      {renderSelect("Combien tu veux de croissant ?", "croissant", ['0', '1', '2', '3'])}
-      {renderSelect("Combien tu veux de pain choco ?", "pain_choco", ['0', '1', '2', '3'])}
-      {renderSelect("Combien de saucisson ?", "saucisson", ['0', '1', '2', '3'])}
-      {renderSelect("Combien de fromage ?", "fromage", ['0', '1', '2', '3'])}
-      {renderSelect("Combien de bière ?", "biere", ['0', '1', '2', '3'])}
-      {renderSelect("Tu veux un bus ? Dis nous d'où tu pars", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse'])}
+      )}
+      {renderSelect("🪖 Tu veux louer un casque ?", "casque", ["oui", "non"])}
+      {renderSelect("⛷️ Quel forfait veux-tu ? (Accès aux pistes)", "type_forfait", ["standard", "étendu"])}
+      {renderSelect("🛡️ Quelle assurance tu prends ?", "assurance", ["aucune", "zen", "skieur", "zen+skieur"])}
+      {renderSelect("😎 Tu veux un masque SKZ stylé ?", "masque", ["oui", "non"])}
+      {renderSelect("🚬 Pack fumeur : tu fumes ?", "pack_fumeur", ["oui", "non"])}
+      {renderSelect("🎉 Tu veux accéder aux soirées ?", "pack_soiree", ["oui", "non"])}
+      {renderSelect("🧣 Tu veux le pack grand froid ?", "pack_grand_froid", ["oui", "non"])}
+      {renderSelect("🥖 Combien de baguettes par jour ?", "pain", ['0', '1', '2', '3'])}
+      {renderSelect("🥐 Combien de croissants par jour ?", "croissant", ['0', '1', '2', '3'])}
+      {renderSelect("🍫 Combien de pains au choco par jour ?", "pain_choco", ['0', '1', '2', '3'])}
+      {renderSelect("🥓 Combien de saucissons (par 3) ?", "saucisson", ['0', '1', '2', '3'])}
+      {renderSelect("🧀 Combien de fromages (par 3) ?", "fromage", ['0', '1', '2', '3'])}
+      {renderSelect("🍺 Combien de bières (par 3) ?", "biere", ['0', '1', '2', '3'])}
+      {renderSelect("🚌 Tu veux un bus ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse'])}
+      
       <Button variant="primary" type="submit" disabled={loading}>
         {loading ? 'Enregistrement...' : 'Valider mes choix (DEFINITIF)'}
       </Button>
     </Form>
+
+
   );
 }
