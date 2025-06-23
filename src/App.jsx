@@ -9,6 +9,7 @@ import Paiements from './pages/Paiements';
 import Navbar from './components/Navbar'; 
 import AdminPanel from './pages/AdminPanel';
 import PasswordRequest from './pages/password-request';
+import FAQ from './pages/FAQ';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -26,6 +27,7 @@ function App() {
           <Route path='/paiements' element={<Paiements/>} />
           <Route path="/formulaire" element={<Formulaire/>} />
           <Route path="/admin" element={<AdminPanel/>} />
+          <Route path="/faq" element={<FAQ/>} />
         </Routes>
       </main>
     </>

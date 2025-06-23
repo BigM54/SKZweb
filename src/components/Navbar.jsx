@@ -58,6 +58,7 @@ export default function NavBarComponent() {
     { to: '/formulaire', label: 'Mes Choix', protected: true },
     { to: '/paiements', label: 'Mes Paiements', protected: true },
     { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true }
+    { to: '/faq', label: 'FAQ', protected: false}
   ];
 
   return (
