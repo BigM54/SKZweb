@@ -62,12 +62,11 @@ export default function NavBarComponent() {
   ];
 
   return (
-    <Navbar expand="md" expanded={expanded} onToggle={() => setExpanded(!expanded)} bg="light" className="shadow-sm">
+    <Navbar expand="md" expanded={expanded} onToggle={() => setExpanded(!expanded)}>
       <Container>
-        <Navbar.Brand as={Link} to="/" onClick={() => setExpanded(false)}>⛷️ Skioz'Arts</Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
-          <Nav className="me-auto">
+          <Nav className="mx-auto text-center">
             {links
               .filter(link => {
                 if (link.protected && !isSignedIn) return false;

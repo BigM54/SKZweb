@@ -11,6 +11,7 @@ export default function AdminUtilisateurs() {
   const [loading, setLoading] = useState(false);
   const [optionsMap, setOptionsMap] = useState({});
   const { getToken } = useAuth();
+  const [acompteMails, setAcompteMails] = useState([]);
 
   useEffect(() => {
     if (searchTerm.trim().length === 0) {
@@ -60,6 +61,14 @@ export default function AdminUtilisateurs() {
       setOptionsMap(optionsById);
     }
 
+    const { data: acomptes } = await supabase
+      .from('Acompte')
+      .select('email');
+
+    if (acomptes) {
+      setAcompteMails(acomptes.map(a => a.email));
+    }
+
     setLoading(false);
   };
 
@@ -96,6 +105,7 @@ export default function AdminUtilisateurs() {
                         <div><strong>🧀 Apéro :</strong> Fromage: {opt.fromage}, Saucisson: {opt.saucisson}, Bières: {opt.biere}</div>
                         <div><strong>🎿 Location :</strong> Pack: {opt.pack_location}, Matériel: {opt.materiel_location}, Casque: {opt.casque}, Assurance: {opt.assurance}</div>
                         <div><strong>🎒 Packs spéciaux :</strong> Fumeur: {opt.pack_fumeur}, Grand Froid: {opt.pack_grand_froid}, Soirée: {opt.pack_soiree}, Masque: {opt.masque}</div>
+                        <div><strong>💰 Paiement :</strong>{' '}Acompte {acompteMails.includes(u.email) ? '✅' : '❌'}</div>
                       </div>
                     ) : (
                       <div className="text-muted">Pas d'options enregistrées</div>

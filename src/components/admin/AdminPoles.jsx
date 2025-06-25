@@ -9,6 +9,7 @@ export default function AdminPoles() {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({});
   const { getToken } = useAuth();
+  const [acompteCount, setAcompteCount] = useState(0);
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -70,6 +71,14 @@ export default function AdminPoles() {
       g.type_forfait[opt.type_forfait] = (g.type_forfait[opt.type_forfait] || 0) + 1
     });
 
+    const { data: acomptes } = await supabase
+      .from('Acompte')
+      .select('email');
+
+    if (acomptes) {
+      setAcompteCount(acomptes.length);
+    }
+
     setStats(grouped);
     setLoading(false);
   };
@@ -95,39 +104,44 @@ export default function AdminPoles() {
             <tbody>
               <tr>
                 <td>Boulangerie</td>
-                <td>🟫 Pain: {data.pain} | Croissant: {data.croissant} | PainChoco: {data.pain_choco}</td>
+                <td>🥖 Pain: {data.pain} |🥐 Croissant: {data.croissant} |🍞🍫 PainChoco: {data.pain_choco}</td>
               </tr>
               <tr>
                 <td>Apéro</td>
-                <td>🧀 Fromage: {data.fromage} | Saucisson: {data.saucisson} | Bière: {data.biere}</td>
+                <td>🧀 Fromage: {data.fromage} |🌭 Saucisson: {data.saucisson} |🍺 Bière: {data.biere}</td>
               </tr>
               <tr>
                 <td>Location</td>
                 <td>
-                  Pack: {Object.entries(data.pack_location).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
-                  Matériel: {Object.entries(data.materiel_location).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
-                  Casque: {data.casque} 
+                  🏅Pack: {Object.entries(data.pack_location).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
+                  🎿Matériel: {Object.entries(data.materiel_location).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
+                  ⛑️Casque: {data.casque} 
                 </td>
               </tr>
                 <tr>
                 <td>Forfait et Assurance</td>
                 <td> 
-                  Assurance: {Object.entries(data.assurance).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
-                  Forfait: {Object.entries(data.type_forfait).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
+                  🤝Assurance: {Object.entries(data.assurance).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
+                  💳Forfait: {Object.entries(data.type_forfait).map(([k,v]) => `${k} (${v})`).join(', ')};<br/>
                 </td>
               </tr>
               <tr>
                 <td>Packs spéciaux</td>
-                <td>Fumeur: {data.pack_fumeur} | GrandFroid: {data.pack_grand_froid} | Soirée: {data.pack_soiree} | Masque: {data.masque}</td>
+                <td>🚬Fumeur: {data.pack_fumeur} | 🥶GrandFroid: {data.pack_grand_froid} | 🥳Soirée: {data.pack_soiree} | 🥽Masque: {data.masque}</td>
               </tr>
               <tr>
                 <td>Bus</td>
                 <td>
                     <pre>
+                        🚌
                         {Object.entries(data.bus).map(([k,v]) => `${k} (${v})`)
                         .join('\n')}
                     </pre>
                 </td>
+              </tr>
+              <tr>
+                <td>Paiement</td>
+                <td>💵Acompte reçu : {acompteCount} ✅</td>
               </tr>
             </tbody>
           </Table>

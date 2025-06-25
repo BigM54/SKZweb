@@ -21,50 +21,33 @@ export default function QrCode() {
     imageOptions: {
         saveAsBlob: true,
         hideBackgroundDots: true,
-        imageSize: 0.4,
+        imageSize: 1,
         margin: 0,
     },
     dotsOptions: {
-        type: "classy-rounded",
-        color: "#6a1a4c",
+        type: "square",
+        color: "#003250",
         roundSize: true,
-        gradient: {
-        type: "linear",
-        rotation: 0,
-        colorStops: [
-            { offset: 0, color: "#030084" },
-            { offset: 1, color: "#3cc9ff" },
-        ],
-        },
+        gradient: null,
     },
     backgroundOptions: {
         round: 0,
-        color: "#ffffff",
+        color: "white",
     },
     cornersSquareOptions: {
-        type: "extra-rounded",
-        color: "#001399",
-        gradient: {
-        type: "linear",
-        rotation: 0,
-        colorStops: [
-            { offset: 0, color: "#000495" },
-            { offset: 1, color: "#14c4fe" },
-        ],
-        },
+        type: "square",
+        color: "#003250",
+        gradient: null,
     },
+    dotsOptionsHelper:{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#6a1a4c","color2":"#6a1a4c","rotation":"0"}},
+    cornersSquareOptionsHelper:{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#000000","color2":"#000000","rotation":"0"}},
     cornersDotOptions: {
-        type: "dot",
-        color: "#0011df",
-        gradient: {
-        type: "linear",
-        rotation: 0,
-        colorStops: [
-            { offset: 0, color: "#001fae" },
-            { offset: 1, color: "#1ad1ff" },
-        ],
-        },
+        type: "square",
+        color: "#003250",
+        gradient: null,
     },
+    cornersDotOptionsHelper:{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#000000","color2":"#000000","rotation":"0"}},
+    backgroundOptionsHelper:{"colorType":{"single":true,"gradient":false},"gradient":{"linear":true,"radial":false,"color1":"#ffffff","color2":"#ffffff","rotation":"0"}},
     });
 
   const ref = useRef(null);
