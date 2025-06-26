@@ -84,6 +84,19 @@ export default function NavBarComponent() {
           <Button variant="danger" onClick={handleLogout}>Se déconnecter</Button>
         </div>
       )}
+      {isSignedIn && (
+        <div className="mt-4">
+          {profil?.prenom && <p>👋 {profil.prenom}</p>}
+          <Button
+            variant="outline-danger"
+            size="sm"
+            onClick={handleLogout}
+            style={{ marginTop: '0.5rem' }}
+          >
+            Se déconnecter
+          </Button>
+        </div>
+      )}
     </Nav>
   );
 
@@ -127,7 +140,7 @@ export default function NavBarComponent() {
             position: 'sticky',
             top: 0,
             height: '100vh',
-            width: '220px',
+            width: '280px',
             backgroundColor: '#f8f9fa',
             borderRight: '1px solid #dee2e6',
             padding: '1rem',
