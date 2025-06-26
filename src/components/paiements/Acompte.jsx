@@ -58,7 +58,7 @@ export default function Acompte() {
 
     const timeout = setTimeout(() => {
       if (!widgetLoaded) setHasTimedOut(true);
-    }, 10000);
+    }, 15000);
 
     return () => {
       window.removeEventListener('message', resizeIframe);
