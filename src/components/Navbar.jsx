@@ -28,10 +28,13 @@ export default function NavBarComponent() {
     const fetchProfil = async () => {
       if (!user) return;
       const token = await getToken({ template: 'supabase' });
-      const supabase = createClient(
-        'https://vwwnyxyglihmsabvbmgs.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw'
-      );
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      });
       const { data, error } = await supabase
         .from('profils')
         .select('prenom')
@@ -78,12 +81,6 @@ export default function NavBarComponent() {
             {label}
           </Nav.Link>
         ))}
-      {profil?.prenom && (
-        <div className="mt-3">
-          <p>👋 {profil.prenom}</p>
-          <Button variant="danger" onClick={handleLogout}>Se déconnecter</Button>
-        </div>
-      )}
       {isSignedIn && (
         <div className="mt-4">
           {profil?.prenom && <p>👋 {profil.prenom}</p>}

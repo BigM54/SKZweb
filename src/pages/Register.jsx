@@ -202,6 +202,7 @@ export default function RegisterAndVerify() {
                 <option value="boquette">Boquette</option>
                 <option value="bordels">Bordel's</option>
                 <option value="birse">Birse</option>
+                <option value="chalons">Chalon's</option>
               </Input>
             </FormGroup>
             <FormGroup><Label>Prom's</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>

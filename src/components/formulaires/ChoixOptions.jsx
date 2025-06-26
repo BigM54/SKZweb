@@ -9,6 +9,7 @@ export default function ChoixOptions() {
   const [modeAffichage, setModeAffichage] = useState(false);
   const {getToken} = useAuth()
   const { user} = useUser();
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,9 +40,68 @@ export default function ChoixOptions() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!modeAffichage && form) {
+      const newTotal = calculateTotal();
+      console.log('💸 Nouveau total :', newTotal);
+      setTotal(newTotal);
+    }
+  }, [form, modeAffichage]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const calculateTotal = () => {
+    console.log("oui")
+    let total = 459;
+
+    // Matériel de location
+    if (form.materiel_location === 'complet') {
+      const packPrices = { bronze: 75, argent: 92, or: 112, platine: 147 };
+      total += packPrices[form.pack_location] || 0;
+    }
+
+    if (form.materiel_location === 'ski' || form.materiel_location === 'snowboard') {
+      const packPrices = { bronze: 68, argent: 88, or: 108, platine: 142 };
+      total += packPrices[form.pack_location] || 0;
+    }
+
+    if (form.materiel_location === 'chaussures') {
+      const packPrices = { bronze: 51, argent: 73, or: 94, platine: 127 };
+      total += packPrices[form.pack_location] || 0;
+    }
+
+    // Casque
+    if (form.casque === 'oui') total += 28;
+
+    // Forfait
+    if (form.type_forfait === 'étendu') total += 50;
+
+    // Assurance
+    const assurancePrices = { zen: 38, skieur: 37, 'zen+skieur': 55 };
+    total += assurancePrices[form.assurance] || 0;
+
+    // Goodies
+    if (form.masque === 'oui') total += 48;
+    if (form.pack_fumeur === 'oui') total += 10;
+    if (form.pack_soiree === 'oui') total += 12;
+    if (form.pack_grand_froid === 'oui') total += 14;
+
+    // Pack bon vivant
+    total += parseInt(form.pain || 0) * 12;
+    total += parseInt(form.croissant || 0) * 10;
+    total += parseInt(form.pain_choco || 0) * 10;
+    total += parseInt(form.saucisson || 0) * 13;
+    total += parseInt(form.fromage || 0) * 15;
+    total += parseInt(form.biere || 0) * 12;
+
+    // Bus
+    const busPrices = { non: 0, sibers: 125, kin: 115, cluns: 105, p3: 115, boquette: 130, bordels: 125, birse: 130,chalons: 120 };
+    total += busPrices[form.bus] || 0;
+
+    return total;
   };
 
 
@@ -101,7 +161,7 @@ export default function ChoixOptions() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski", "chaussures"])}
+      {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski","snowboard", "chaussures"])}
       {form.materiel_location !== 'aucun' ? (
         <Form.Group className="mb-3">
           {renderSelect("📦 Choisis ton pack location (qualité du matos)", "pack_location", ["bronze", "argent", "or", "platine"])}
@@ -125,8 +185,25 @@ export default function ChoixOptions() {
       {renderSelect("🥓 Combien de saucissons (par 3) ?", "saucisson", ['0', '1', '2', '3'])}
       {renderSelect("🧀 Combien de fromages (par 3) ?", "fromage", ['0', '1', '2', '3'])}
       {renderSelect("🍺 Combien de bières (par 3) ?", "biere", ['0', '1', '2', '3'])}
-      {renderSelect("🚌 Tu veux un bus ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse'])}
+      {renderSelect("🚌 Tu veux un bus ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
       
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          backgroundColor: '#f8f9fa',
+          borderTop: '1px solid #dee2e6',
+          padding: '0.75rem 1rem',
+          textAlign: 'center',
+          zIndex: 1050,
+          boxShadow: '0 -2px 5px rgba(0,0,0,0.1)',
+        }}
+      >
+        <strong>💰 Total : {total} €</strong>
+      </div>
+
       <Button variant="primary" type="submit" disabled={loading}>
         {loading ? 'Enregistrement...' : 'Valider mes choix (DEFINITIF)'}
       </Button>
