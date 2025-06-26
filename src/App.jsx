@@ -11,7 +11,7 @@ import Navbar from './components/Navbar'; // Assure-toi qu’il ne soit pas `pos
 
 function App() {
   return (
-    <div style={{ backgroundColor: '#f8f9fa' }}>
+    <div style={{ backgroundColor: '#ffffff' }}>
       {/* Bannière en haut */}
       <img
         src="/baniere.jpeg"

@@ -20,7 +20,7 @@ export default function Formulaires() {
   const [ongletActif, setOngletActif] = useState('Options');
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
       <Container className="py-4">
         <Tabs
           activeKey={ongletActif}
