@@ -14,7 +14,7 @@ function App() {
     <div style={{ backgroundColor: '#ffffff' }}>
       {/* Bannière en haut */}
       <img
-        src="/baniere.jpeg"
+        src="/banniereV2.png"
         alt="Bannière"
         style={{ width: '100%', height: 'auto', display: 'block' }}
       />
