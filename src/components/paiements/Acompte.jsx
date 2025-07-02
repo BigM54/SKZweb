@@ -58,18 +58,6 @@ export default function Acompte() {
     return () => window.removeEventListener('message', handler);
   }, []);
 
-    window.addEventListener('message', resizeIframe);
-
-    const timeout = setTimeout(() => {
-      if (!widgetLoaded) setHasTimedOut(true);
-    }, 15000);
-
-    return () => {
-      window.removeEventListener('message', resizeIframe);
-      clearTimeout(timeout);
-    };
-  }, [widgetLoaded]);
-
   return (
     <Card className="mb-4">
       <Card.Body>
