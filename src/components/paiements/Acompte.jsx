@@ -88,11 +88,7 @@ export default function Acompte() {
               Tu peux régler ton acompte en ligne via le formulaire ci-dessous :
             </Card.Text>
             <iframe
-              id="haWidget"
-              allowTransparency="true"
-              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
-              style={{ width: '100%', border: 'none', height: '300px' }}
-              title="Paiement Acompte"
+              id="haWidget" allowtransparency="true" src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )" 
             />
           </>
         )}
