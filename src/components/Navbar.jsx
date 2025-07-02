@@ -18,7 +18,7 @@ export default function NavBarComponent() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 900);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -83,7 +83,7 @@ export default function NavBarComponent() {
         ))}
       {isSignedIn && (
         <div className="mt-4">
-          {profil?.prenom && <p>👋 {profil.prenom}</p>}
+          {profil?.prenom && <p className="text-white">👋 {profil.prenom}</p>}
           <Button
             variant="outline-danger"
             size="sm"
@@ -124,7 +124,7 @@ export default function NavBarComponent() {
       {isMobile && (
         <Offcanvas show={sidebarOpen} onHide={() => setSidebarOpen(false)}>
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Menu</Offcanvas.Title>
+            <Offcanvas.Title>Skioz'Arts 2026</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>{renderNavLinks()}</Offcanvas.Body>
         </Offcanvas>
