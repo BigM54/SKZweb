@@ -65,7 +65,7 @@ export default function Login() {
   };
 
   return (
-    <Container style={{ maxWidth: 450 }} className="mt-5">
+    <Container className="mt-5">
       <Card className="p-4 shadow">
         <Card.Body>
           <h2 className="text-center mb-4 text-primary">Connexion</h2>

@@ -171,7 +171,7 @@ export default function RegisterAndVerify() {
   if (!isLoaded) return null;
 
   return (
-    <Container className="mt-4 p-4 border rounded shadow" style={{ maxWidth: 600 }}>
+    <Container className="mt-4 p-4 border rounded shadow">
       <h2 className="text-center text-primary mb-3">
         {step === 'register' ? 'Créer un compte' : 'Vérifie ton email'}
       </h2>
