@@ -19,6 +19,7 @@ export default function QrCode() {
     },
     image: "/skz_logo.png",
     imageOptions: {
+        crossOrigin: "anonymous",
         saveAsBlob: true,
         hideBackgroundDots: true,
         imageSize: 1,
