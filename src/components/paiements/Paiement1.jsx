@@ -94,8 +94,6 @@ export default function Paiement1() {
               src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/widget"
               style={{ width: '100%', border: 'none', height: '300px' }}
               title="1er Paiement"
-              sandbox="allow-same-origin allow-scripts allow-forms"
-              frameborder="0"
             />
           </>
         )}

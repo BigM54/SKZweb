@@ -1,5 +1,5 @@
 import { Card, Alert, Spinner } from 'react-bootstrap';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -9,8 +9,6 @@ export default function Acompte() {
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
   const { getToken } = useAuth();
-  const iframeRef = useRef(null);
-  const [iframeHeight, setIframeHeight] = useState('600px');
 
   useEffect(() => {
     const checkPayment = async () => {
@@ -48,15 +46,26 @@ export default function Acompte() {
   }, [isLoaded, user]);
 
   useEffect(() => {
-    const handler = (event) => {
-      if (event.data?.height && iframeRef.current) {
-        setIframeHeight(event.data.height + 'px');
+    const resizeIframe = (e) => {
+      const dataHeight = e.data.height;
+      const haWidgetElement = document.getElementById('haWidget');
+      if (haWidgetElement && dataHeight) {
+        haWidgetElement.style.height = dataHeight + 'px';
+        setWidgetLoaded(true);
       }
     };
 
-    window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
-  }, []);
+    window.addEventListener('message', resizeIframe);
+
+    const timeout = setTimeout(() => {
+      if (!widgetLoaded) setHasTimedOut(true);
+    }, 15000);
+
+    return () => {
+      window.removeEventListener('message', resizeIframe);
+      clearTimeout(timeout);
+    };
+  }, [widgetLoaded]);
 
   return (
     <Card className="mb-4">
@@ -78,18 +87,12 @@ export default function Acompte() {
             <Card.Text>
               Tu peux régler ton acompte en ligne via le formulaire ci-dessous :
             </Card.Text>
-
             <iframe
-              ref={iframeRef}
               id="haWidget"
-              title="Formulaire HelloAsso"
               allowTransparency="true"
               src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
-              style={{
-                width: '100%',
-                border: 'none',
-                height: iframeHeight // valeur définie dynamiquement
-              }}
+              style={{ width: '100%', border: 'none', height: '300px' }}
+              title="Paiement Acompte"
             />
           </>
         )}
