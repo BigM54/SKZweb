@@ -72,7 +72,7 @@ export default function AdminPoles() {
     });
 
     const { data: acomptes } = await supabase
-      .from('Acompte')
+      .from('Paiements')
       .select('email');
 
     if (acomptes) {

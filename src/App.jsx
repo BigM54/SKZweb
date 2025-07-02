@@ -1,49 +1,49 @@
 import { Container } from 'react-bootstrap';
 import { Routes, Route } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import PasswordRequest from './pages/password-request';
-import Formulaire from './pages/Formulaire';
-import Paiements from './pages/Paiements';
-import AdminPanel from './pages/AdminPanel';
-import FAQ from './pages/FAQ';
+import Loader from './components/Loader';
+import Navbar from './components/Navbar';
 
-import Navbar from './components/Navbar'; // ton composant qui gère Offcanvas + Sidebar
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const PasswordRequest = lazy(() => import('./pages/password-request'));
+const Formulaire = lazy(() => import('./pages/Formulaire'));
+const Paiements = lazy(() => import('./pages/Paiements'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const FAQ = lazy(() => import('./pages/FAQ'));
 
 function App() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Bannière */}
-      <img
-        src="/banniereV2.png"
-        alt="Bannière"
-        style={{ width: '100%', height: 'auto', display: 'block' }}
-      />
+    <Suspense fallback={<Loader />}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <img
+          src="/banniereV2.png"
+          alt="Bannière"
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+        />
 
-      {/* Contenu global : sidebar + contenu principal */}
-      <div style={{ display: 'flex', flex: 1 }}>
-        {/* Sidebar latérale ou Offcanvas */}
-        <Navbar />
-
-        {/* Contenu principal */}
-        <main style={{ flex: 1, padding: '1rem' }}>
-          <Container fluid>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/password-request" element={<PasswordRequest />} />
-              <Route path="/paiements" element={<Paiements />} />
-              <Route path="/formulaire" element={<Formulaire />} />
-              <Route path="/admin" element={<AdminPanel />} />
-              <Route path="/faq" element={<FAQ />} />
-            </Routes>
-          </Container>
-        </main>
+        <div style={{ display: 'flex', flex: 1 }}>
+          <Navbar />
+          <main style={{ flex: 1, padding: '1rem' }}>
+            <Container fluid>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/password-request" element={<PasswordRequest />} />
+                <Route path="/paiements" element={<Paiements />} />
+                <Route path="/formulaire" element={<Formulaire />} />
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/faq" element={<FAQ />} />
+              </Routes>
+            </Container>
+          </main>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
 

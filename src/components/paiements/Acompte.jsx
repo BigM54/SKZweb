@@ -29,7 +29,7 @@ export default function Acompte() {
       const email = user.primaryEmailAddress.emailAddress;
 
       const { data, error } = await supabase
-        .from('Acompte')
+        .from('Paiements')
         .select('email')
         .eq('email', email)
         .single();

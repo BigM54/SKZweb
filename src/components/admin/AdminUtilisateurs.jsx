@@ -62,7 +62,7 @@ export default function AdminUtilisateurs() {
     }
 
     const { data: acomptes } = await supabase
-      .from('Acompte')
+      .from('Paiements')
       .select('email');
 
     if (acomptes) {
