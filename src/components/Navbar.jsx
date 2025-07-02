@@ -117,8 +117,7 @@ export default function NavBarComponent() {
             zIndex: 1050,
             backgroundColor: 'transparent',
             border: 'none',
-            fontSize: '1.8rem',
-            padding: '0.3rem 0.7rem',
+            fontSize: '2.5rem',
             borderRadius: '6px',
             color: 'black', 
           }}
@@ -150,7 +149,7 @@ export default function NavBarComponent() {
             position: 'sticky',
             top: 0,
             height: '100vh',
-            width: '280px',
+            width: '350px',
             backgroundColor: '#0d1c31',
             borderRight: '1px solid #dee2e6',
             padding: '1rem',

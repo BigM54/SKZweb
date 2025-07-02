@@ -56,6 +56,51 @@
   animation: fadeInFill 2s ease-in-out forwards;
 }
 
+.flip-box {
+  background-color: transparent;
+  color: white;
+  width: 65px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: transform 0.6s;
+  will-change: transform;
+}
+
+.flip-box.flip .flip-value {
+  animation: flip 0.6s ease;
+}
+
+.flip-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.flip-label {
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  text-align: center;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  40% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+
+
 @keyframes fadeInFill {
   0% {
     transform: scale(0.8);
