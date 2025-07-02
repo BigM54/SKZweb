@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 import useIsAdmin from '../hooks/useIsAdmin';
 import { createClient } from '@supabase/supabase-js';
+import { SidebarOpen } from 'lucide-react';
 
 export default function NavBarComponent() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -20,6 +21,10 @@ export default function NavBarComponent() {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1000);
     };
+
+    // Initial call
+    handleResize();
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -100,20 +105,22 @@ export default function NavBarComponent() {
   return (
     <>
       {/* Bouton burger visible uniquement sur mobile */}
-      {isMobile && (
+      {isMobile && !sidebarOpen && (
         <Button
           variant="light"
           onClick={() => setSidebarOpen(true)}
           style={{
-            position: 'fixed',
-            left: '10px',
+            position: 'sticky',
+            top: 0,
+            height: '6vh',
+            left: 10,
             zIndex: 1050,
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            backgroundColor: 'transparent',
             border: 'none',
             fontSize: '1.8rem',
             padding: '0.3rem 0.7rem',
             borderRadius: '6px',
-            backdropFilter: 'blur(4px)'
+            color: 'black', 
           }}
         >
           ☰
@@ -122,8 +129,14 @@ export default function NavBarComponent() {
 
       {/* Sidebar mobile (Offcanvas) */}
       {isMobile && (
-        <Offcanvas show={sidebarOpen} onHide={() => setSidebarOpen(false)}>
-          <Offcanvas.Header closeButton>
+        <Offcanvas
+          show={sidebarOpen}
+          onHide={() => setSidebarOpen(false)}
+          placement="start"
+          className="p-4"
+          style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px' }}
+        >
+          <Offcanvas.Header closeButton closeVariant="white">
             <Offcanvas.Title>Skioz'Arts 2026</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>{renderNavLinks()}</Offcanvas.Body>
