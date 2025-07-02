@@ -88,7 +88,13 @@ export default function Paiement1() {
             <Card.Text>
               Tu peux régler ton premier paiement en ligne via le formulaire ci-dessous :
             </Card.Text>
-            <iframe id="haWidget" allowtransparency="true" src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget" style="width: 100%; border: none;" onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )" ></iframe>
+            <iframe
+              id="haWidget"
+              allowTransparency="true"
+              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/widget"
+              style={{ width: '100%', border: 'none', height: '300px' }}
+              title="1er Paiement"
+            />
           </>
         )}
       </Card.Body>
