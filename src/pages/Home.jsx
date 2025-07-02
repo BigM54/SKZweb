@@ -69,6 +69,8 @@ export default function Home() {
       <Alert variant="light" className="text-center mb-0" style={{ fontWeight: '600' }}>
         36e édition du plus grand événement de ski étudiant d'Europe ! ✨
       </Alert>
+
+      {/* Section avec image de fond + compte à rebours */}
       <div
         style={{
           backgroundImage: 'url("/laPlagne.jpg")',
@@ -89,6 +91,52 @@ export default function Home() {
           </Row>
         </Container>
       </div>
+      <Container
+        fluid
+        className="text-center"
+        style={{
+          backgroundColor: '#f8f9fa',
+          paddingTop: '1rem',
+          paddingBottom: '1rem',   // moins haut qu'avant (au lieu de py-5)
+        }}
+      >
+        <h2
+          style={{
+            fontWeight: 'bold',
+            fontSize: '2.5rem',
+            display: 'inline-block',
+            paddingBottom: '0.3rem',
+            borderBottom: '3px solid #0d1c31', // petit bord sous le texte
+            marginBottom: '0.5rem', // espace entre texte et bord en dessous
+          }}
+        >
+          Ils nous soutiennent
+        </h2>
+      </Container>
+      <Container fluid className="py-4" style={{ backgroundColor: '#f8f9fa' }}>
+        <Row className="justify-content-center align-items-center">
+          <Col xs="auto">
+            <a href="https://www.rolex.com" target="_blank" rel="noopener noreferrer">
+              <img src="/Rolex.png" alt="Rolex" style={{ maxHeight: '80px', margin: '1rem' }} />
+            </a>
+          </Col>
+          <Col xs="auto">
+            <a href="https://www.gucci.com" target="_blank" rel="noopener noreferrer">
+              <img src="/Gucci.png" alt="Gucci" style={{ maxHeight: '80px', margin: '1rem' }} />
+            </a>
+          </Col>
+          <Col xs="auto">
+            <a href="https://youtu.be/dQw4w9WgXcQ?si=NOz9qFdokahj36y8" target="_blank" rel="noopener noreferrer">
+              <img src="/Jacquie.png" alt="Jacquie" style={{ maxHeight: '80px', margin: '1rem' }} />
+            </a>
+          </Col>
+          <Col xs="auto">
+            <a href="https://www.Bugatti.com" target="_blank" rel="noopener noreferrer">
+              <img src="/Bugatti.png" alt="Bugatti" style={{ maxHeight: '80px', margin: '1rem' }} />
+            </a>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }
