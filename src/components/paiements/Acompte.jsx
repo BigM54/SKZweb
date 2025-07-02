@@ -30,7 +30,7 @@ export default function Acompte() {
 
       const { data, error } = await supabase
         .from('Paiements')
-        .select('email')
+        .select('acompteStatut')
         .eq('email', email)
         .single();
 
@@ -38,7 +38,8 @@ export default function Acompte() {
         console.error('Erreur Supabase :', error);
       }
 
-      setHasPaid(!!data);
+      const hasPaid = data?.acompteStatut === true;
+      setHasPaid(hasPaid);
     };
 
     checkPayment();

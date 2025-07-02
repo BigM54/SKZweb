@@ -1,4 +1,3 @@
-// supabase/functions/helloasso-webhook/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -8,24 +7,78 @@ serve(async (req) => {
     const parsed = JSON.parse(rawBody);
 
     const eventType = parsed?.eventType;
-    const email = parsed?.data?.payer?.email;
-
     if (eventType !== "Payment") {
       console.warn("❌ Ignored: eventType n'est pas Payment");
       return new Response("Ignored", { status: 200 });
     }
 
+    const email = parsed?.data?.payer?.email;
     if (!email) {
       console.error("❌ Email manquant dans le payload");
       return new Response("Bad Request: missing email", { status: 400 });
     }
 
+    const formSlug = parsed?.data?.order?.formSlug;
+    const amountReceived = parsed?.data?.amount; // montant payé reçu
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { error } = await supabase.from("Paiements").insert({ email, paiement1Statut: true });
+    let updateData: any = {};
+
+    switch (formSlug) {
+      case "acompte-skz":
+        updateData = { acompteStatut: true };
+        break;
+      case "paiement-1-skz":
+        updateData = { paiement1Statut: true };
+        break;
+      case "paiement-2-skz":
+        updateData = { paiement2Statut: true };
+        break;
+      case "paiement-3-skz":
+        // On met à jour paiement3Recu, on récupère paiement3Montant pour vérifier
+        // Attention : ici on doit d'abord récupérer paiement3Montant avant update
+        {
+          // Récupérer paiement3Montant existant
+          const { data: existingRow, error: selectError } = await supabase
+            .from("Paiements")
+            .select("paiement3Montant")
+            .eq("email", email)
+            .single();
+
+          if (selectError) {
+            console.error("❌ Erreur de récupération paiement3Montant:", selectError.message);
+            return new Response("Erreur serveur", { status: 500 });
+          }
+
+          const paiement3Montant = existingRow?.paiement3Montant ?? 0;
+          const fraude = paiement3Montant !== amountReceived;
+
+          updateData = {
+            paiement3Recu: amountReceived,
+            Fraude: fraude,
+          };
+        }
+        break;
+      default:
+        console.warn("❌ Formulaire non géré:", formSlug);
+        return new Response("Formulaire ignoré", { status: 200 });
+    }
+
+    // Mettre à jour la ligne existante ou insérer si inexistante
+    // Ici on tente un UPSERT via .upsert() avec la clé email
+    const { error } = await supabase
+      .from("Paiements")
+      .upsert(
+        {
+          email,
+          ...updateData,
+        },
+        { onConflict: "email" }, // email comme clé unique
+      );
 
     if (error) {
       console.error("❌ Erreur Supabase:", error.message);
@@ -33,7 +86,6 @@ serve(async (req) => {
     }
 
     return new Response("OK", { status: 200 });
-
   } catch (err) {
     console.error("❌ Erreur de traitement:", err);
     return new Response("Erreur serveur", { status: 500 });
