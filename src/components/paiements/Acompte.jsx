@@ -1,5 +1,5 @@
 import { Card, Alert, Spinner } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
