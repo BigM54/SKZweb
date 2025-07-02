@@ -9,6 +9,8 @@ export default function Acompte() {
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
   const { getToken } = useAuth();
+  const iframeRef = useRef(null);
+  const [iframeHeight, setIframeHeight] = useState('600px');
 
   useEffect(() => {
     const checkPayment = async () => {
@@ -46,14 +48,15 @@ export default function Acompte() {
   }, [isLoaded, user]);
 
   useEffect(() => {
-    const resizeIframe = (e) => {
-      const dataHeight = e.data.height;
-      const haWidgetElement = document.getElementById('haWidget');
-      if (haWidgetElement && dataHeight) {
-        haWidgetElement.style.height = dataHeight + 'px';
-        setWidgetLoaded(true);
+    const handler = (event) => {
+      if (event.data?.height && iframeRef.current) {
+        setIframeHeight(event.data.height + 'px');
       }
     };
+
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
 
     window.addEventListener('message', resizeIframe);
 
@@ -87,12 +90,18 @@ export default function Acompte() {
             <Card.Text>
               Tu peux régler ton acompte en ligne via le formulaire ci-dessous :
             </Card.Text>
+
             <iframe
-              id="haWidget" 
-              allowtransparency="true" 
-              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget" 
-              style="width: 100%; border: none;" 
-              onload="window.addEventListener( 'message', e => { const dataHeight = e.data.height; const haWidgetElement = document.getElementById('haWidget'); haWidgetElement.height = dataHeight + 'px'; } )" 
+              ref={iframeRef}
+              id="haWidget"
+              title="Formulaire HelloAsso"
+              allowTransparency="true"
+              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
+              style={{
+                width: '100%',
+                border: 'none',
+                height: iframeHeight // valeur définie dynamiquement
+              }}
             />
           </>
         )}
