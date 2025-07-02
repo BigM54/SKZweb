@@ -44,15 +44,20 @@ function App() {
   return (
     <Suspense fallback={null}>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {/* Bannière tout en haut */}
         <img
           src="/banniereV2.png"
           alt="Bannière"
           style={{ width: '100%', height: 'auto', display: 'block' }}
         />
-        <div style={{ display: 'flex', flex: 1}}>
-          <Navbar />
-          <main className='p-0 m-0 w-100'>
-            <Container fluid className='p-0 m-0 w-100'>
+
+        {/* La navbar horizontale en dessous de la bannière */}
+        <Navbar />
+
+        {/* Le contenu principal en dessous */}
+        <div style={{ flex: 1 }}>
+          <main className="p-0 m-0 w-100">
+            <Container fluid className="p-0 m-0 w-100">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />

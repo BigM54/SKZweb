@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Nav, Button, Offcanvas } from 'react-bootstrap';
+import { Navbar, Nav, Button, Offcanvas, Container } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 import useIsAdmin from '../hooks/useIsAdmin';
 import { createClient } from '@supabase/supabase-js';
-import { SidebarOpen } from 'lucide-react';
 
 export default function NavBarComponent() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -66,8 +65,8 @@ export default function NavBarComponent() {
     { to: '/faq', label: 'FAQ', protected: false }
   ];
 
-  const renderNavLinks = () => (
-    <Nav className="flex-column">
+  const renderNavLinks = (className = "") => (
+    <Nav className={className}>
       {links
         .filter(link => {
           if (link.protected && !isSignedIn) return false;
@@ -86,21 +85,25 @@ export default function NavBarComponent() {
             {label}
           </Nav.Link>
         ))}
-      {isSignedIn && (
-        <div className="mt-4">
-          {profil?.prenom && <p className="text-white">👋 {profil.prenom}</p>}
-          <Button
-            variant="outline-danger"
-            size="sm"
-            onClick={handleLogout}
-            style={{ marginTop: '0.5rem' }}
-          >
-            Se déconnecter
-          </Button>
-        </div>
-      )}
+    {isSignedIn && (
+      <>
+        {profil?.prenom && (
+          <span className="text-white ms-3">👋 {profil.prenom}</span>
+        )}
+        <Button
+          variant="outline-danger"
+          size="sm"
+          onClick={handleLogout}
+          className="ms-3"
+        >
+          Se déconnecter
+        </Button>
+      </>
+    )}
+
     </Nav>
   );
+
 
   return (
     <>
@@ -111,15 +114,18 @@ export default function NavBarComponent() {
           onClick={() => setSidebarOpen(true)}
           style={{
             position: 'sticky',
-            top: 0,
-            height: '6vh',
-            left: 10,
+            top: 0, // Collé en haut quand on scrolle
+            marginTop: '0.5rem', // Décalage visuel sous la bannière
+            marginLeft: '0.75rem', // Légèrement à gauche
             zIndex: 1050,
-            backgroundColor: 'transparent',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
             border: 'none',
-            fontSize: '2.5rem',
+            fontSize: '2rem',
+            padding: '0.3rem 0.7rem',
             borderRadius: '6px',
-            color: 'black', 
+            backdropFilter: 'blur(4px)',
+            color: 'black',
+            alignSelf: 'flex-start' // Empêche de créer une colonne pleine hauteur
           }}
         >
           ☰
@@ -138,27 +144,25 @@ export default function NavBarComponent() {
           <Offcanvas.Header closeButton closeVariant="white">
             <Offcanvas.Title>Skioz'Arts 2026</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>{renderNavLinks()}</Offcanvas.Body>
+          <Offcanvas.Body>{renderNavLinks("flex-column")}</Offcanvas.Body>
         </Offcanvas>
       )}
 
       {/* Sidebar desktop */}
       {!isMobile && (
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-            width: '350px',
-            backgroundColor: '#0d1c31',
-            borderRight: '1px solid #dee2e6',
-            padding: '1rem',
-            overflowY: 'auto',
-            flexShrink: 0
-          }}
+        <Navbar
+          expand="lg"
+          style={{ backgroundColor: '#0d1c31', position: 'sticky', top: 0, zIndex: 1040}}
+          variant="dark"
+          className="px-4"
         >
-          {renderNavLinks()}
-        </div>
+          <Container fluid>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
+              {renderNavLinks("d-flex flex-row gap-4 align-items-center")}
+            </Navbar.Collapse>
+          </Container>
+    </Navbar>
       )}
     </>
   );
