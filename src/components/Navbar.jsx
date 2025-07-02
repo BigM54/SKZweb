@@ -138,7 +138,7 @@ export default function NavBarComponent() {
             top: 0,
             height: '100vh',
             width: '280px',
-            backgroundColor: '#f8f9fa',
+            backgroundColor: '#0d1c31',
             borderRight: '1px solid #dee2e6',
             padding: '1rem',
             overflowY: 'auto',

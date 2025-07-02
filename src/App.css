@@ -1,10 +1,9 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   display: flex;
   height: 100%;
+  width: 100%;
 }
 
 .logo {
@@ -50,5 +49,27 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.animated-logo {
+  opacity: 0;
+  animation: fadeInFill 2s ease-in-out forwards;
+}
+
+@keyframes fadeInFill {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+    filter: grayscale(100%);
+  }
+  50% {
+    opacity: 0.5;
+    filter: grayscale(50%);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: grayscale(0%);
+  }
 }
 

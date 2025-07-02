@@ -41,11 +41,11 @@ export default function ChoixOptions() {
   }, []);
 
   useEffect(() => {
-    if (!modeAffichage && form) {
+    if (form) {
       const newTotal = calculateTotal();
       setTotal(newTotal);
     }
-  }, [form, modeAffichage]);
+  }, [form]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
