@@ -20,8 +20,8 @@ export default function Formulaires() {
   const [ongletActif, setOngletActif] = useState('Options');
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
-      <Container className="py-4">
+    <div className="full-width" style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
+      <div className="py-4">
         <Tabs
           activeKey={ongletActif}
           onSelect={(k) => setOngletActif(k)}
@@ -32,7 +32,6 @@ export default function Formulaires() {
           <Tab eventKey="Res'" title="Res'" />
           <Tab eventKey="QrCode" title="QrCode" />
         </Tabs>
-
         <Card className="shadow">
           <Card.Body>
             {ongletActif === 'Options' && <ChoixOptions />}
@@ -41,7 +40,7 @@ export default function Formulaires() {
             {ongletActif === "QrCode" && <QrCode />}
           </Card.Body>
         </Card>
-      </Container>
+      </div>
     </div>
   );
 }

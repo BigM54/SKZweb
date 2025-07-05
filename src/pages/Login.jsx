@@ -65,8 +65,8 @@ export default function Login() {
   };
 
   return (
-    <Container className="mt-5">
-      <Card className="p-4 shadow">
+    <div className="full-width mt-5">
+      <Card className="p-4 shadow mx-auto" style={{ maxWidth: 480 }}>
         <Card.Body>
           <h2 className="text-center mb-4 text-primary">Connexion</h2>
 
@@ -119,6 +119,6 @@ export default function Login() {
           </div>
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 }

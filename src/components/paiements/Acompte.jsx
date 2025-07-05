@@ -141,17 +141,7 @@ export default function Acompte() {
   // Étape 1 : affichage du widget HelloAsso en plein écran sous la navbar/bannière
   if (step === 1) {
     return (
-      <div
-        style={{
-          position: 'fixed',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: '#fff',
-          zIndex: 2000,
-          overflow: 'auto',
-        }}
-      >
+      <div style={{ width: '100%', background: '#fff', padding: 0 }}>
         {hasTimedOut ? (
           <div style={{ padding: 24 }}>
             <Alert variant="danger" className="mt-3">
@@ -173,8 +163,8 @@ export default function Acompte() {
             allowTransparency="true"
             src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
             style={{
-              width: '100vw',
-              height: 'calc(100vh - 600px)', // ajuste la hauteur selon le top
+              width: '100%',
+              minHeight: '700px',
               border: 'none',
               display: 'block',
             }}

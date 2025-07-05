@@ -1,4 +1,4 @@
-import { Container, Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 import Acompte from '../components/paiements/Acompte';
 import Paiement1 from '../components/paiements/Paiement1';
 import Paiement2 from '../components/paiements/Paiement2';
@@ -6,9 +6,15 @@ import Paiement3 from '../components/paiements/Paiement3';
 
 export default function MesPaiements() {
   return (
-    <Container className="py-4">
-      <h2 className="mb-4">💳 Mes Paiements</h2>
-      <Tabs defaultActiveKey="acompte" id="paiements-tabs" className="mb-3">
+    <div className="full-width py-4">
+      <h2 className="mb-4 text-center">💳 Mes Paiements</h2>
+      <Tabs
+        defaultActiveKey="acompte"
+        id="paiements-tabs"
+        className="mb-3 d-flex justify-content-center"
+        mountOnEnter
+        unmountOnExit
+      >
         <Tab eventKey="acompte" title="Acompte">
           <Acompte />
         </Tab>
@@ -22,6 +28,6 @@ export default function MesPaiements() {
           <Paiement3 />
         </Tab>
       </Tabs>
-    </Container>
+    </div>
   );
 }

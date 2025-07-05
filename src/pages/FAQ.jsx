@@ -2,9 +2,8 @@ import { Accordion, Container } from 'react-bootstrap';
 
 export default function FAQ() {
   return (
-    <Container className="my-5">
+    <div className="full-width my-5">
       <h2 className="text-center mb-4">❓ Foire Aux Questions (FAQ)</h2>
-
       <Accordion alwaysOpen>
         {/* Rubrique Paiements */}
         <Accordion.Item eventKey="0">
@@ -72,6 +71,6 @@ export default function FAQ() {
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-    </Container>
+    </div>
   );
 }

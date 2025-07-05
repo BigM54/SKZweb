@@ -57,8 +57,8 @@ export default function PasswordRequest() {
   };
 
   return (
-    <Container style={{ maxWidth: 480 }} className="mt-5">
-      <Card className="p-4 shadow">
+    <div className="full-width mt-5">
+      <Card className="p-4 shadow mx-auto" style={{ maxWidth: 480 }}>
         <Card.Body>
           <h3 className="text-center mb-4">🔐 Réinitialisation du mot de passe</h3>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -106,6 +106,6 @@ export default function PasswordRequest() {
           )}
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 }
