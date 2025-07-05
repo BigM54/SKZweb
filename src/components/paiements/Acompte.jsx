@@ -90,8 +90,8 @@ export default function Acompte() {
             <iframe
               id="haWidget"
               allowTransparency="true"
-              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
-              style={{ width: '100%', border: 'none', height: '300px' }}
+              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget-bouton"
+              style={{ width: '100%', height: '70px', border: 'none' }}
               title="Paiement Acompte"
             />
           </>
