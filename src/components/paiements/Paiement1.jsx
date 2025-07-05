@@ -38,8 +38,7 @@ export default function Paiement1() {
         console.error('Erreur Supabase :', error);
       }
 
-      const hasPaid = data?.paiement1Statut === true;
-      setHasPaid(hasPaid);
+      setHasPaid(data?.paiement1Statut === true);
 
     };
 
@@ -82,7 +81,7 @@ export default function Paiement1() {
         ) : hasTimedOut ? (
           <Alert variant="danger" className="mt-3">
             ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
-            Certains navigateurs (notamment Safari ou avec des bloqueurs de cookies) peuvent empêcher l'affichage du formulaire.<br />
+            Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
             <a
               href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/formulaire"
               target="_blank"

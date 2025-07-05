@@ -38,8 +38,7 @@ export default function Acompte() {
         console.error('Erreur Supabase :', error);
       }
 
-      const hasPaid = data?.acompteStatut === true;
-      setHasPaid(hasPaid);
+      setHasPaid(data?.acompteStatut === true);
     };
 
     checkPayment();

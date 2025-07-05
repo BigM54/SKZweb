@@ -41,7 +41,7 @@ export default function NavBarComponent() {
       });
       const { data, error } = await supabase
         .from('profils')
-        .select('prenom')
+        .select('prenom, bucque')
         .eq('id', user.id)
         .single();
       if (error) console.error('Erreur profil :', error.message);
@@ -87,8 +87,8 @@ export default function NavBarComponent() {
         ))}
     {isSignedIn && (
       <>
-        {profil?.prenom && (
-          <span className="text-white ms-3">👋 {profil.prenom}</span>
+        {(profil?.bucque || profil?.prenom) && (
+          <span className="text-white ms-3">👋 {profil?.bucque ? profil.bucque : profil.prenom}</span>
         )}
         <Button
           variant="outline-danger"

@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
-export default function Paiement2() {
+export default function Paiement3() {
   const { user, isLoaded } = useUser();
   const [hasPaid, setHasPaid] = useState(null); 
+  const [fraud, setFraud] = useState(false);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
   const { getToken } = useAuth();
@@ -31,7 +32,7 @@ export default function Paiement2() {
 
       const { data, error } = await supabase
         .from('Paiements')
-        .select('paiement3Montant, paiement3Recu')
+        .select('paiement3Montant, paiement3Recu, Fraude')
         .eq('email', email)
         .single();
 
@@ -42,28 +43,21 @@ export default function Paiement2() {
       }
 
       if (!data) {
-        // Pas de données pour cet email
         setHasPaid(false);
         return;
       }
 
-      const { paiement3Montant, paiement3Recu } = data;
+      setMontant(data.paiement3Montant);
+      setFraud(data.Fraude === true);
 
-      if (paiement3Recu === null || paiement3Recu === undefined) {
-        // Paiement3Recu nul => pas payé
+      if (data.paiement3Recu === null || data.paiement3Recu === undefined) {
         setHasPaid(false);
-        setMontant(paiement3Montant)
-      } else if (paiement3Recu !== paiement3Montant) {
-        // Montant reçu différent du montant attendu
-        alert("Le montant envoyé n'est pas correct, veuillez contacter l'administrateur.");
+      } else if (data.Fraude === true) {
         setHasPaid(false);
       } else {
-        // Montants égaux
         setHasPaid(true);
       }
-
     };
-
     checkPayment();
   }, [isLoaded, user]);
 
@@ -96,6 +90,11 @@ export default function Paiement2() {
 
         {!isLoaded || hasPaid === null ? (
           <Spinner animation="border" />
+        ) : fraud ? (
+          <Alert variant="danger">
+            ⚠️ Le montant reçu ne correspond pas au montant attendu.<br />
+            Merci de contacter la team SKZ pour régulariser la situation.
+          </Alert>
         ) : hasPaid ? (
           <Alert variant="success">
             ✅ Tu as déjà effectué ce paiement. Merci !
@@ -103,7 +102,7 @@ export default function Paiement2() {
         ) : hasTimedOut ? (
           <Alert variant="danger" className="mt-3">
             ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
-            Certains navigateurs (notamment Safari ou avec des bloqueurs de cookies) peuvent empêcher l'affichage du formulaire.<br />
+            Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
             <a
               href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/formulaire"
               target="_blank"

@@ -2,6 +2,12 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 serve(async (req) => {
+  // Vérification du secret dans l'URL
+  const url = new URL(req.url);
+  const secret = url.searchParams.get("secret");
+  if (secret !== Deno.env.get("WEBHOOK_SECRET")) {
+    return new Response("Unauthorized", { status: 401 });
+  }
   try {
     const rawBody = await req.text();
     const parsed = JSON.parse(rawBody);
@@ -12,14 +18,16 @@ serve(async (req) => {
       return new Response("Ignored", { status: 200 });
     }
 
-    const email = parsed?.data?.payer?.email;
+    let email = parsed?.data?.payer?.email;
     if (!email) {
       console.error("❌ Email manquant dans le payload");
       return new Response("Bad Request: missing email", { status: 400 });
     }
+    email = email.toLowerCase();
 
     const formSlug = parsed?.data?.order?.formSlug;
-    const amountReceived = parsed?.data?.amount; // montant payé reçu
+    const amountReceivedCents = parsed?.data?.amount; // montant payé reçu en centimes
+    const amountReceived = amountReceivedCents ? amountReceivedCents / 100 : 0; // conversion en euros
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
