@@ -92,7 +92,7 @@ export default function Paiement2() {
               id="haWidget"
               allowTransparency="true"
               src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-2-skz/widget"
-              style={{ width: '100%', border: 'none'}}
+              style={{ width: '100%', border: 'none', height: '300px' }}
               title="2eme Paiement"
             />
           </>
