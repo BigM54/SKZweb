@@ -54,7 +54,12 @@ export default function Acompte() {
     }
   }, [step]);
 
+  // Ce useEffect ne s'active que quand on est à l'étape 1 (affichage iframe)
   useEffect(() => {
+    if (step !== 1) return;
+
+    setHasTimedOut(false); // reset à chaque affichage du widget
+
     const resizeIframe = (e) => {
       const dataHeight = e.data.height;
       const haWidgetElement = document.getElementById('haWidgetAcompte');
@@ -74,7 +79,8 @@ export default function Acompte() {
       window.removeEventListener('message', resizeIframe);
       clearTimeout(timeout);
     };
-  }, [widgetLoaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, widgetLoaded]);
 
   if (!isLoaded || hasPaid === null) {
     return (
@@ -138,7 +144,6 @@ export default function Acompte() {
       <div
         style={{
           position: 'fixed',
-          top: '80px', // ajuste cette valeur à la hauteur de ta navbar+bannière
           left: 0,
           right: 0,
           bottom: 0,
@@ -169,7 +174,7 @@ export default function Acompte() {
             src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
             style={{
               width: '100vw',
-              height: 'calc(100vh - 80px)', // ajuste la hauteur selon le top
+              height: 'calc(100vh - 600px)', // ajuste la hauteur selon le top
               border: 'none',
               display: 'block',
             }}
