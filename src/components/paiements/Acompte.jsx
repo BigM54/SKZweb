@@ -132,34 +132,53 @@ export default function Acompte() {
     );
   }
 
-  // Étape 1 : affichage du widget HelloAsso dans une Card
-  return (
-    <Card className="mb-4">
-      <Card.Body>
-        <Card.Title>Paiement de l'acompte</Card.Title>
+  // Étape 1 : affichage du widget HelloAsso en plein écran sous la navbar/bannière
+  if (step === 1) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: '80px', // ajuste cette valeur à la hauteur de ta navbar+bannière
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: '#fff',
+          zIndex: 2000,
+          overflow: 'auto',
+        }}
+      >
         {hasTimedOut ? (
-          <Alert variant="danger" className="mt-3">
-            ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
-            Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
-            <a
-              href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/formulaire"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary mt-2"
-            >
-              Ouvrir le formulaire dans un nouvel onglet
-            </a>
-          </Alert>
+          <div style={{ padding: 24 }}>
+            <Alert variant="danger" className="mt-3">
+              ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
+              Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
+              <a
+                href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/formulaire"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary mt-2"
+              >
+                Ouvrir le formulaire dans un nouvel onglet
+              </a>
+            </Alert>
+          </div>
         ) : (
           <iframe
             id="haWidgetAcompte"
             allowTransparency="true"
             src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
-            style={{ width: '100%', minHeight: '700px', border: 'none' }}
+            style={{
+              width: '100vw',
+              height: 'calc(100vh - 80px)', // ajuste la hauteur selon le top
+              border: 'none',
+              display: 'block',
+            }}
             title="Paiement Acompte"
           />
         )}
-      </Card.Body>
-    </Card>
-  );
+      </div>
+    );
+  }
+
+  return null;
 }
