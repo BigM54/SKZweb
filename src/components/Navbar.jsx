@@ -114,9 +114,9 @@ export default function NavBarComponent() {
           onClick={() => setSidebarOpen(true)}
           style={{
             position: 'sticky',
-            top: 0, // Collé en haut quand on scrolle
-            marginTop: '0.5rem', // Décalage visuel sous la bannière
-            marginLeft: '0.75rem', // Légèrement à gauche
+            top: 0,
+            marginTop: '0rem', // réduit ou supprime l'espace
+            marginLeft: '0.75rem',
             zIndex: 1050,
             backgroundColor: 'rgba(255, 255, 255, 0.7)',
             border: 'none',
@@ -125,7 +125,7 @@ export default function NavBarComponent() {
             borderRadius: '6px',
             backdropFilter: 'blur(4px)',
             color: 'black',
-            alignSelf: 'flex-start' // Empêche de créer une colonne pleine hauteur
+            alignSelf: 'flex-start'
           }}
         >
           ☰
@@ -139,12 +139,14 @@ export default function NavBarComponent() {
           onHide={() => setSidebarOpen(false)}
           placement="start"
           className="p-4"
-          style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px' }}
+          style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
         >
           <Offcanvas.Header closeButton closeVariant="white">
             <Offcanvas.Title>Skioz'Arts 2026</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>{renderNavLinks("flex-column")}</Offcanvas.Body>
+          <Offcanvas.Body style={{ fontSize: '1.5rem' }}>
+            {renderNavLinks("flex-column")}
+          </Offcanvas.Body>
         </Offcanvas>
       )}
 

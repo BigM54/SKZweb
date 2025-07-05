@@ -7,7 +7,7 @@ export default function AdminPanel() {
   return (
     <div className="full-width mt-4">
       <h2 className="mb-4">🛠️ Panel Administrateur</h2>
-      <Tabs defaultActiveKey="utilisateur" id="admin-tabs" className="mb-3">
+      <Tabs defaultActiveKey="utilisateur" id="admin-tabs" className="mb-3 d-flex justify-content-center">
         <Tab eventKey="utilisateur" title="📋 Infos Utilisateur">
           <AdminUtilisateurs />
         </Tab>

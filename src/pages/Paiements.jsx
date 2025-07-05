@@ -6,7 +6,7 @@ import Paiement3 from '../components/paiements/Paiement3';
 
 export default function MesPaiements() {
   return (
-    <div className="full-width py-4">
+    <div className="full-width">
       <h2 className="mb-4 text-center">💳 Mes Paiements</h2>
       <Tabs
         defaultActiveKey="acompte"
