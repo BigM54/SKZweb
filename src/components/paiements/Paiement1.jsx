@@ -60,7 +60,7 @@ export default function Paiement1() {
 
     const timeout = setTimeout(() => {
       if (!widgetLoaded) setHasTimedOut(true);
-    }, 15000);
+    }, 5000);
 
     return () => {
       window.removeEventListener('message', resizeIframe);
@@ -81,7 +81,16 @@ export default function Paiement1() {
           </Alert>
         ) : hasTimedOut ? (
           <Alert variant="danger" className="mt-3">
-            ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.
+            ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
+            Certains navigateurs (notamment Safari ou avec des bloqueurs de cookies) peuvent empêcher l'affichage du formulaire.<br />
+            <a
+              href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/formulaire"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary mt-2"
+            >
+              Ouvrir le formulaire dans un nouvel onglet
+            </a>
           </Alert>
         ) : (
           <>

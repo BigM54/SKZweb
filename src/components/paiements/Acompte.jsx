@@ -59,7 +59,7 @@ export default function Acompte() {
 
     const timeout = setTimeout(() => {
       if (!widgetLoaded) setHasTimedOut(true);
-    }, 15000);
+    }, 5000);
 
     return () => {
       window.removeEventListener('message', resizeIframe);
@@ -80,7 +80,16 @@ export default function Acompte() {
           </Alert>
         ) : hasTimedOut ? (
           <Alert variant="danger" className="mt-3">
-            ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.
+            ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
+            Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
+            <a
+              href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/formulaire"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary mt-2"
+            >
+              Ouvrir le formulaire dans un nouvel onglet
+            </a>
           </Alert>
         ) : (
           <>
