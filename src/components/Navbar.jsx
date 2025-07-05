@@ -92,7 +92,7 @@ export default function NavBarComponent() {
         )}
         <Button
           variant="outline-danger"
-          size="sm"
+          size="lg"
           onClick={handleLogout}
           className="ms-3"
         >
