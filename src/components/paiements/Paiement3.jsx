@@ -70,7 +70,7 @@ export default function Paiement2() {
   useEffect(() => {
     const resizeIframe = (e) => {
       const dataHeight = e.data.height;
-      const haWidgetElement = document.getElementById('haWidget');
+      const haWidgetElement = document.getElementById('haWidgetPaiement3');
       if (haWidgetElement && dataHeight) {
         haWidgetElement.style.height = dataHeight + 'px';
         setWidgetLoaded(true);
@@ -110,7 +110,7 @@ export default function Paiement2() {
               Tu peux régler ton troisième paiement en ligne via le formulaire ci-dessous :
             </Card.Text>
             <iframe
-              id="haWidget"
+              id="haWidgetPaiement3"
               allowTransparency="true"
               src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/widget"
               style={{ width: '100%', border: 'none', height: '300px'}}

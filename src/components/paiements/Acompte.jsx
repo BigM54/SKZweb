@@ -48,7 +48,7 @@ export default function Acompte() {
   useEffect(() => {
     const resizeIframe = (e) => {
       const dataHeight = e.data.height;
-      const haWidgetElement = document.getElementById('haWidget');
+      const haWidgetElement = document.getElementById('haWidgetAcompte');
       if (haWidgetElement && dataHeight) {
         haWidgetElement.style.height = dataHeight + 'px';
         setWidgetLoaded(true);
@@ -88,7 +88,7 @@ export default function Acompte() {
               Tu peux régler ton acompte en ligne via le formulaire ci-dessous :
             </Card.Text>
             <iframe
-              id="haWidget"
+              id="haWidgetAcompte"
               allowTransparency="true"
               src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/widget"
               style={{ width: '100%', border: 'none', height: '300px' }}

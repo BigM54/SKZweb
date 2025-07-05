@@ -49,7 +49,7 @@ export default function Paiement1() {
   useEffect(() => {
     const resizeIframe = (e) => {
       const dataHeight = e.data.height;
-      const haWidgetElement = document.getElementById('haWidget');
+      const haWidgetElement = document.getElementById('haWidgetPaiement1');
       if (haWidgetElement && dataHeight) {
         haWidgetElement.style.height = dataHeight + 'px';
         setWidgetLoaded(true);
@@ -89,7 +89,7 @@ export default function Paiement1() {
               Tu peux régler ton premier paiement en ligne via le formulaire ci-dessous :
             </Card.Text>
             <iframe
-              id="haWidget"
+              id="haWidgetPaiement1"
               allowTransparency="true"
               src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/widget"
               style={{ width: '100%', border: 'none', height: '300px' }}
