@@ -12,6 +12,7 @@ export default function AdminUtilisateurs() {
   const [optionsMap, setOptionsMap] = useState({});
   const { getToken } = useAuth();
   const [acompteMails, setAcompteMails] = useState([]);
+  const [paiementsMap, setPaiementsMap] = useState({});
 
   useEffect(() => {
     if (searchTerm.trim().length === 0) {
@@ -59,6 +60,20 @@ export default function AdminUtilisateurs() {
         optionsById[opt.id] = opt;
       });
       setOptionsMap(optionsById);
+
+      // Fetch paiements pour tous les emails trouvés
+      const emails = profils.map(p => p.email);
+      const { data: paiements } = await supabase
+        .from('Paiements')
+        .select('*')
+        .in('email', emails);
+
+      // Map email -> paiement
+      const paiementsByEmail = {};
+      paiements?.forEach(p => {
+        paiementsByEmail[p.email] = p;
+      });
+      setPaiementsMap(paiementsByEmail);
     }
 
     const { data: acomptes } = await supabase
@@ -93,6 +108,7 @@ export default function AdminUtilisateurs() {
           <tbody>
             {results.map((u) => {
               const opt = optionsMap[u.id];
+              const paiement = paiementsMap[u.email] || {};
               return (
                 <tr key={u.id}>
                   <td colSpan={5}>
@@ -105,7 +121,7 @@ export default function AdminUtilisateurs() {
                         <div><strong>🧀 Apéro :</strong> Fromage: {opt.fromage}, Saucisson: {opt.saucisson}, Bières: {opt.biere}</div>
                         <div><strong>🎿 Location :</strong> Pack: {opt.pack_location}, Matériel: {opt.materiel_location}, Casque: {opt.casque}, Assurance: {opt.assurance}</div>
                         <div><strong>🎒 Packs spéciaux :</strong> Fumeur: {opt.pack_fumeur}, Grand Froid: {opt.pack_grand_froid}, Soirée: {opt.pack_soiree}, Masque: {opt.masque}</div>
-                        <div><strong>💰 Paiement :</strong>{' '}Acompte {acompteMails.includes(u.email) ? '✅' : '❌'}</div>
+                        <div><strong>💰 Paiements :</strong>Acompte : {paiement.acompteStatut ? `✅` : '❌'}, 1 : {paiement.paiement1Statut ? `✅` : '❌'}, 2 : {paiement.paiement2Statut ? `✅` : '❌'},3 : {paiement.paiement3Recu ? `✅` : '❌'} {paiement.Fraude ? `FRAUDE ATTENTION` : ''}</div>
                       </div>
                     ) : (
                       <div className="text-muted">Pas d'options enregistrées</div>

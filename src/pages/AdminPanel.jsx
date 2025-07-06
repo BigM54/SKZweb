@@ -2,6 +2,7 @@ import { Tabs, Tab, Container } from 'react-bootstrap';
 import AdminUtilisateurs from '../components/admin/AdminUtilisateurs';
 import AdminPoles from '../components/admin/AdminPoles';
 import QrScanner from '../components/admin/QrScanner';
+import AdminPaiements from '../components/admin/AdminPaiements';
 
 export default function AdminPanel() {
   return (
@@ -13,6 +14,9 @@ export default function AdminPanel() {
         </Tab>
           <Tab eventKey="poles" title="👤 Infos Poles">
             <AdminPoles />
+        </Tab>
+          <Tab eventKey="paiements" title="💰 Infos Paiements">
+            <AdminPaiements />
         </Tab>
           <Tab eventKey="scan" title="📷 Qr Scanner">
             <QrScanner />

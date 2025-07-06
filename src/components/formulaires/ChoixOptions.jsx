@@ -173,7 +173,7 @@ export default function ChoixOptions() {
   );
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} className="text-start">
       {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski","snowboard", "chaussures"])}
       {form.materiel_location !== 'aucun' ? (
         <Form.Group className="mb-3">
@@ -216,7 +216,6 @@ export default function ChoixOptions() {
       >
         <strong>💰 Total : {total} €</strong>
       </div>
-
       <Button variant="primary" type="submit" disabled={loading}>
         {loading ? 'Enregistrement...' : 'Valider mes choix (DEFINITIF)'}
       </Button>

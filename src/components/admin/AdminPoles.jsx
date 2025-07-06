@@ -10,6 +10,10 @@ export default function AdminPoles() {
   const [stats, setStats] = useState({});
   const { getToken } = useAuth();
   const [acompteCount, setAcompteCount] = useState(0);
+  const [paiement1Count, setPaiement1Count] = useState(0);
+  const [paiement2Count, setPaiement2Count] = useState(0);
+  const [paiement3Count, setPaiement3Count] = useState(0);
+  const [paiements, setPaiements] = useState([]);
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -21,9 +25,7 @@ export default function AdminPoles() {
     const token = await getToken({ template: 'supabase' });
 
     const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
-      global: {
-        headers: { Authorization: `Bearer ${token}` }
-      }
+      global: { headers: { Authorization: `Bearer ${token}` } }
     });
 
     const { data: options, error } = await supabase
@@ -71,12 +73,17 @@ export default function AdminPoles() {
       g.type_forfait[opt.type_forfait] = (g.type_forfait[opt.type_forfait] || 0) + 1
     });
 
-    const { data: acomptes } = await supabase
+    // Fetch tous les paiements pour la somme totale
+    const { data: paiementsData } = await supabase
       .from('Paiements')
-      .select('email');
+      .select('*');
 
-    if (acomptes) {
-      setAcompteCount(acomptes.length);
+    setPaiements(paiementsData || []); // <-- stocke dans le state
+
+    if (paiementsData) {
+      setPaiement1Count(paiementsData.filter(p => p.paiement1Statut === true).length);
+      setPaiement2Count(paiementsData.filter(p => p.paiement2Statut === true).length);
+      setPaiement3Count(paiementsData.filter(p => Number(p.paiement3Recu) > 0).length);
     }
 
     setStats(grouped);
@@ -141,7 +148,7 @@ export default function AdminPoles() {
               </tr>
               <tr>
                 <td>Paiement</td>
-                <td>💵Acompte reçu : {acompteCount} ✅</td>
+                <td>💵 Acompte : {acompteCount}💶 Paiement 1 : <>({paiement1Count} / {paiements.length})</>   2 : <>({paiement2Count} / {paiements.length})</>   3 : <>({paiement3Count} / {paiements.length})</></td>
               </tr>
             </tbody>
           </Table>
