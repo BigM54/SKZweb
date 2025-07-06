@@ -1,4 +1,4 @@
-import { Card, Alert, Spinner } from 'react-bootstrap';
+import { Card, Alert, Spinner, Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
@@ -6,11 +6,13 @@ import { createClient } from '@supabase/supabase-js';
 export default function Paiement3() {
   const { user, isLoaded } = useUser();
   const [hasPaid, setHasPaid] = useState(null); 
-  const [fraud, setFraud] = useState(false);
+  const [fraude, setFraude] = useState(false);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
+  const [step, setStep] = useState(0); // 0: avertissement, 1: paiement
+  const [canConfirm, setCanConfirm] = useState(false);
+  const [montant, setMontant] = useState(null); // <-- Ajout pour stocker paiement3Montant
   const { getToken } = useAuth();
-  const [montant, setMontant] = useState(0);
 
   useEffect(() => {
     const checkPayment = async () => {
@@ -32,36 +34,36 @@ export default function Paiement3() {
 
       const { data, error } = await supabase
         .from('Paiements')
-        .select('paiement3Montant, paiement3Recu, Fraude')
+        .select('paiement3Recu,paiement3Montant,Fraude')
         .eq('email', email)
         .single();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Erreur Supabase :', error);
-        setHasPaid(false);
-        return;
       }
 
-      if (!data) {
-        setHasPaid(false);
-        return;
-      }
+      setHasPaid(Number(data?.paiement3Recu) > 0);
+      setFraude(data?.Fraude === true);
+      setMontant(data?.paiement3Montant ?? null);
 
-      setMontant(data.paiement3Montant);
-      setFraud(data.Fraude === true);
-
-      if (data.paiement3Recu === null || data.paiement3Recu === undefined) {
-        setHasPaid(false);
-      } else if (data.Fraude === true) {
-        setHasPaid(false);
-      } else {
-        setHasPaid(true);
-      }
     };
+
     checkPayment();
   }, [isLoaded, user]);
 
   useEffect(() => {
+    if (step === 0) {
+      setCanConfirm(false);
+      const timer = setTimeout(() => setCanConfirm(true), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (step !== 1) return;
+
+    setHasTimedOut(false);
+
     const resizeIframe = (e) => {
       const dataHeight = e.data.height;
       const haWidgetElement = document.getElementById('haWidgetPaiement3');
@@ -81,52 +83,114 @@ export default function Paiement3() {
       window.removeEventListener('message', resizeIframe);
       clearTimeout(timeout);
     };
-  }, [widgetLoaded]);
+  }, [step, widgetLoaded]);
 
-  return (
-    <Card className="mb-4">
-      <Card.Body>
-        <Card.Title>3ème Paiement ({montant}€)</Card.Title>
+  const montantAffiche = montant !== null && montant !== undefined ? montant : "";
 
-        {!isLoaded || hasPaid === null ? (
+  if (!isLoaded || hasPaid === null) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Spinner animation="border" />
-        ) : fraud ? (
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (fraude) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Alert variant="danger">
-            ⚠️ Le montant reçu ne correspond pas au montant attendu.<br />
-            Merci de contacter la team SKZ pour régulariser la situation.
+            ❌ Un problème a été détecté sur ton paiement. Merci de contacter l'organisation.
           </Alert>
-        ) : hasPaid ? (
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (hasPaid) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Alert variant="success">
             ✅ Tu as déjà effectué ce paiement. Merci !
           </Alert>
-        ) : hasTimedOut ? (
-          <Alert variant="danger" className="mt-3">
-            ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
-            Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
-            <a
-              href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/formulaire"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary mt-2"
-            >
-              Ouvrir le formulaire dans un nouvel onglet
-            </a>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (step === 0) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>Avertissement avant paiement</Card.Title>
+          <Alert variant="warning">
+            <ul>
+              <li>
+                <b>Le mail utilisé pour le paiement doit être le même que celui de ton compte !</b>
+              </li>
+              <li>
+                <b>La contribution à HelloAsso est facultative</b> : tu peux la mettre à <b>0 €</b> si tu le souhaites, cela ne revient pas à SKZ.
+              </li>
+            </ul>
           </Alert>
+          <Button
+            variant="primary"
+            disabled={!canConfirm}
+            onClick={() => setStep(1)}
+          >
+            J'ai compris, accéder au paiement
+          </Button>
+          {!canConfirm && (
+            <div className="mt-2 text-muted" style={{ fontSize: '0.9em' }}>
+              Le bouton sera disponible dans 5 secondes…
+            </div>
+          )}
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (step === 1) {
+    return (
+      <div style={{ width: '100%', background: '#fff', padding: 0 }}>
+        {hasTimedOut ? (
+          <div style={{ padding: 24 }}>
+            <Alert variant="danger" className="mt-3">
+              ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
+              Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
+              <a
+                href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/formulaire"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary mt-2"
+              >
+                Ouvrir le formulaire dans un nouvel onglet
+              </a>
+            </Alert>
+          </div>
         ) : (
-          <>
-            <Card.Text>
-              Tu peux régler ton troisième paiement en ligne via le formulaire ci-dessous :
-            </Card.Text>
-            <iframe
-              id="haWidgetPaiement3"
-              allowTransparency="true"
-              src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/widget"
-              style={{ width: '100%', border: 'none', height: '300px'}}
-              title="3eme Paiement"
-            />
-          </>
+          <iframe
+            id="haWidgetPaiement3"
+            allowTransparency="true"
+            src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/widget"
+            style={{
+              width: '100%',
+              minHeight: '700px',
+              border: 'none',
+              display: 'block',
+            }}
+            title="3ème Paiement"
+          />
         )}
-      </Card.Body>
-    </Card>
-  );
+      </div>
+    );
+  }
+
+  return null;
 }
