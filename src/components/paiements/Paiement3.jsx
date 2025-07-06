@@ -104,7 +104,7 @@ export default function Paiement3() {
         <Card.Body>
           <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Alert variant="danger">
-            ❌ Un problème a été détecté sur ton paiement. Merci de contacter l'organisation.
+            ❌ Le montant reçu ne correspond pas au montant demandé. Merci de contacter l'organisation.
           </Alert>
         </Card.Body>
       </Card>
