@@ -12,6 +12,14 @@ export default function Paiement2() {
   const [canConfirm, setCanConfirm] = useState(false);
   const { getToken } = useAuth();
 
+  const email = user?.primaryEmailAddress?.emailAddress || '';
+
+  const handleCopyEmail = () => {
+    if (email) {
+      navigator.clipboard.writeText(email);
+    }
+  };
+
   useEffect(() => {
     const checkPayment = async () => {
       if (!user) return;
@@ -120,6 +128,14 @@ export default function Paiement2() {
               </li>
             </ul>
           </Alert>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={handleCopyEmail}
+            className="mt-2"
+          >
+            Copier mon mail
+          </Button>
           <Button
             variant="primary"
             disabled={!canConfirm}

@@ -82,6 +82,14 @@ export default function Acompte() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, widgetLoaded]);
 
+  const email = user?.primaryEmailAddress?.emailAddress || '';
+
+  const handleCopyEmail = () => {
+    if (email) {
+      navigator.clipboard.writeText(email);
+    }
+  };
+
   if (!isLoaded || hasPaid === null) {
     return (
       <Card className="mb-4">
@@ -121,6 +129,14 @@ export default function Acompte() {
               </li>
             </ul>
           </Alert>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={handleCopyEmail}
+            className="mt-2"
+          >
+            Copier mon mail
+          </Button>
           <Button
             variant="primary"
             disabled={!canConfirm}

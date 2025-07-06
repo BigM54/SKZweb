@@ -111,6 +111,14 @@ export default function Paiement3() {
     );
   }
 
+  const email = user?.primaryEmailAddress?.emailAddress || '';
+
+  const handleCopyEmail = () => {
+    if (email) {
+      navigator.clipboard.writeText(email);
+    }
+  };
+
   if (hasPaid) {
     return (
       <Card className="mb-4">
@@ -139,6 +147,14 @@ export default function Paiement3() {
               </li>
             </ul>
           </Alert>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={handleCopyEmail}
+            className="mt-2"
+          >
+            Copier mon mail
+          </Button>
           <Button
             variant="primary"
             disabled={!canConfirm}

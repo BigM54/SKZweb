@@ -81,6 +81,14 @@ export default function Paiement1() {
     };
   }, [step, widgetLoaded]);
 
+  const email = user?.primaryEmailAddress?.emailAddress || '';
+
+  const handleCopyEmail = () => {
+    if (email) {
+      navigator.clipboard.writeText(email);
+    }
+  };
+
   if (!isLoaded || hasPaid === null) {
     return (
       <Card className="mb-4">
@@ -120,13 +128,26 @@ export default function Paiement1() {
               </li>
             </ul>
           </Alert>
+          <div>
           <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={handleCopyEmail}
+            className="mt-2"
+          >
+            Copier mon mail
+          </Button>
+          </div>
+          <div>
+          <Button
+            className="mt-2"
             variant="primary"
             disabled={!canConfirm}
             onClick={() => setStep(1)}
           >
             J'ai compris, accéder au paiement
           </Button>
+          </div>
           {!canConfirm && (
             <div className="mt-2 text-muted" style={{ fontSize: '0.9em' }}>
               Le bouton sera disponible dans 5 secondes…
