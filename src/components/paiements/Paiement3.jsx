@@ -12,6 +12,7 @@ export default function Paiement3() {
   const [step, setStep] = useState(0); // 0: avertissement, 1: paiement
   const [canConfirm, setCanConfirm] = useState(false);
   const [montant, setMontant] = useState(null); // <-- Ajout pour stocker paiement3Montant
+  const [montantSaisi, setMontantSaisi] = useState("");
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -146,18 +147,44 @@ export default function Paiement3() {
                 <b>La contribution à HelloAsso est facultative</b> : tu peux la mettre à <b>0 €</b> si tu le souhaites, cela ne revient pas à SKZ.
               </li>
             </ul>
+            <div className="mt-2">
+              <b>💡 Le montant payé sera automatiquement vérifié par le système.</b>
+            </div>
+            <div className="mt-2">
+              <b> Somme a payer : ({montantAffiche}€)</b>
+            </div>
           </Alert>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            onClick={handleCopyEmail}
-            className="mt-2"
-          >
-            Copier mon mail
-          </Button>
+          <div className="mb-2">
+            <Button
+              variant="outline-primary"
+              onClick={handleCopyEmail}
+              size="sm"
+            >
+              Copier mon mail
+            </Button>
+          </div>
+          <div className="mb-2">
+            <label htmlFor="montant-confirm" className="form-label">
+              Pour confirmer, entre le montant à payer :
+            </label>
+            <input
+              id="montant-confirm"
+              type="number"
+              className="form-control"
+              style={{ maxWidth: 200, margin: "0 auto" }}
+              value={montantSaisi}
+              onChange={e => setMontantSaisi(e.target.value)}
+              placeholder={`Montant attendu : ${montantAffiche}€`}
+              min={0}
+            />
+          </div>
           <Button
             variant="primary"
-            disabled={!canConfirm}
+            disabled={
+              !canConfirm ||
+              String(montantSaisi).trim() === "" ||
+              Number(montantSaisi) !== montantAffiche
+            }
             onClick={() => setStep(1)}
           >
             J'ai compris, accéder au paiement
@@ -165,6 +192,11 @@ export default function Paiement3() {
           {!canConfirm && (
             <div className="mt-2 text-muted" style={{ fontSize: '0.9em' }}>
               Le bouton sera disponible dans 5 secondes…
+            </div>
+          )}
+          {String(montantSaisi).trim() !== "" && Number(montantSaisi) !== montantAffiche && (
+            <div className="mt-2 text-danger" style={{ fontSize: '0.95em' }}>
+              Le montant saisi ne correspond pas au montant attendu.
             </div>
           )}
         </Card.Body>

@@ -111,7 +111,6 @@ export default function ChoixOptions() {
     try {
       const token = await getToken({ template: 'supabase' });
 
-      console.log("Token JWT transmis :", token);
       // Appel de l’Edge Function pour mettre à jour le montant
       const response = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/update_montant', {
         method: 'POST',

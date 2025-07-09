@@ -8,9 +8,70 @@ export default function Acompte() {
   const [hasPaid, setHasPaid] = useState(null); 
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
-  const [step, setStep] = useState(0); // 0: avertissement, 1: paiement
+  const [step, setStep] = useState(0);
   const [canConfirm, setCanConfirm] = useState(false);
+  const [acompteOuvert, setAcompteOuvert] = useState(null);
+  const [dateOuverturePerso, setDateOuverturePerso] = useState(null);
   const { getToken } = useAuth();
+
+  useEffect(() => {
+    const checkAcompteOuvert = async () => {
+      if (!user) return;
+      const token = await getToken({ template: 'supabase' });
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: { headers: { Authorization: `Bearer ${token}` } },
+      });
+
+      // 1. Récupère la prom's de l'utilisateur
+      const email = user.primaryEmailAddress?.emailAddress;
+      const { data: profil } = await supabase
+        .from('profils')
+        .select('proms')
+        .eq('email', email)
+        .single();
+
+      // 2. Récupère les dates shotgun
+      const { data: shotgunDates } = await supabase
+        .from('dateShotgun')
+        .select('*')
+        .single();
+
+      if (!profil || !shotgunDates) {
+        setAcompteOuvert(false);
+        return;
+      }
+
+      // 3. Détermine la colonne à utiliser selon la promo
+      let dateOuverture = null;
+      const promoUser = profil.proms ? Number(profil.proms) : null;
+      const promoConscrits = shotgunDates.promsConscrits ? Number(shotgunDates.promsConscrits) : null;
+
+      if (promoUser === null || promoConscrits === null) {
+        dateOuverture = shotgunDates.Archis;
+      } else if (promoUser === promoConscrits) {
+        dateOuverture = shotgunDates.Conscrits;
+      } else if (promoUser === promoConscrits - 1) {
+        dateOuverture = shotgunDates.Anciens;
+      } else if (promoUser === promoConscrits - 2) {
+        dateOuverture = shotgunDates.P3;
+      } else if (promoUser <= promoConscrits - 3) {
+        dateOuverture = shotgunDates.Archis;
+      } else {
+        dateOuverture = null;
+      }
+
+      // 4. Compare la date d'ouverture à aujourd'hui
+      if (dateOuverture) {
+        setDateOuverturePerso(dateOuverture);
+        setAcompteOuvert(new Date(dateOuverture) <= new Date());
+      } else {
+        setDateOuverturePerso(null);
+        setAcompteOuvert(false);
+      }
+    };
+
+    checkAcompteOuvert();
+  }, [user, getToken]);
 
   useEffect(() => {
     const checkPayment = async () => {
@@ -18,7 +79,7 @@ export default function Acompte() {
 
       const token = await getToken({ template: 'supabase' });
 
-      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9zZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
         global: {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -90,12 +151,44 @@ export default function Acompte() {
     }
   };
 
-  if (!isLoaded || hasPaid === null) {
+  if (!isLoaded || acompteOuvert === null || hasPaid === null) {
     return (
       <Card className="mb-4">
         <Card.Body>
           <Card.Title>Acompte</Card.Title>
           <Spinner animation="border" />
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  
+  if (!acompteOuvert) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>Acompte</Card.Title>
+          <Alert variant="info">
+            ⏳ Le shotgun n'est pas encore disponible pour toi.<br />
+            {dateOuverturePerso && (
+              <>
+                Il ouvrira le&nbsp;
+                <b>
+                  {new Date(dateOuverturePerso).toLocaleString('fr-FR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </b>
+                .
+              </>
+            )}
+            <br />
+            Merci de revenir plus tard.
+          </Alert>
         </Card.Body>
       </Card>
     );
@@ -129,21 +222,21 @@ export default function Acompte() {
               </li>
             </ul>
           </Alert>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            onClick={handleCopyEmail}
-            className="mt-2"
-          >
-            Copier mon mail
-          </Button>
-          <Button
-            variant="primary"
-            disabled={!canConfirm}
-            onClick={() => setStep(1)}
-          >
-            J'ai compris, accéder au paiement
-          </Button>
+          <div className="d-flex gap-2 justify-content-center mt-2">
+            <Button
+              variant="outline-primary"
+              onClick={handleCopyEmail}
+            >
+              Copier mon mail
+            </Button>
+            <Button
+              variant="primary"
+              disabled={!canConfirm}
+              onClick={() => setStep(1)}
+            >
+              J'ai compris, accéder au paiement
+            </Button>
+          </div>
           {!canConfirm && (
             <div className="mt-2 text-muted" style={{ fontSize: '0.9em' }}>
               Le bouton sera disponible dans 5 secondes…

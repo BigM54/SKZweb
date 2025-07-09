@@ -130,7 +130,6 @@ export default function Paiement2() {
           </Alert>
           <Button
             variant="outline-primary"
-            size="sm"
             onClick={handleCopyEmail}
             className="mt-2"
           >

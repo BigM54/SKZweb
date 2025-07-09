@@ -131,7 +131,6 @@ export default function Paiement1() {
           <div>
           <Button
             variant="outline-primary"
-            size="sm"
             onClick={handleCopyEmail}
             className="mt-2"
           >
