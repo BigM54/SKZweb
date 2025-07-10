@@ -126,3 +126,81 @@
   padding-right: 0;
 }
 
+
+/* Couleur du texte des boutons et dropdowns : bleu par défaut, blanc si ouvert */
+.nav-btn, .nav-btn .dropdown-toggle {
+  font-size: 1.2rem;
+  padding: 0.5rem 1.25rem;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  color: #0d6efd !important; /* bleu Bootstrap */
+  background: transparent !important;
+  border: none;
+  transition: color 0.2s, background 0.2s;
+}
+
+/* Quand le dropdown est ouvert, texte blanc */
+.nav-btn.show > .dropdown-toggle,
+.nav-btn .dropdown-toggle.show,
+.nav-btn .dropdown-toggle[aria-expanded="true"] {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+/* Hover sur bouton ou dropdown : texte blanc, fond bleu foncé */
+.nav-btn:hover,
+.nav-btn:focus,
+.nav-btn .dropdown-toggle:hover,
+.nav-btn .dropdown-toggle:focus,
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: transparent !important;
+  color: #fff !important; /* garde le texte blanc au hover si tu veux */
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  background-color: #0d1c31 !important;
+  min-width: 180px;
+  padding: 0;
+  border: none;
+}
+
+/* Dropdown items : bleu par défaut, blanc au hover */
+.dropdown-item {
+  color: #0d6efd !important;
+  font-size: 1.2rem;
+  padding: 0.5rem 1.25rem;
+  background: transparent !important;
+  transition: color 0.2s, background 0.2s;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: #fff !important;
+  background-color: #19325a !important;
+}
+
+@media (max-width: 999px) {
+  .mobile-nav .nav-btn,
+  .mobile-nav .dropdown {
+    margin-bottom: 1.2rem !important;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start !important;
+    text-align: left;
+  }
+  .mobile-nav .dropdown-toggle {
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+  }
+  .mobile-nav .dropdown-menu {
+    width: 100%;
+    min-width: unset;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+  }
+}
+

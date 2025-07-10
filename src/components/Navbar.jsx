@@ -8,6 +8,8 @@ import { createClient } from '@supabase/supabase-js';
 export default function NavBarComponent() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [aideCanvasOpen, setAideCanvasOpen] = useState(false);
+  const [profilCanvasOpen, setProfilCanvasOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
@@ -20,10 +22,7 @@ export default function NavBarComponent() {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1000);
     };
-
-    // Initial call
     handleResize();
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -33,11 +32,7 @@ export default function NavBarComponent() {
       if (!user) return;
       const token = await getToken({ template: 'supabase' });
       const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
-        global: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+        global: { headers: { Authorization: `Bearer ${token}` } },
       });
       const { data, error } = await supabase
         .from('profils')
@@ -63,7 +58,8 @@ export default function NavBarComponent() {
     { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true }
   ];
 
-  const renderNavLinks = (className = "") => (
+  // Rendu des liens pour mobile (remplace les dropdowns par des liens)
+  const renderNavLinksMobile = (className = "") => (
     <Nav className={className}>
       {links
         .filter(link => {
@@ -79,64 +75,109 @@ export default function NavBarComponent() {
             key={to}
             active={pathname === to}
             onClick={() => setSidebarOpen(false)}
+            className="nav-btn"
           >
             {label}
           </Nav.Link>
         ))}
-      {/* Dropdown Aide (toujours affiché) */}
-      <NavDropdown
-        title="Aide"
-        id="aide-dropdown"
-        menuVariant="dark"
+      {/* Remplace les dropdowns par des liens qui ouvrent un Offcanvas */}
+      <Nav.Link
+        as="button"
+        className="nav-btn"
+        style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
+        onClick={() => { setSidebarOpen(false); setAideCanvasOpen(true); }}
       >
-        <NavDropdown.Item as={Link} to="/faq" onClick={() => setSidebarOpen(false)}>
-          FAQ
-        </NavDropdown.Item>
-        <NavDropdown.Item as={Link} to="/contact" onClick={() => setSidebarOpen(false)}>
-          Contact
-        </NavDropdown.Item>
-        <NavDropdown.Item as={Link} to="/infos" onClick={() => setSidebarOpen(false)}>
-          Infos
-        </NavDropdown.Item>
-      </NavDropdown>
-      {/* Dropdown Profil (toujours affiché si connecté) */}
+        Aide
+      </Nav.Link>
       {isSignedIn && (
-        <NavDropdown
-          title={
-            <span className="text-white">
-              👋 {profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}
-            </span>
-          }
-          id="skz-dropdown"
-          menuVariant="dark"
+        <Nav.Link
+          as="button"
+          className="nav-btn"
+          style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
+          onClick={() => { setSidebarOpen(false); setProfilCanvasOpen(true); }}
         >
-          <NavDropdown.Item as={Link} to="/formulaire" onClick={() => setSidebarOpen(false)}>
-            Mes Choix
-          </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/paiements" onClick={() => setSidebarOpen(false)}>
-            Mes Paiements
-          </NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item onClick={handleLogout} className="text-danger">
-            Se déconnecter
-          </NavDropdown.Item>
-        </NavDropdown>
+          {profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}
+        </Nav.Link>
       )}
     </Nav>
   );
 
+  // Rendu des liens pour desktop (dropdowns classiques avec ouverture au survol)
+  const [aideDropdownOpen, setAideDropdownOpen] = useState(false);
+  const [profilDropdownOpen, setProfilDropdownOpen] = useState(false);
+
+  const renderNavLinksDesktop = (className = "") => (
+    <Nav className={className}>
+      {links
+        .filter(link => {
+          if (link.protected && !isSignedIn) return false;
+          if (link.hideIfAuth && isSignedIn) return false;
+          if (link.hiseIfNotAdmin && !isAdmin) return false;
+          return true;
+        })
+        .map(({ to, label }) => (
+          <Nav.Link
+            as={Link}
+            to={to}
+            key={to}
+            active={pathname === to}
+            className="nav-btn"
+          >
+            {label}
+          </Nav.Link>
+        ))}
+      <NavDropdown
+        title={<span className={aideDropdownOpen ? "text-white" : "text-primary"}>Aide</span>}
+        id="aide-dropdown"
+        menuVariant="dark"
+        className="nav-btn"
+        show={aideDropdownOpen}
+        onMouseEnter={() => setAideDropdownOpen(true)}
+        onMouseLeave={() => setAideDropdownOpen(false)}
+        onToggle={() => {}}
+      >
+        <NavDropdown.Item as={Link} to="/faq">FAQ</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/contact">Contact</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/infos">Infos</NavDropdown.Item>
+      </NavDropdown>
+      {isSignedIn && (
+        <NavDropdown
+          title={<span className={profilDropdownOpen ? "text-white" : "text-primary"}>{profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}</span>}
+          id="skz-dropdown"
+          menuVariant="dark"
+          className="nav-btn"
+          show={profilDropdownOpen}
+          onMouseEnter={() => setProfilDropdownOpen(true)}
+          onMouseLeave={() => setProfilDropdownOpen(false)}
+          onToggle={() => {}}
+        >
+          <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
+        </NavDropdown>
+      )}
+      {isSignedIn && (
+        <Button
+          variant="outline-danger"
+          onClick={handleLogout}
+          className="ms-2"
+        >
+          Se déconnecter
+        </Button>
+      )}
+    </Nav>
+  );
 
   return (
     <>
-      {/* Bouton burger visible uniquement sur mobile */}
-      {isMobile && !sidebarOpen && (
+      {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
+      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && (
         <Button
           variant="light"
           onClick={() => setSidebarOpen(true)}
           style={{
             position: 'sticky',
             top: 0,
-            marginTop: '0rem', // réduit ou supprime l'espace
+            marginTop: '0rem',
             marginLeft: '0.75rem',
             zIndex: 1050,
             backgroundColor: 'rgba(255, 255, 255, 0.7)',
@@ -155,23 +196,86 @@ export default function NavBarComponent() {
 
       {/* Sidebar mobile (Offcanvas) */}
       {isMobile && (
-        <Offcanvas
-          show={sidebarOpen}
-          onHide={() => setSidebarOpen(false)}
-          placement="start"
-          className="p-4"
-          style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
-        >
-          <Offcanvas.Header closeButton closeVariant="white">
-            <Offcanvas.Title>Skioz'Arts 2026</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body style={{ fontSize: '1.5rem' }}>
-            {renderNavLinks("flex-column")}
-          </Offcanvas.Body>
-        </Offcanvas>
+        <>
+          <Offcanvas
+            show={sidebarOpen}
+            onHide={() => setSidebarOpen(false)}
+            placement="start"
+            className="p-4"
+            style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
+          >
+            <Offcanvas.Header closeButton closeVariant="white">
+              <Offcanvas.Title>Skioz'Arts 2026</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body style={{ fontSize: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: 0 }}>
+              <div style={{ flex: 1 }}>
+                {renderNavLinksMobile("flex-column mobile-nav")}
+              </div>
+              {isSignedIn && (
+                <div className="flex-column mt-4 d-flex">
+                  <Button
+                    variant="outline-danger"
+                    onClick={handleLogout}
+                  >
+                    Se déconnecter
+                  </Button>
+                </div>
+              )}
+            </Offcanvas.Body>
+          </Offcanvas>
+
+          {/* Offcanvas Aide */}
+          <Offcanvas
+            show={aideCanvasOpen}
+            onHide={() => setAideCanvasOpen(false)}
+            placement="start"
+            className="p-4"
+            style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
+          >
+            <Offcanvas.Header closeButton closeVariant="white">
+              <Offcanvas.Title>Aide</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="flex-column mobile-nav">
+                <Nav.Link as={Link} to="/faq" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
+                  FAQ
+                </Nav.Link>
+                <Nav.Link as={Link} to="/contact" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
+                  Contact
+                </Nav.Link>
+                <Nav.Link as={Link} to="/infos" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
+                  Infos
+                </Nav.Link>
+              </Nav>
+            </Offcanvas.Body>
+          </Offcanvas>
+
+          {/* Offcanvas Profil */}
+          <Offcanvas
+            show={profilCanvasOpen}
+            onHide={() => setProfilCanvasOpen(false)}
+            placement="start"
+            className="p-4"
+            style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
+          >
+            <Offcanvas.Header closeButton closeVariant="white">
+              <Offcanvas.Title>{profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="flex-column mobile-nav">
+                <Nav.Link as={Link} to="/formulaire" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                  Mes Choix
+                </Nav.Link>
+                <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                  Mes Paiements
+                </Nav.Link>
+              </Nav>
+            </Offcanvas.Body>
+          </Offcanvas>
+        </>
       )}
 
-      {/* Sidebar desktop */}
+      {/* Navbar desktop */}
       {!isMobile && (
         <Navbar
           expand="lg"
@@ -182,10 +286,10 @@ export default function NavBarComponent() {
           <Container fluid>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
-              {renderNavLinks("d-flex flex-row gap-4 align-items-center")}
+              {renderNavLinksDesktop("d-flex flex-row gap-4 align-items-center")}
             </Navbar.Collapse>
           </Container>
-    </Navbar>
+        </Navbar>
       )}
     </>
   );
