@@ -10,6 +10,7 @@ export default function Paiement2() {
   const [hasTimedOut, setHasTimedOut] = useState(false);
   const [step, setStep] = useState(0); // 0: avertissement, 1: paiement
   const [canConfirm, setCanConfirm] = useState(false);
+  const [hasPaid1, setHasPaid1] = useState(null); // Paiement 1 status
   const { getToken } = useAuth();
 
   const email = user?.primaryEmailAddress?.emailAddress || '';
@@ -40,14 +41,14 @@ export default function Paiement2() {
 
       const { data, error } = await supabase
         .from('Paiements')
-        .select('paiement2Statut')
+        .select('paiement2Statut, paiement1Statut')
         .eq('email', email)
         .single();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Erreur Supabase :', error);
       }
-
+      setHasPaid1(data?.paiement1Statut === true);
       setHasPaid(data?.paiement2Statut === true);
 
     };
@@ -89,12 +90,25 @@ export default function Paiement2() {
     };
   }, [step, widgetLoaded]);
 
-  if (!isLoaded || hasPaid === null) {
+  if (!isLoaded || hasPaid === null || hasPaid1 === null) {
     return (
       <Card className="mb-4">
         <Card.Body>
           <Card.Title>2ème Paiement (200€)</Card.Title>
           <Spinner animation="border" />
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (!hasPaid1) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>2ème Paiement (200€)</Card.Title>
+          <Alert variant="warning">
+            ⚠️ Tu dois d'abord effectuer le 1er paiement avant d'accéder à ce paiement.
+          </Alert>
         </Card.Body>
       </Card>
     );

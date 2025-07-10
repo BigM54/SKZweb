@@ -13,6 +13,8 @@ export default function Paiement3() {
   const [canConfirm, setCanConfirm] = useState(false);
   const [montant, setMontant] = useState(null); // <-- Ajout pour stocker paiement3Montant
   const [montantSaisi, setMontantSaisi] = useState("");
+  const [hasPaid1, setHasPaid1] = useState(null); // Paiement 1 status
+  const [hasPaid2, setHasPaid2] = useState(null); // Paiement 2 status
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function Paiement3() {
 
       const { data, error } = await supabase
         .from('Paiements')
-        .select('paiement3Recu,paiement3Montant,Fraude')
+        .select('paiement3Recu,paiement3Montant,Fraude,paiement1Statut,paiement2Statut')
         .eq('email', email)
         .single();
 
@@ -43,6 +45,8 @@ export default function Paiement3() {
         console.error('Erreur Supabase :', error);
       }
 
+      setHasPaid1(data?.paiement1Statut === true);
+      setHasPaid2(data?.paiement2Statut === true);
       setHasPaid(Number(data?.paiement3Recu) > 0);
       setFraude(data?.Fraude === true);
       setMontant(data?.paiement3Montant ?? null);
@@ -88,12 +92,25 @@ export default function Paiement3() {
 
   const montantAffiche = montant !== null && montant !== undefined ? montant : "";
 
-  if (!isLoaded || hasPaid === null) {
+  if (!isLoaded || hasPaid === null || hasPaid1 === null || hasPaid2 === null) {
     return (
       <Card className="mb-4">
         <Card.Body>
           <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Spinner animation="border" />
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (!hasPaid1 || !hasPaid2) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
+          <Alert variant="warning">
+            ⚠️ Tu dois d'abord effectuer les paiements précédents avant d'accéder à ce paiement.
+          </Alert>
         </Card.Body>
       </Card>
     );

@@ -1,44 +1,52 @@
-import { useEffect, useState } from 'react';
-import { Form, Button, Alert, Spinner } from 'react-bootstrap';
-import { useAuth, useUser } from '@clerk/clerk-react';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Spinner } from 'react-bootstrap';
+import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
 export default function ChoixOptions() {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modeAffichage, setModeAffichage] = useState(false);
-  const {getToken} = useAuth()
-  const { user} = useUser();
+  const { getToken } = useAuth();
+  const { user } = useUser();
   const [total, setTotal] = useState(0);
+  const [acomptePaid, setAcomptePaid] = useState(null);
 
+  // Récupère d'un coup les données options et paiements
   useEffect(() => {
     const fetchData = async () => {
+      if (!user) return;
       const token = await getToken({ template: 'supabase' });
       const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
         global: { headers: { Authorization: `Bearer ${token}` } },
       });
+      if (!user?.primaryEmailAddress?.emailAddress) return;
+      const email = user.primaryEmailAddress.emailAddress;
 
-      const { data, error } = await supabase
-        .from('options')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+      // Récupère options et acompte en parallèle
+      const [{ data: optionsData }, { data: paiementData }] = await Promise.all([
+        supabase.from('options').select('*').eq('id', user.id).single(),
+        supabase.from('Paiements').select('acompteStatut').eq('email', email).single(),
+      ]);
 
-      if (data) {
-        setForm(data);
+      if (optionsData) {
+        setForm(optionsData);
         setModeAffichage(true);
       } else {
         setForm({
           pack_location: '',
           materiel_location: '', casque: '', type_forfait: '', assurance: '',
           masque: '', pack_fumeur: '', pack_soiree: '', pack_grand_froid: '',
-          pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '0', bus: ''})
+          pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '0', bus: ''
+        });
         setModeAffichage(false);
       }
+      setAcomptePaid(paiementData?.acompteStatut);
+      console.log('Acompte payé:', paiementData?.acompteStatut);
       setLoading(false);
     };
     fetchData();
-  }, []);
+  }, [user, getToken]);
 
   useEffect(() => {
     if (form) {
@@ -139,7 +147,7 @@ export default function ChoixOptions() {
   };
 
 
-  if (loading || !form) return <Spinner animation="border" variant="primary" />;
+  if (loading || !form || acomptePaid === null) return <Spinner animation="border" variant="primary" />;
 
   if (modeAffichage) {
     return (
@@ -173,6 +181,11 @@ export default function ChoixOptions() {
 
   return (
     <Form onSubmit={handleSubmit} className="text-start">
+      {!acomptePaid && (
+        <div className="mt-2 text-danger">
+          ⚠️ Tu peux tester les options mais pas enregistrer tant que tu n'as pas payer l'acompte.
+        </div>
+      )}
       {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski","snowboard", "chaussures"])}
       {form.materiel_location !== 'aucun' ? (
         <Form.Group className="mb-3">
@@ -215,11 +228,14 @@ export default function ChoixOptions() {
       >
         <strong>💰 Total : {total} €</strong>
       </div>
-      <Button variant="primary" type="submit" disabled={loading}>
+      {!acomptePaid && (
+        <div className="mt-2 text-danger">
+          ⚠️ Tu dois d'abord payer l'acompte pour valider tes choix d'options.
+        </div>
+      )}
+      <Button className={"mt-2"} variant="primary" type="submit" disabled={loading || !acomptePaid}>
         {loading ? 'Enregistrement...' : 'Valider mes choix (DEFINITIF)'}
       </Button>
     </Form>
-
-
   );
 }

@@ -81,6 +81,20 @@ serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!  // Clé secrète serveur
     );
 
+    // Vérifie si l'acompte est payé avant de valider les choix
+    const { data: acompteData, error: acompteError } = await supabase
+      .from("Paiements")
+      .select("acompteStatut")
+      .eq("email", userEmail)
+      .single();
+    if (acompteError) throw acompteError;
+    if (!acompteData || acompteData.acompteStatut !== true) {
+      return new Response(JSON.stringify({ error: "Acompte non payé. Merci de payer l'acompte avant de valider tes choix." }), {
+        status: 403,
+        headers: { "Access-Control-Allow-Origin": "*" },
+      });
+    }
+
     // mise à jour du montant dans la table Paiements
     const { error: updateError } = await supabase
       .from("Paiements")
@@ -96,7 +110,6 @@ serve(async (req: Request) => {
       id: userId
     });
     if (optionsError) throw optionsError;
-
 
     return new Response(JSON.stringify({ success: true, montant }), {
       status: 200,
