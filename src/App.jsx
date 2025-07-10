@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import { Routes, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./pages/Home'));
+const Partenaires = lazy(() => import('./pages/Partenaires'))
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const PasswordRequest = lazy(() => import('./pages/password-request'));
@@ -13,6 +14,8 @@ const Formulaire = lazy(() => import('./pages/Formulaire'));
 const Paiements = lazy(() => import('./pages/Paiements'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const FAQ = lazy(() => import('./pages/FAQ'));
+const Infos = lazy(() => import('./pages/Infos'));
+const Contact = lazy(() => import('./pages/Contact'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -67,6 +70,9 @@ function App() {
                 <Route path="/formulaire" element={<Formulaire />} />
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/partenaires" element={<Partenaires />} />
+                <Route path='/infos' element={<Infos />} />
+                <Route path="/contact" element={<Contact />} />
               </Routes>
             </Container>
           </main>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navbar, Nav, Button, Offcanvas, Container } from 'react-bootstrap';
+import { Navbar, Nav, Button, Offcanvas, Container, NavDropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 import useIsAdmin from '../hooks/useIsAdmin';
@@ -59,10 +59,8 @@ export default function NavBarComponent() {
     { to: '/', label: 'Accueil', protected: false },
     { to: '/login', label: 'Connexion', protected: false, hideIfAuth: true },
     { to: '/register', label: 'Inscription', protected: false, hideIfAuth: true },
-    { to: '/formulaire', label: 'Mes Choix', protected: true },
-    { to: '/paiements', label: 'Mes Paiements', protected: true },
-    { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true },
-    { to: '/faq', label: 'FAQ', protected: false }
+    { to: '/partenaires', label: 'Nos Partenaires', protected: false },
+    { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true }
   ];
 
   const renderNavLinks = (className = "") => (
@@ -85,22 +83,68 @@ export default function NavBarComponent() {
             {label}
           </Nav.Link>
         ))}
-    {isSignedIn && (
-      <>
-        {(profil?.bucque || profil?.prenom) && (
-          <span className="text-white ms-3">👋 {profil?.bucque ? profil.bucque : profil.prenom}</span>
-        )}
-        <Button
-          variant="outline-danger"
-          size="lg"
-          onClick={handleLogout}
+      {/* Dropdown Aide visible uniquement sur desktop */}
+      {!isMobile && (
+        <NavDropdown
+          title='Aide'
+          id="aide-dropdown"
+          align="end"
           className="ms-3"
         >
-          Se déconnecter
-        </Button>
-      </>
-    )}
-
+          <NavDropdown.Item as={Link} to="/faq">
+            FAQ
+          </NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/contact">
+            Contact
+          </NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/infos">
+            Infos
+          </NavDropdown.Item>
+        </NavDropdown>
+      )}
+      {/* ...le reste de ton code pour le profil */}
+      {isSignedIn && (
+        <>
+          {!isMobile && (
+            <NavDropdown
+              title={
+                <span className="text-white">
+                  👋 {profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}
+                </span>
+              }
+              id="skz-dropdown"
+              align="end"
+              className="ms-3"
+            >
+              <NavDropdown.Item as={Link} to="/formulaire">
+                Mes Choix
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/paiements">
+                Mes Paiements
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={handleLogout} className="text-danger">
+                Se déconnecter
+              </NavDropdown.Item>
+            </NavDropdown>
+          )}
+          {isMobile && (
+            <>
+              {(profil?.bucque || profil?.prenom) && (
+                <span className="text-white ms-3">👋 {profil?.bucque ? profil.bucque : profil.prenom}</span>
+              )}
+              <Button
+                variant="outline-danger"
+                size="lg"
+                onClick={handleLogout}
+                className="ms-3"
+              >
+                Se déconnecter
+              </Button>
+            </>
+          )}
+        </>
+      )}
     </Nav>
   );
 
