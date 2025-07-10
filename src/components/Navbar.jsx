@@ -3,7 +3,6 @@ import { Navbar, Nav, Button, Offcanvas, Container, NavDropdown } from 'react-bo
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, useAuth, useClerk } from '@clerk/clerk-react';
 import useIsAdmin from '../hooks/useIsAdmin';
-import { createClient } from '@supabase/supabase-js';
 
 export default function NavBarComponent() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -13,7 +12,6 @@ export default function NavBarComponent() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
-  const { getToken } = useAuth();
   const { signOut } = useClerk();
   const { isAdmin } = useIsAdmin();
   const [profil, setProfil] = useState(null);
@@ -26,24 +24,6 @@ export default function NavBarComponent() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    const fetchProfil = async () => {
-      if (!user) return;
-      const token = await getToken({ template: 'supabase' });
-      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
-        global: { headers: { Authorization: `Bearer ${token}` } },
-      });
-      const { data, error } = await supabase
-        .from('profils')
-        .select('prenom, bucque')
-        .eq('id', user.id)
-        .single();
-      if (error) console.error('Erreur profil :', error.message);
-      else setProfil(data);
-    };
-    fetchProfil();
-  }, [user, getToken]);
 
   const handleLogout = async () => {
     await signOut();
@@ -96,7 +76,7 @@ export default function NavBarComponent() {
           style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
           onClick={() => { setSidebarOpen(false); setProfilCanvasOpen(true); }}
         >
-          {profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}
+          Mon SKZ
         </Nav.Link>
       )}
     </Nav>
@@ -142,7 +122,7 @@ export default function NavBarComponent() {
       </NavDropdown>
       {isSignedIn && (
         <NavDropdown
-          title={<span className={profilDropdownOpen ? "text-white" : "text-primary"}>{profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}</span>}
+          title={<span className={profilDropdownOpen ? "text-white" : "text-primary"}>Mon SKZ</span>}
           id="skz-dropdown"
           menuVariant="dark"
           className="nav-btn"
