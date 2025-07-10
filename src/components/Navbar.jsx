@@ -83,67 +83,44 @@ export default function NavBarComponent() {
             {label}
           </Nav.Link>
         ))}
-      {/* Dropdown Aide visible uniquement sur desktop */}
-      {!isMobile && (
+      {/* Dropdown Aide (toujours affiché) */}
+      <NavDropdown
+        title="Aide"
+        id="aide-dropdown"
+        menuVariant="dark"
+      >
+        <NavDropdown.Item as={Link} to="/faq" onClick={() => setSidebarOpen(false)}>
+          FAQ
+        </NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/contact" onClick={() => setSidebarOpen(false)}>
+          Contact
+        </NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/infos" onClick={() => setSidebarOpen(false)}>
+          Infos
+        </NavDropdown.Item>
+      </NavDropdown>
+      {/* Dropdown Profil (toujours affiché si connecté) */}
+      {isSignedIn && (
         <NavDropdown
-          title='Aide'
-          id="aide-dropdown"
-          align="end"
-          className="ms-3"
+          title={
+            <span className="text-white">
+              👋 {profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}
+            </span>
+          }
+          id="skz-dropdown"
+          menuVariant="dark"
         >
-          <NavDropdown.Item as={Link} to="/faq">
-            FAQ
+          <NavDropdown.Item as={Link} to="/formulaire" onClick={() => setSidebarOpen(false)}>
+            Mes Choix
           </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/contact">
-            Contact
+          <NavDropdown.Item as={Link} to="/paiements" onClick={() => setSidebarOpen(false)}>
+            Mes Paiements
           </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/infos">
-            Infos
+          <NavDropdown.Divider />
+          <NavDropdown.Item onClick={handleLogout} className="text-danger">
+            Se déconnecter
           </NavDropdown.Item>
         </NavDropdown>
-      )}
-      {/* ...le reste de ton code pour le profil */}
-      {isSignedIn && (
-        <>
-          {!isMobile && (
-            <NavDropdown
-              title={
-                <span className="text-white">
-                  👋 {profil?.bucque ? profil.bucque : profil?.prenom || "Mon SKZ"}
-                </span>
-              }
-              id="skz-dropdown"
-              align="end"
-              className="ms-3"
-            >
-              <NavDropdown.Item as={Link} to="/formulaire">
-                Mes Choix
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/paiements">
-                Mes Paiements
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item onClick={handleLogout} className="text-danger">
-                Se déconnecter
-              </NavDropdown.Item>
-            </NavDropdown>
-          )}
-          {isMobile && (
-            <>
-              {(profil?.bucque || profil?.prenom) && (
-                <span className="text-white ms-3">👋 {profil?.bucque ? profil.bucque : profil.prenom}</span>
-              )}
-              <Button
-                variant="outline-danger"
-                size="lg"
-                onClick={handleLogout}
-                className="ms-3"
-              >
-                Se déconnecter
-              </Button>
-            </>
-          )}
-        </>
       )}
     </Nav>
   );
