@@ -26,7 +26,6 @@ export default function MesPaiements() {
         .select('paiement3Montant, acompteStatut')
         .eq('email', email)
         .single();
-      console.log("Données Supabase :", data, error);
       if (!error) {
         setMontant3(data?.paiement3Montant ?? null);
         setAcomptePaye(data?.acompteStatut);

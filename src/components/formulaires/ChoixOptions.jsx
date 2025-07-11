@@ -42,7 +42,6 @@ export default function ChoixOptions() {
         setModeAffichage(false);
       }
       setAcomptePaid(paiementData?.acompteStatut);
-      console.log('Acompte payé:', paiementData?.acompteStatut);
       setLoading(false);
     };
     fetchData();
