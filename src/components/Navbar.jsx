@@ -9,6 +9,7 @@ export default function NavBarComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [aideCanvasOpen, setAideCanvasOpen] = useState(false);
   const [profilCanvasOpen, setProfilCanvasOpen] = useState(false);
+  const [authCanvasOpen, setAuthCanvasOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
@@ -32,8 +33,7 @@ export default function NavBarComponent() {
 
   const links = [
     { to: '/', label: 'Accueil', protected: false },
-    { to: '/login', label: 'Connexion', protected: false, hideIfAuth: true },
-    { to: '/register', label: 'Inscription', protected: false, hideIfAuth: true },
+    { to: '/anims', label: 'Les Anims', protected: false },
     { to: '/partenaires', label: 'Nos Partenaires', protected: false },
     { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true }
   ];
@@ -69,6 +69,16 @@ export default function NavBarComponent() {
       >
         Aide
       </Nav.Link>
+      {!isSignedIn && (
+        <Nav.Link
+          as="button"
+          className="nav-btn"
+          style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
+          onClick={() => { setSidebarOpen(false); setAuthCanvasOpen(true); }}
+        >
+          Mon SKZ
+        </Nav.Link>
+      )}
       {isSignedIn && (
         <Nav.Link
           as="button"
@@ -85,6 +95,7 @@ export default function NavBarComponent() {
   // Rendu des liens pour desktop (dropdowns classiques avec ouverture au survol)
   const [aideDropdownOpen, setAideDropdownOpen] = useState(false);
   const [profilDropdownOpen, setProfilDropdownOpen] = useState(false);
+  const [authDropdownOpen, setAuthDropdownOpen] = useState(false);
 
   const renderNavLinksDesktop = (className = "") => (
     <Nav className={className}>
@@ -120,6 +131,21 @@ export default function NavBarComponent() {
         <NavDropdown.Item as={Link} to="/contact">Contact</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/infos">Infos</NavDropdown.Item>
       </NavDropdown>
+      {!isSignedIn && (
+        <NavDropdown
+          title={<span className={authDropdownOpen ? "text-white" : "text-primary"}>Mon SKZ</span>}
+          id="auth-dropdown"
+          menuVariant="dark"
+          className="nav-btn"
+          show={authDropdownOpen}
+          onMouseEnter={() => setAuthDropdownOpen(true)}
+          onMouseLeave={() => setAuthDropdownOpen(false)}
+          onToggle={() => {}}
+        >
+          <NavDropdown.Item as={Link} to="/login">Connexion</NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/register">Inscription</NavDropdown.Item>
+        </NavDropdown>
+      )}
       {isSignedIn && (
         <NavDropdown
           title={<span className={profilDropdownOpen ? "text-white" : "text-primary"}>Mon SKZ</span>}
@@ -150,7 +176,7 @@ export default function NavBarComponent() {
   return (
     <>
       {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
-      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && (
+      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && (
         <Button
           variant="light"
           onClick={() => setSidebarOpen(true)}
@@ -248,6 +274,29 @@ export default function NavBarComponent() {
                 </Nav.Link>
                 <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Paiements
+                </Nav.Link>
+              </Nav>
+            </Offcanvas.Body>
+          </Offcanvas>
+
+          {/* Offcanvas Authentification */}
+          <Offcanvas
+            show={authCanvasOpen}
+            onHide={() => setAuthCanvasOpen(false)}
+            placement="start"
+            className="p-4"
+            style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
+          >
+            <Offcanvas.Header closeButton closeVariant="white">
+              <Offcanvas.Title>Connexion / Inscription</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="flex-column mobile-nav">
+                <Nav.Link as={Link} to="/login" onClick={() => setAuthCanvasOpen(false)} className="nav-btn">
+                  Connexion
+                </Nav.Link>
+                <Nav.Link as={Link} to="/register" onClick={() => setAuthCanvasOpen(false)} className="nav-btn">
+                  Inscription
                 </Nav.Link>
               </Nav>
             </Offcanvas.Body>

@@ -158,9 +158,11 @@ export default function ChoixOptions() {
           </p>
         </div>
         <h5 className="mb-3">Récapitulatif de tes choix :</h5>
-        {Object.entries(form).map(([cle, val]) => (
-          <div key={cle}><strong>{cle}</strong>: {val}</div>
-        ))}
+        {Object.entries(form)
+          .filter(([cle]) => cle !== 'Date_boulangerie')
+          .map(([cle, val]) => (
+            <div key={cle}><strong>{cle}</strong>: {val}</div>
+          ))}
         <Button variant="primary" className="mt-3" onClick={() => setModeAffichage(false)}>
           Modifier mes options
         </Button>
@@ -232,7 +234,7 @@ export default function ChoixOptions() {
           ⚠️ Tu dois d'abord payer l'acompte pour valider tes choix d'options.
         </div>
       )}
-      <Button className={"mt-2"} variant="primary" type="submit" disabled={loading || !acomptePaid}>
+      <Button className={"mt-2"} variant="primary" type="submit">
         {loading ? 'Enregistrement...' : 'Valider mes choix (DEFINITIF)'}
       </Button>
     </Form>

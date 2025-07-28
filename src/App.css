@@ -181,6 +181,23 @@
   background-color: #19325a !important;
 }
 
+.animation-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.animation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.animation-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.animation-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
 @media (max-width: 999px) {
   .mobile-nav .nav-btn,
   .mobile-nav .dropdown {

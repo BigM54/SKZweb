@@ -3,6 +3,7 @@ import { FormGroup, Label, Input, Button } from 'reactstrap';
 import { Html5Qrcode } from 'html5-qrcode';
 import { useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
+import { Alert } from 'react-bootstrap';
 
 const fieldMap = {
   profils: {
@@ -32,6 +33,7 @@ const hasStartedRef = useRef(false);
 const [scanResult, setScanResult] = useState('');
   const [selectedType, setSelectedType] = useState('profils');
   const [scanning, setScanning] = useState(false);
+  const [pendingViennoiserie, setPendingViennoiserie] = useState(null);
   const typeRef = useRef('profils');
   const scannerRef = useRef(null);
   const { getToken } = useAuth();
@@ -87,45 +89,81 @@ const [scanResult, setScanResult] = useState('');
           const config = fieldMap[type];
           const token = await getToken({ template: 'supabase' });
 
-          const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw',
-            {
-              global: {
-                headers: { Authorization: `Bearer ${token}` },
-              },
-            }
-          );
+        const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+          global: {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        });
 
-          const { table, fields } = config;
-          const { data, error } = await supabase
+        const { table, fields } = config;
+        let message = '';
+        let variant = 'success'; // vert par défaut
+        let data, error;
+
+        if (type === 'vienoiserie') {
+          // Récupère la date actuelle au format YYYY-MM-DD
+          const today = new Date().toISOString().slice(0, 10);
+          // Récupère la ligne options
+          const { data: optionsData, error: optionsError } = await supabase
+            .from('options')
+            .select([...fields, 'Date_boulangerie'].join(','))
+            .eq('id', decodedText)
+            .single();
+          data = optionsData;
+          error = optionsError;
+
+          if (error || !data) {
+            message = '❌ Données non trouvées';
+            variant = 'danger';
+          } else {
+            // Vérifie la date
+            if (data.Date_boulangerie === today) {
+              message = `❌ La commande de viennoiserie a déjà été récupérée aujourd'hui (${today}).`;
+              variant = 'danger';
+            } else {
+              // Au lieu de mettre à jour automatiquement, stocke les données pour confirmation
+              message = `📦 Commande trouvée !\nPain: ${data.pain}\nCroissant: ${data.croissant}\nPain choco: ${data.pain_choco}\n\nCliquez sur "Confirmer la prise" pour valider.`;
+              variant = 'warning';
+              setPendingViennoiserie({ data, decodedText });
+            }
+          }
+        } else {
+          // ...comportement standard...
+          const { data: stdData, error: stdError } = await supabase
             .from(table)
             .select(fields.join(','))
             .eq('id', decodedText)
             .single();
-
-        if (error || !data) {
-        setScanResult('❌ Données non trouvées');
-        } else {
-        const message = fields.map((f) => `${f}: ${data[f] ?? 'N/A'}`).join('\n');
-        setScanResult(`✅ Informations ${type} :\n${message}`);
-        }
-
-          await html5QrCode.resume();
-        },
-        (err) => {
-          if (
-            !err.includes('NotFoundException') &&
-            !err.includes('IndexSizeError')
-          ) {
-            console.warn('Erreur de scan :', err);
+          data = stdData;
+          error = stdError;
+          if (error || !data) {
+            message = '❌ Données non trouvées';
+            variant = 'danger';
+          } else {
+            message = fields.map((f) => `${f}: ${data[f] ?? 'N/A'}`).join('\n');
+            message = `✅ Informations ${type} :\n${message}`;
+            variant = 'success';
           }
         }
-      );
-      setScanning(true);
-    } catch (err) {
-      console.error('Erreur de démarrage du scanner :', err);
-      window.alert('Impossible de démarrer le scan');
-    }
-  };
+
+        setScanResult(<Alert variant={variant}>{message.split('\n').map((line, i) => <div key={i}>{line}</div>)}</Alert>);
+        await html5QrCode.resume();
+      },
+      (err) => {
+        if (
+          !err.includes('NotFoundException') &&
+          !err.includes('IndexSizeError')
+        ) {
+          console.warn('Erreur de scan :', err);
+        }
+      }
+    );
+    setScanning(true);
+  } catch (err) {
+    console.error('Erreur de démarrage du scanner :', err);
+    window.alert('Impossible de démarrer le scan');
+  }
+};
 
     const stopScan = async () => {
     const html5QrCode = scannerRef.current;
@@ -141,9 +179,34 @@ const [scanResult, setScanResult] = useState('');
         console.warn('Erreur lors de l\'arrêt du scanner :', err);
         }
     }
+  };
+
+  const confirmViennoiserie = async () => {
+    if (!pendingViennoiserie) return;
+
+    const { data, decodedText } = pendingViennoiserie;
+    const today = new Date().toISOString().slice(0, 10);
+    const token = await getToken({ template: 'supabase' });
+
+    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+      global: {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    });
+
+    const { error: updateError } = await supabase
+      .from('options')
+      .update({ Date_boulangerie: today })
+      .eq('id', decodedText);
+
+    if (updateError) {
+      setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour de la date.</Alert>);
+    } else {
+      const message = `✅ Commande confirmée et récupérée !\nPain: ${data.pain}\nCroissant: ${data.croissant}\nPain choco: ${data.pain_choco}\nDate enregistrée: ${today}`;
+      setScanResult(<Alert variant="success">{message.split('\n').map((line, i) => <div key={i}>{line}</div>)}</Alert>);
+    }
     
-
-
+    setPendingViennoiserie(null);
   };
 
   return (
@@ -172,20 +235,20 @@ const [scanResult, setScanResult] = useState('');
           Stop Scan
         </Button>
       </div>
+
+      {pendingViennoiserie && (
+        <div className="d-flex gap-3 mb-3">
+          <Button color="warning" onClick={confirmViennoiserie}>
+            Confirmer la prise de commande
+          </Button>
+        </div>
+      )}
+
     {scanResult && (
-        <div
-            style={{
-            whiteSpace: 'pre-line',
-            marginBottom: '1rem',
-            padding: '1rem',
-            backgroundColor: '#f8f9fa',
-            borderRadius: '0.25rem',
-            border: '1px solid #ccc',
-            }}
-        >
+        <div style={{ marginBottom: '1rem' }}>
             {scanResult}
         </div>
-        )}
+    )}
 
       <div
         id="reader"

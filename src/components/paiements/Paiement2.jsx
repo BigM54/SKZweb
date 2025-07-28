@@ -142,6 +142,7 @@ export default function Paiement2() {
               </li>
             </ul>
           </Alert>
+          <div>
           <Button
             variant="outline-primary"
             onClick={handleCopyEmail}
@@ -149,13 +150,17 @@ export default function Paiement2() {
           >
             Copier mon mail
           </Button>
+          </div>
+          <div>
           <Button
+            className="mt-2"
             variant="primary"
             disabled={!canConfirm}
             onClick={() => setStep(1)}
           >
             J'ai compris, accéder au paiement
           </Button>
+          </div>
           {!canConfirm && (
             <div className="mt-2 text-muted" style={{ fontSize: '0.9em' }}>
               Le bouton sera disponible dans 5 secondes…

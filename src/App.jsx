@@ -16,6 +16,7 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const Infos = lazy(() => import('./pages/Infos'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Anims = lazy(() => import('./pages/Anims'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/partenaires" element={<Partenaires />} />
                 <Route path='/infos' element={<Infos />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/anims" element={<Anims />} />
               </Routes>
             </Container>
           </main>
