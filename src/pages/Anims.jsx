@@ -162,7 +162,7 @@ export default function Animations() {
   return (
     <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
       <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold text-primary mb-3">🎿 Nos Animations</h1>
+        <h1 className="display-4 fw-bold text-primary mb-3">Les Anim's</h1>
         <p className="lead text-muted">
           Découvre toutes les activités proposées pendant le séjour Skioz'Arts 2026 !
           <br />
