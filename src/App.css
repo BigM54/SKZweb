@@ -221,3 +221,34 @@
   }
 }
 
+/* Styles responsive pour le récapitulatif des animations */
+.min-width-0 {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  /* Sur petit écran, assure que les éléments ne débordent pas */
+  .text-wrap {
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  /* Réduit l'espacement sur petits écrans */
+  .g-3 > * {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Améliore la gestion des badges sur petits écrans */
+  .flex-wrap {
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Sur très petit écran, stack les badges verticalement si nécessaire */
+  .badge {
+    margin-bottom: 2px;
+  }
+}
+

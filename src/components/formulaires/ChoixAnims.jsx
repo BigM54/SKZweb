@@ -209,7 +209,7 @@ export default function ChoixAnims() {
       {!isCompleted ? (
         // Mode sélection d'animation
         <Row className="justify-content-center w-100">
-          <Col lg={8} xl={6}>
+          <Col sm={12} lg={8} xl={6}>
             {/* Barre de progression */}
             <div className="mb-4">
               <div className="d-flex justify-content-between align-items-center mb-2">
@@ -325,7 +325,7 @@ export default function ChoixAnims() {
       ) : (
         // Mode récapitulatif
         <Row className="justify-content-center w-100">
-          <Col lg={8}>
+          <Col sm={12} lg={10} xl={8}>
             <div className="text-center mb-5">
               <h2 className="display-5 fw-bold text-success mb-3">🎉 Félicitations !</h2>
               <p className="lead text-muted">
@@ -351,8 +351,8 @@ export default function ChoixAnims() {
                   <Card.Body>
                     <Row className="g-3">
                       {animsInCategory.map(anim => (
-                        <Col key={anim.id} md={6}>
-                          <div className="d-flex align-items-center p-2 border rounded">
+                        <Col key={anim.id} xs={12}>
+                          <div className="d-flex align-items-start p-2 border rounded h-100">
                             <img 
                               src={anim.image} 
                               alt={anim.title}
@@ -360,17 +360,21 @@ export default function ChoixAnims() {
                                 width: '60px', 
                                 height: '60px', 
                                 objectFit: 'cover',
-                                borderRadius: '8px'
+                                borderRadius: '8px',
+                                flexShrink: 0,
+                                marginTop: '2px'
                               }}
                               className="me-3"
                             />
-                            <div>
-                              <div className="fw-bold">{anim.title}</div>
-                              <div className="d-flex gap-1 mt-1">
-                                <Badge bg="light" text="dark" style={{ fontSize: '0.7rem' }}>
+                            <div className="flex-grow-1 min-width-0">
+                              <div className="fw-bold" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
+                                {anim.title}
+                              </div>
+                              <div className="d-flex gap-1 mt-1 flex-wrap">
+                                <Badge bg="light" text="dark" style={{ fontSize: '0.65rem' }}>
                                   {anim.typeIcon} {anim.type}
                                 </Badge>
-                                <Badge bg="light" text="dark" style={{ fontSize: '0.7rem' }}>
+                                <Badge bg="light" text="dark" style={{ fontSize: '0.65rem' }}>
                                   {getDifficultyIcon(anim.difficulty)} {anim.niveau}
                                 </Badge>
                               </div>
