@@ -17,6 +17,8 @@ const FAQ = lazy(() => import('./pages/FAQ'));
 const Infos = lazy(() => import('./pages/Infos'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Anims = lazy(() => import('./pages/Anims'));
+const Soirees = lazy(() => import('./pages/Soirees'));
+const Village = lazy(() => import('./pages/Village'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -75,6 +77,8 @@ function App() {
                 <Route path='/infos' element={<Infos />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/anims" element={<Anims />} />
+                <Route path="/soirees" element={<Soirees />} />
+                <Route path="/village" element={<Village />} />
               </Routes>
             </Container>
           </main>

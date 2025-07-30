@@ -252,3 +252,28 @@
   }
 }
 
+/* Désactive l'effet de survol gris sur les boutons de choix */
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  background-color: transparent !important;
+  border-color: #6c757d !important;
+  color: #6c757d !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: transparent !important;
+  border-color: #0d6efd !important;
+  color: #0d6efd !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-warning:hover,
+.btn-warning:focus,
+.btn-danger:hover,
+.btn-danger:focus {
+  transform: none !important;
+  box-shadow: none !important;
+}
+

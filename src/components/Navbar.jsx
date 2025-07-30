@@ -10,6 +10,7 @@ export default function NavBarComponent() {
   const [aideCanvasOpen, setAideCanvasOpen] = useState(false);
   const [profilCanvasOpen, setProfilCanvasOpen] = useState(false);
   const [authCanvasOpen, setAuthCanvasOpen] = useState(false);
+  const [presentationCanvasOpen, setPresentationCanvasOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
@@ -33,9 +34,7 @@ export default function NavBarComponent() {
 
   const links = [
     { to: '/', label: 'Accueil', protected: false },
-    { to: '/anims', label: 'Les Anims', protected: false },
-    { to: '/partenaires', label: 'Nos Partenaires', protected: false },
-    { to: '/admin', label: 'Admin Panel', protected: true, hiseIfNotAdmin: true }
+    { to: '/partenaires', label: 'Nos Partenaires', protected: false }
   ];
 
   // Rendu des liens pour mobile (remplace les dropdowns par des liens)
@@ -61,6 +60,14 @@ export default function NavBarComponent() {
           </Nav.Link>
         ))}
       {/* Remplace les dropdowns par des liens qui ouvrent un Offcanvas */}
+      <Nav.Link
+        as="button"
+        className="nav-btn"
+        style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
+        onClick={() => { setSidebarOpen(false); setPresentationCanvasOpen(true); }}
+      >
+        Présentation
+      </Nav.Link>
       <Nav.Link
         as="button"
         className="nav-btn"
@@ -96,6 +103,7 @@ export default function NavBarComponent() {
   const [aideDropdownOpen, setAideDropdownOpen] = useState(false);
   const [profilDropdownOpen, setProfilDropdownOpen] = useState(false);
   const [authDropdownOpen, setAuthDropdownOpen] = useState(false);
+  const [presentationDropdownOpen, setPresentationDropdownOpen] = useState(false);
 
   const renderNavLinksDesktop = (className = "") => (
     <Nav className={className}>
@@ -117,6 +125,20 @@ export default function NavBarComponent() {
             {label}
           </Nav.Link>
         ))}
+      <NavDropdown
+        title={<span className={presentationDropdownOpen ? "text-white" : "text-primary"}>Présentation</span>}
+        id="presentation-dropdown"
+        menuVariant="dark"
+        className="nav-btn"
+        show={presentationDropdownOpen}
+        onMouseEnter={() => setPresentationDropdownOpen(true)}
+        onMouseLeave={() => setPresentationDropdownOpen(false)}
+        onToggle={() => {}}
+      >
+        <NavDropdown.Item as={Link} to="/anims">Les Anims</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/soirees">Les Soirées</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/village">Le Village</NavDropdown.Item>
+      </NavDropdown>
       <NavDropdown
         title={<span className={aideDropdownOpen ? "text-white" : "text-primary"}>Aide</span>}
         id="aide-dropdown"
@@ -159,6 +181,9 @@ export default function NavBarComponent() {
         >
           <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
+          {isAdmin && (
+            <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
+          )}
         </NavDropdown>
       )}
       {isSignedIn && (
@@ -176,7 +201,7 @@ export default function NavBarComponent() {
   return (
     <>
       {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
-      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && (
+      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && (
         <Button
           variant="light"
           onClick={() => setSidebarOpen(true)}
@@ -275,6 +300,11 @@ export default function NavBarComponent() {
                 <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Paiements
                 </Nav.Link>
+                {isAdmin && (
+                  <Nav.Link as={Link} to="/admin" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                    Admin Panel
+                  </Nav.Link>
+                )}
               </Nav>
             </Offcanvas.Body>
           </Offcanvas>
@@ -301,6 +331,32 @@ export default function NavBarComponent() {
               </Nav>
             </Offcanvas.Body>
           </Offcanvas>
+
+          {/* Offcanvas Présentation */}
+          <Offcanvas
+            show={presentationCanvasOpen}
+            onHide={() => setPresentationCanvasOpen(false)}
+            placement="start"
+            className="p-4"
+            style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
+          >
+            <Offcanvas.Header closeButton closeVariant="white">
+              <Offcanvas.Title>Présentation</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="flex-column mobile-nav">
+                <Nav.Link as={Link} to="/anims" onClick={() => setPresentationCanvasOpen(false)} className="nav-btn">
+                  Les Anims
+                </Nav.Link>
+                <Nav.Link as={Link} to="/soirees" onClick={() => setPresentationCanvasOpen(false)} className="nav-btn">
+                  Les Soirées
+                </Nav.Link>
+                <Nav.Link as={Link} to="/village" onClick={() => setPresentationCanvasOpen(false)} className="nav-btn">
+                  Le Village
+                </Nav.Link>
+              </Nav>
+            </Offcanvas.Body>
+          </Offcanvas>
         </>
       )}
 
@@ -315,7 +371,7 @@ export default function NavBarComponent() {
           <Container fluid>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
-              {renderNavLinksDesktop("d-flex flex-row gap-4 align-items-center")}
+              {renderNavLinksDesktop("d-flex flex-row gap-2 align-items-center")}
             </Navbar.Collapse>
           </Container>
         </Navbar>
