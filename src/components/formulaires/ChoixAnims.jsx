@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge, ListGroup } from 'react-bootstrap';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default function ChoixAnims() {
   const [choices, setChoices] = useState({});
   const [currentAnimIndex, setCurrentAnimIndex] = useState(0);
+  const [orderedFavorites, setOrderedFavorites] = useState([]);
 
   const animations = [
     {
@@ -158,6 +160,24 @@ export default function ChoixAnims() {
   const currentAnim = animations[currentAnimIndex];
   const progress = ((currentAnimIndex + 1) / animations.length) * 100;
 
+  // Met à jour l'ordre des favoris à la fin de la sélection
+  React.useEffect(() => {
+    if (isCompleted) {
+      const favorites = Object.entries(choices)
+        .filter(([_, choice]) => choice === 'yes')
+        .map(([animId, _]) => parseInt(animId));
+      setOrderedFavorites(favorites);
+    }
+  }, [isCompleted]);
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const arr = Array.from(orderedFavorites);
+    const [removed] = arr.splice(result.source.index, 1);
+    arr.splice(result.destination.index, 0, removed);
+    setOrderedFavorites(arr);
+  };
+
   const getChoiceVariant = (animId, choice) => {
     const currentChoice = choices[animId];
     if (currentChoice === choice) {
@@ -234,10 +254,7 @@ export default function ChoixAnims() {
                   variant="top" 
                   src={currentAnim.image} 
                   alt={currentAnim.title}
-                  style={{ 
-                    height: '100%', 
-                    objectFit: 'cover'
-                  }}
+                  style={{ height: '100%', objectFit: 'cover' }}
                 />
               </div>
               <Card.Body>
@@ -259,31 +276,23 @@ export default function ChoixAnims() {
                   </Card.Text>
                 </div>
                 
-                {/* Boutons de choix */}
-                <div className="d-grid gap-2">
+                {/* Sélection par coeur/croix */}
+                <div className="d-flex justify-content-between align-items-center mt-4">
                   <Button
+                    variant={choices[currentAnim.id] === 'no' ? 'danger' : 'outline-secondary'}
                     size="lg"
-                    variant={getChoiceVariant(currentAnim.id, 'absolument')}
-                    onClick={() => handleChoice(currentAnim.id, 'absolument')}
-                    className="py-3"
+                    className="px-4 py-2"
+                    onClick={() => handleChoice(currentAnim.id, 'no')}
                   >
-                    {getChoiceIcon('absolument')} Absolument faire !
+                    ❌
                   </Button>
                   <Button
+                    variant={choices[currentAnim.id] === 'yes' ? 'success' : 'outline-secondary'}
                     size="lg"
-                    variant={getChoiceVariant(currentAnim.id, 'interesse')}
-                    onClick={() => handleChoice(currentAnim.id, 'interesse')}
-                    className="py-3"
+                    className="px-4 py-2"
+                    onClick={() => handleChoice(currentAnim.id, 'yes')}
                   >
-                    {getChoiceIcon('interesse')} Intéressé
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant={getChoiceVariant(currentAnim.id, 'pas_interesse')}
-                    onClick={() => handleChoice(currentAnim.id, 'pas_interesse')}
-                    className="py-3"
-                  >
-                    {getChoiceIcon('pas_interesse')} Pas intéressé
+                    ❤️
                   </Button>
                 </div>
               </Card.Body>
@@ -323,70 +332,77 @@ export default function ChoixAnims() {
           </Col>
         </Row>
       ) : (
-        // Mode récapitulatif
+        // Mode récapitulatif avec classement drag & drop des anims aimées et anims non choisies
         <Row className="justify-content-center w-100">
           <Col sm={12} lg={10} xl={8}>
             <div className="text-center mb-5">
               <h2 className="display-5 fw-bold text-success mb-3">🎉 Félicitations !</h2>
               <p className="lead text-muted">
-                Tu as terminé la sélection de tes animations. Voici ton récapitulatif :
+                Tu as terminé la sélection de tes animations. Glisse pour classer tes anims préférées :
               </p>
             </div>
 
-            {/* Récapitulatif par catégorie */}
-            {['absolument', 'interesse', 'pas_interesse'].map(category => {
-              const animsInCategory = Object.entries(choices)
-                .filter(([_, choice]) => choice === category)
-                .map(([animId, _]) => animations.find(a => a.id === parseInt(animId)));
+            {/* Classement drag & drop des anims aimées */}
+            <Card className="mb-4 shadow-sm">
+              <Card.Header className="bg-success text-white">
+                <h5 className="mb-0">❤️ Tes anims préférées (glisse pour classer)</h5>
+              </Card.Header>
+              <Card.Body>
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="favorites-list" direction="vertical">
+                    {(provided) => (
+                      <ul className="list-group list-group-flush" ref={provided.innerRef} {...provided.droppableProps}>
+                        {orderedFavorites.map((animId, idx) => {
+                          const anim = animations.find(a => a.id === animId);
+                          return (
+                            <Draggable key={anim.id} draggableId={String(anim.id)} index={idx}>
+                              {(provided, snapshot) => (
+                                <li
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className={`list-group-item d-flex align-items-center ${snapshot.isDragging ? 'bg-light' : ''}`}
+                                  style={{ ...provided.draggableProps.style, cursor: 'grab' }}
+                                >
+                                  <span className="me-3">{idx + 1}.</span>
+                                  <img src={anim.image} alt={anim.title} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} className="me-3" />
+                                  <span className="fw-bold flex-grow-1">{anim.title}</span>
+                                  <span style={{ fontSize: '1.5rem' }}>❤️</span>
+                                </li>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                        {provided.placeholder}
+                      </ul>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </Card.Body>
+            </Card>
 
-              if (animsInCategory.length === 0) return null;
-
-              return (
-                <Card key={category} className="mb-4 shadow-sm">
-                  <Card.Header className={`bg-${category === 'absolument' ? 'success' : category === 'interesse' ? 'warning' : 'danger'} text-white`}>
-                    <h5 className="mb-0">
-                      {getChoiceIcon(category)} {getChoiceLabel(category)} ({animsInCategory.length})
-                    </h5>
-                  </Card.Header>
-                  <Card.Body>
-                    <Row className="g-3">
-                      {animsInCategory.map(anim => (
-                        <Col key={anim.id} xs={12}>
-                          <div className="d-flex align-items-start p-2 border rounded h-100">
-                            <img 
-                              src={anim.image} 
-                              alt={anim.title}
-                              style={{ 
-                                width: '60px', 
-                                height: '60px', 
-                                objectFit: 'cover',
-                                borderRadius: '8px',
-                                flexShrink: 0,
-                                marginTop: '2px'
-                              }}
-                              className="me-3"
-                            />
-                            <div className="flex-grow-1 min-width-0">
-                              <div className="fw-bold" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
-                                {anim.title}
-                              </div>
-                              <div className="d-flex gap-1 mt-1 flex-wrap">
-                                <Badge bg="light" text="dark" style={{ fontSize: '0.65rem' }}>
-                                  {anim.typeIcon} {anim.type}
-                                </Badge>
-                                <Badge bg="light" text="dark" style={{ fontSize: '0.65rem' }}>
-                                  {getDifficultyIcon(anim.difficulty)} {anim.niveau}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        </Col>
-                      ))}
-                    </Row>
-                  </Card.Body>
-                </Card>
-              );
-            })}
+            {/* Anims non choisies */}
+            <Card className="mb-4 shadow-sm">
+              <Card.Header className="bg-danger text-white">
+                <h5 className="mb-0">❌ Anims non choisies</h5>
+              </Card.Header>
+              <Card.Body>
+                <ul className="list-group list-group-flush">
+                  {Object.entries(choices)
+                    .filter(([_, choice]) => choice === 'no')
+                    .map(([animId, _]) => {
+                      const anim = animations.find(a => a.id === parseInt(animId));
+                      return (
+                        <li key={anim.id} className="list-group-item d-flex align-items-center">
+                          <img src={anim.image} alt={anim.title} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} className="me-3" />
+                          <span className="fw-bold flex-grow-1">{anim.title}</span>
+                          <span style={{ fontSize: '1.5rem' }}>❌</span>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </Card.Body>
+            </Card>
 
             {/* Actions finales */}
             <div className="text-center mt-5">
