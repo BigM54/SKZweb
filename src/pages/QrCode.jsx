@@ -3,7 +3,7 @@ import QRCodeStyling from "qr-code-styling";
 import { useUser } from '@clerk/clerk-react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 
-function QrCode() {
+function QrCode({ style }) {
     const { user } = useUser();
     const ref = useRef(null);
     const [qrCode, setQrCode] = useState(null);
@@ -47,7 +47,7 @@ function QrCode() {
 
     return (
         <div className="App">
-            <div ref={ref} style={{ width: 300, height: 300, margin: "0 auto" }} />
+            <div ref={ref} style={{ ...style, margin: "0 auto" }} />
         </div>
     );
 }
@@ -60,7 +60,12 @@ export default function QrCodePage() {
           <Card className="shadow-lg border-0 mb-4">
             <Card.Body>
               <h2 className="mb-4 text-center">🎫 Mon QR Code SKZ</h2>
-              <QrCode />
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                {/* On force le QR code à être responsive */}
+                <div style={{ maxWidth: 320, width: '100%' }}>
+                  <QrCode style={{ width: '100%', height: 'auto', maxWidth: 320, display: 'block', margin: '0 auto' }} />
+                </div>
+              </div>
             </Card.Body>
           </Card>
         </Col>
