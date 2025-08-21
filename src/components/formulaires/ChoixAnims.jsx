@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button, Badge, ListGroup } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { useUser, useAuth } from '@clerk/clerk-react';
+import { createClient } from '@supabase/supabase-js';
+import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default function ChoixAnims() {
+  const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
   const [choices, setChoices] = useState({});
   const [currentAnimIndex, setCurrentAnimIndex] = useState(0);
   const [orderedFavorites, setOrderedFavorites] = useState([]);
+  const [modeAffichage, setModeAffichage] = useState(false);
+  const [recapFavorites, setRecapFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const animations = [
     {
@@ -161,7 +168,7 @@ export default function ChoixAnims() {
   const progress = ((currentAnimIndex + 1) / animations.length) * 100;
 
   // Met à jour l'ordre des favoris à la fin de la sélection
-  React.useEffect(() => {
+  useEffect(() => {
     if (isCompleted) {
       const favorites = Object.entries(choices)
         .filter(([_, choice]) => choice === 'yes')
@@ -178,37 +185,6 @@ export default function ChoixAnims() {
     setOrderedFavorites(arr);
   };
 
-  const getChoiceVariant = (animId, choice) => {
-    const currentChoice = choices[animId];
-    if (currentChoice === choice) {
-      switch (choice) {
-        case 'interesse': return 'warning';
-        case 'absolument': return 'success';
-        case 'pas_interesse': return 'danger';
-        default: return 'outline-secondary';
-      }
-    }
-    return 'outline-secondary';
-  };
-
-  const getChoiceIcon = (choice) => {
-    switch (choice) {
-      case 'interesse': return '🤔';
-      case 'absolument': return '😍';
-      case 'pas_interesse': return '😐';
-      default: return '';
-    }
-  };
-
-  const getChoiceLabel = (choice) => {
-    switch (choice) {
-      case 'interesse': return 'Intéressé';
-      case 'absolument': return 'Absolument faire';
-      case 'pas_interesse': return 'Pas intéressé';
-      default: return '';
-    }
-  };
-
   const getCategoryIcon = (category) => {
     return category === 'cours' ? '🎓' : '🏆';
   };
@@ -223,6 +199,66 @@ export default function ChoixAnims() {
     };
     return icons[difficulty] || '⚪';
   };
+
+  // Effet pour charger le récapitulatif si une ligne existe
+  useEffect(() => {
+    async function fetchRecap() {
+      if (!isLoaded || !user) return;
+      setLoading(true);
+      try {
+        const token = await getToken({ template: 'supabase' });
+        const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+          global: { headers: { Authorization: `Bearer ${token}` } }
+        });
+        const { data } = await supabase
+          .from('anims')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (data) {
+          const favorites = [];
+          for (let i = 1; i <= 10; i++) {
+            if (data[i]) {
+              const animObj = animations.find(a => a.title === data[i]);
+              if (animObj) favorites.push(animObj);
+            }
+          }
+          if (favorites.length > 0) {
+            setRecapFavorites(favorites);
+            setModeAffichage(true);
+          }
+        }
+      } catch (e) {
+        // Optionnel: gestion d'erreur
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchRecap();
+  }, [isLoaded, user]);
+
+  if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}><span className="visually-hidden">Chargement...</span><div className="spinner-border text-primary" role="status"></div></div>;
+
+  if (modeAffichage) {
+    return (
+      <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
+        <Row className="justify-content-center w-100">
+          <Col sm={12} lg={10} xl={8}>
+            <div className="text-center mb-5">
+              <h2 className="display-5 fw-bold text-success mb-3">🎉 Tes choix d'animations</h2>
+              <ul className="list-group list-group-flush">
+                {recapFavorites.map((anim, idx) => (
+                  <li key={anim.id} className="list-group-item">
+                    <strong>{idx + 1}.</strong> {anim.title}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 
   return (
     <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
@@ -367,7 +403,6 @@ export default function ChoixAnims() {
                                   <span className="me-3">{idx + 1}.</span>
                                   <img src={anim.image} alt={anim.title} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} className="me-3" />
                                   <span className="fw-bold flex-grow-1">{anim.title}</span>
-                                  <span style={{ fontSize: '1.5rem' }}>❤️</span>
                                 </li>
                               )}
                             </Draggable>
@@ -396,7 +431,6 @@ export default function ChoixAnims() {
                         <li key={anim.id} className="list-group-item d-flex align-items-center">
                           <img src={anim.image} alt={anim.title} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} className="me-3" />
                           <span className="fw-bold flex-grow-1">{anim.title}</span>
-                          <span style={{ fontSize: '1.5rem' }}>❌</span>
                         </li>
                       );
                     })}
@@ -422,7 +456,35 @@ export default function ChoixAnims() {
                 >
                   ← Modifier mes choix
                 </Button>
-                <Button variant="success" size="lg">
+                <Button 
+                  variant="success" 
+                  size="lg"
+                  onClick={async () => {
+                    if (!isLoaded || !user) {
+                      alert("Utilisateur non connecté");
+                      return;
+                    }
+                    const token = await getToken({ template: 'supabase' });
+                    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+                      global: { headers: { Authorization: `Bearer ${token}` } }
+                    });
+                    // Construction de l'objet à insérer dans la table anims
+                    const insertData = { id: user.id };
+                    orderedFavorites.forEach((animId, idx) => {
+                      const anim = animations.find(a => a.id === animId);
+                      insertData[(idx + 1).toString()] = anim.title;
+                    });
+                    // Insère ou met à jour la ligne pour cet utilisateur
+                    const { error } = await supabase
+                      .from('anims')
+                      .insert([insertData], { onConflict: ['id'] });
+                    if (error) {
+                      alert("Erreur lors de l'enregistrement des anims : " + error.message);
+                    } else {
+                      alert("Tes choix d'anims ont bien été enregistrés !");
+                    }
+                  }}
+                >
                   ✅ Valider mes choix
                 </Button>
               </div>

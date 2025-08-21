@@ -181,6 +181,7 @@ export default function NavBarComponent() {
         >
           <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
           {isAdmin && (
             <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
           )}
@@ -299,6 +300,9 @@ export default function NavBarComponent() {
                 </Nav.Link>
                 <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Paiements
+                </Nav.Link>
+                <Nav.Link as={Link} to="/qrcode" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                  Mon QR Code
                 </Nav.Link>
                 {isAdmin && (
                   <Nav.Link as={Link} to="/admin" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">

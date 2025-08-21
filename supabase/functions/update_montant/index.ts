@@ -84,7 +84,7 @@ serve(async (req: Request) => {
     // Vérifie si l'acompte est payé avant de valider les choix
     const { data: acompteData, error: acompteError } = await supabase
       .from("Paiements")
-      .select("acompteStatut")
+      .select("acompteStatut, dateAcompte")
       .eq("email", userEmail)
       .single();
     if (acompteError) throw acompteError;
@@ -93,6 +93,18 @@ serve(async (req: Request) => {
         status: 403,
         headers: { "Access-Control-Allow-Origin": "*" },
       });
+    }
+    // Vérifie la dateAcompte
+    if (acompteData.dateAcompte) {
+      const acompteDate = new Date(acompteData.dateAcompte);
+      const now = new Date();
+      const diffDays = (now.getTime() - acompteDate.getTime()) / (1000 * 60 * 60 * 24);
+      if (diffDays > 7) {
+        return new Response(JSON.stringify({ error: "Il n'est plus possible de modifier tes options ou le montant du paiement (plus de 7 jours depuis l'acompte)." }), {
+          status: 403,
+          headers: { "Access-Control-Allow-Origin": "*" },
+        });
+      }
     }
 
     // mise à jour du montant dans la table Paiements

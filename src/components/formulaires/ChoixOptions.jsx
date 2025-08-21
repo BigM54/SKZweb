@@ -11,6 +11,8 @@ export default function ChoixOptions() {
   const { user } = useUser();
   const [total, setTotal] = useState(0);
   const [acomptePaid, setAcomptePaid] = useState(null);
+  const [acompteDate, setAcompteDate] = useState(null);
+  const [joursRestants, setJoursRestants] = useState(null);
 
   // Récupère d'un coup les données options et paiements
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function ChoixOptions() {
       // Récupère options et acompte en parallèle
       const [{ data: optionsData }, { data: paiementData }] = await Promise.all([
         supabase.from('options').select('*').eq('id', user.id).single(),
-        supabase.from('Paiements').select('acompteStatut').eq('email', email).single(),
+        supabase.from('Paiements').select('acompteStatut, dateAcompte').eq('email', email).single(),
       ]);
 
       if (optionsData) {
@@ -42,6 +44,14 @@ export default function ChoixOptions() {
         setModeAffichage(false);
       }
       setAcomptePaid(paiementData?.acompteStatut);
+      setAcompteDate(paiementData?.dateAcompte);
+      // Calcul du temps restant
+      if (paiementData?.dateAcompte) {
+        const acompteDateObj = new Date(paiementData.dateAcompte);
+        const now = new Date();
+        const diffDays = Math.floor((now.getTime() - acompteDateObj.getTime()) / (1000 * 60 * 60 * 24));
+        setJoursRestants(Math.max(0, 7 - diffDays));
+      }
       setLoading(false);
     };
     fetchData();
@@ -157,6 +167,16 @@ export default function ChoixOptions() {
             (50€ + 200€ + 200€ + {total-450}€)
           </p>
         </div>
+        {/* Affichage du délai restant ou expiré */}
+        {acomptePaid && acompteDate && (
+          <div className="mb-3">
+            {joursRestants > 0 ? (
+              <span className="text-success">⏳ Il te reste <strong>{joursRestants} jour{joursRestants > 1 ? 's' : ''}</strong> pour modifier tes options.</span>
+            ) : (
+              <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
+            )}
+          </div>
+        )}
         <h5 className="mb-3">Récapitulatif de tes choix :</h5>
         {Object.entries(form)
           .filter(([cle]) => cle !== 'Date_boulangerie')
@@ -234,8 +254,17 @@ export default function ChoixOptions() {
           ⚠️ Tu dois d'abord payer l'acompte pour valider tes choix d'options.
         </div>
       )}
-      <Button className={"mt-2"} variant="primary" type="submit">
-        {loading ? 'Enregistrement...' : 'Valider mes choix (DEFINITIF)'}
+      {acomptePaid && acompteDate && (
+        <div className="mt-2">
+          {joursRestants > 0 ? (
+            <span className="text-success">⏳ Il te reste <strong>{joursRestants} jour{joursRestants > 1 ? 's' : ''}</strong> pour modifier tes options.</span>
+          ) : (
+            <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
+          )}
+        </div>
+      )}
+      <Button className={"mt-2"} variant="primary" type="submit" disabled={acomptePaid && acompteDate && joursRestants === 0}>
+        {loading ? 'Enregistrement...' : 'Valider mes choix'}
       </Button>
     </Form>
   );

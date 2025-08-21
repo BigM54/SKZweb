@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
 import { useUser } from '@clerk/clerk-react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 
-export default function QrCode() {
+function QrCode() {
     const { user } = useUser();
     const ref = useRef(null);
     const [qrCode, setQrCode] = useState(null);
@@ -23,7 +24,7 @@ export default function QrCode() {
                 color: "#003250",
                 type: "square"
             },
-            image: "/skz_logo.png",
+            image: "/skz_logo_low_res.png",
             imageOptions: {
               crossOrigin: "anonymous",
               saveAsBlob: true,
@@ -49,6 +50,23 @@ export default function QrCode() {
             <div ref={ref} style={{ width: 300, height: 300, margin: "0 auto" }} />
         </div>
     );
+}
+
+export default function QrCodePage() {
+  return (
+    <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
+      <Row className="justify-content-center w-100">
+        <Col sm={12} lg={8} xl={6}>
+          <Card className="shadow-lg border-0 mb-4">
+            <Card.Body>
+              <h2 className="mb-4 text-center">🎫 Mon QR Code SKZ</h2>
+              <QrCode />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
 const styles = {
