@@ -66,7 +66,11 @@ export default function Home() {
 
   return (
     <>
-      <Alert variant="light" className="text-center mb-0" style={{ fontWeight: '600' }}>
+      <Alert 
+        variant="light" 
+        className="text-center mb-0" 
+        style={{ fontWeight: '700', fontSize: '1.5rem', letterSpacing: '0.5px' }}
+      >
         36e édition du plus grand événement de ski étudiant d'Europe ! ✨
       </Alert>
 

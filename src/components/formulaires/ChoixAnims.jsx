@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
-import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Badge, Button, Spinner } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useNavigate } from 'react-router-dom';
 
 export default function ChoixAnims() {
   const { user, isLoaded } = useUser();
@@ -13,6 +14,8 @@ export default function ChoixAnims() {
   const [modeAffichage, setModeAffichage] = useState(false);
   const [recapFavorites, setRecapFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [loadingRedirect, setLoadingRedirect] = useState(false);
 
   const animations = [
     {
@@ -237,7 +240,48 @@ export default function ChoixAnims() {
     fetchRecap();
   }, [isLoaded, user]);
 
+  const navigate = useNavigate();
+
+  // Handler de validation avec redirection
+  const handleValidate = async () => {
+    setErrorMsg("");
+    try {
+      const token = await getToken({ template: 'supabase' });
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: { headers: { Authorization: `Bearer ${token}` } }
+      });
+      // Construction de l'objet à insérer dans la table anims
+      const insertData = { id: user.id };
+      orderedFavorites.forEach((animId, idx) => {
+        const anim = animations.find(a => a.id === animId);
+        insertData[(idx + 1).toString()] = anim.title;
+      });
+      // Insère ou met à jour la ligne pour cet utilisateur
+      const { error } = await supabase
+        .from('anims')
+        .insert([insertData], { onConflict: ['id'] });
+      if (error) {
+        setErrorMsg("Erreur lors de l'enregistrement : " + error.message);
+      } else {
+        // On passe directement en mode récap avec les choix courants
+        setRecapFavorites(orderedFavorites.map(animId => animations.find(a => a.id === animId)).filter(Boolean));
+        setModeAffichage(true);
+      }
+    } catch (e) {
+      setErrorMsg("Erreur lors de l'enregistrement : " + e.message);
+    }
+  };
+
   if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}><span className="visually-hidden">Chargement...</span><div className="spinner-border text-primary" role="status"></div></div>;
+
+  if (loadingRedirect) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+        <Spinner animation="border" variant="primary" />
+        <span className="ms-3">Redirection...</span>
+      </div>
+    );
+  }
 
   if (modeAffichage) {
     return (
@@ -459,41 +503,18 @@ export default function ChoixAnims() {
                 <Button 
                   variant="success" 
                   size="lg"
-                  onClick={async () => {
-                    if (!isLoaded || !user) {
-                      alert("Utilisateur non connecté");
-                      return;
-                    }
-                    const token = await getToken({ template: 'supabase' });
-                    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
-                      global: { headers: { Authorization: `Bearer ${token}` } }
-                    });
-                    // Construction de l'objet à insérer dans la table anims
-                    const insertData = { id: user.id };
-                    orderedFavorites.forEach((animId, idx) => {
-                      const anim = animations.find(a => a.id === animId);
-                      insertData[(idx + 1).toString()] = anim.title;
-                    });
-                    // Insère ou met à jour la ligne pour cet utilisateur
-                    const { error } = await supabase
-                      .from('anims')
-                      .insert([insertData], { onConflict: ['id'] });
-                    if (error) {
-                      alert("Erreur lors de l'enregistrement des anims : " + error.message);
-                    } else {
-                      alert("Tes choix d'anims ont bien été enregistrés !");
-                    }
-                  }}
+                  onClick={handleValidate}
                 >
                   ✅ Valider mes choix
                 </Button>
               </div>
-              
-              <div className="mt-4 p-3 bg-light rounded">
-                <small className="text-muted">
-                  💡 Ces informations nous aideront à mieux organiser les activités pendant ton séjour !
-                </small>
-              </div>
+
+              {/* Message d'erreur */}
+              {errorMsg && (
+                <div className="mt-4 alert alert-danger">
+                  {errorMsg}
+                </div>
+              )}
             </div>
           </Col>
         </Row>

@@ -277,3 +277,16 @@
   box-shadow: none !important;
 }
 
+.btn-primary,
+.bg-primary,
+.card.bg-primary,
+.badge-primary {
+  background-color: #003652 !important; /* ton bleu personnalisé */
+  border-color: #003652 !important;
+}
+
+.btn-primary:hover,
+.bg-primary:hover {
+  background-color: #1c86ee !important; /* variante hover */
+  border-color: #1c86ee !important;
+}
