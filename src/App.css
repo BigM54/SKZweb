@@ -1,3 +1,42 @@
+/* Titre sponsors plus petit */
+.sponsors-title {
+  font-size: 1.3rem !important;
+}
+/* Réduit la taille de police dans l'espace sponsors */
+.sponsors-section {
+  font-size: 0.95rem !important;
+}
+
+/* Réduit la taille de police dans l'espace chiffres */
+.stats-section {
+  font-size: 0.95rem !important;
+}
+.stats-number {
+  font-size: 1.3rem !important;
+  font-weight: 700;
+  color: #003652;
+  line-height: 1;
+}
+.stats-label {
+  font-size: 0.95rem !important;
+  color: #222;
+  font-weight: 500;
+}
+/* Supprime le contour du bouton Se déconnecter (btn-outline-danger) */
+.btn-outline-danger {
+  border: none !important;
+  box-shadow: none !important;
+  color: #dc3545 !important; /* rouge Bootstrap par défaut */
+  background: transparent !important;
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+  border: none !important;
+  box-shadow: none !important;
+  color: #b94a57 !important; /* rouge grisé au hover */
+  background: transparent !important;
+}
 #root {
   margin: 0 auto;
   text-align: center;
@@ -129,9 +168,10 @@
 
 /* Couleur du texte des boutons et dropdowns : bleu par défaut, blanc si ouvert */
 .nav-btn, .nav-btn .dropdown-toggle {
-  font-size: 1.2rem;
-  padding: 0.5rem 1.25rem;
-  height: 44px;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+  height: 32px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   color: #0d6efd !important; /* bleu Bootstrap */
@@ -170,8 +210,8 @@
 /* Dropdown items : bleu par défaut, blanc au hover */
 .dropdown-item {
   color: #0d6efd !important;
-  font-size: 1.2rem;
-  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
   background: transparent !important;
   transition: color 0.2s, background 0.2s;
 }
@@ -289,4 +329,45 @@
 .bg-primary:hover {
   background-color: #1c86ee !important; /* variante hover */
   border-color: #1c86ee !important;
+}
+
+/* NAVBAR TEXTE BLANC PAR DÉFAUT, GRIS AU SURVOL */
+.navbar .nav-link, .navbar .navbar-brand, .navbar .dropdown-toggle {
+  color: #fff !important;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.navbar .nav-link:hover, .navbar .navbar-brand:hover, .navbar .dropdown-toggle:hover {
+  color: #b0b0b0 !important;
+}
+
+/* Dropdown items de la navbar : blanc par défaut, gris au hover */
+.navbar .dropdown-menu .dropdown-item {
+  color: #fff !important;
+  background: transparent !important;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+  transition: color 0.2s;
+}
+/* Réduction de la hauteur globale de la navbar */
+.navbar {
+  min-height: 58px;
+  height: 58px;
+  --bs-navbar-padding-y: 0.1rem;
+}
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus {
+  color: #b0b0b0 !important;
+  background: transparent !important;
+}
+
+/* Bouton dropdown de la navbar : blanc par défaut, gris au hover */
+.navbar .dropdown-toggle, .navbar .nav-link.dropdown-toggle {
+  color: #fff !important;
+  background: transparent !important;
+  transition: color 0.2s;
+}
+.navbar .dropdown-toggle:hover, .navbar .nav-link.dropdown-toggle:hover, .navbar .dropdown-toggle:focus, .navbar .nav-link.dropdown-toggle:focus {
+  color: #b0b0b0 !important;
+  background: transparent !important;
 }

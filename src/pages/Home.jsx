@@ -33,19 +33,19 @@ export default function Home() {
       </div>
       <Alert 
         variant="primary"
-        className="text-center mb-0"
+        className="text-center mb-0 stats-section"
         style={{ background: '#fff', fontWeight: '700', fontSize: '2rem', letterSpacing: '0.5px', borderRadius: 0, border: 'none', borderBottom: '2px solid #ffffffff', borderTop: '4px solid #111' }}
       >
         Skiozarts en quelques chiffres
       </Alert>
       {/* Chiffres animés sur fond blanc */}
-      <div style={{ background: '#fff', margin: 0, padding: 0 }}>
+      <div className="stats-section" style={{ background: '#fff', margin: 0, padding: 0 }}>
         <AnimatedStats />
       </div>
       {/* Section avec image de fond + partenaires */}
       <Container
         fluid
-        className="text-center"
+        className="text-center sponsors-section"
         style={{
           backgroundColor: '#f8f9fa',
           paddingTop: '1rem',
@@ -54,9 +54,10 @@ export default function Home() {
         }}
       >
         <h2
+          className="sponsors-title"
           style={{
             fontWeight: 'bold',
-            fontSize: '2.5rem',
+            fontSize: '1.3rem',
             display: 'inline-block',
             paddingBottom: '0.3rem',
             borderBottom: '3px solid #000000ff',
@@ -66,7 +67,7 @@ export default function Home() {
           Ils nous soutiennent
         </h2>
       </Container>
-      <Container fluid className="py-4" style={{ backgroundColor: '#f8f9fa' }}>
+      <Container fluid className="py-4 sponsors-section" style={{ backgroundColor: '#f8f9fa' }}>
         <Row className="justify-content-center align-items-center">
           <Col xs="auto">
             <a href="https://www.rolex.com" target="_blank" rel="noopener noreferrer">
@@ -152,16 +153,14 @@ function AnimatedStats() {
 
 function AnimatedStatsNumbers({ stats }) {
   return (
-    <Container fluid className="py-4" style={{ background: '#fff' }}>
+    <Container fluid className="py-4 stats-section" style={{ background: '#fff' }}>
       <Row className="justify-content-center align-items-center">
         {stats.map((stat, idx) => {
           const count = useCountUp(stat.value, 1200 + idx * 200);
           return (
             <Col xs={6} md={2} key={stat.label} className="mb-3 mb-md-0">
-              <div style={{ fontSize: '2.2rem', fontWeight: 700, color: '#003652', lineHeight: 1 }}>
-                {count}
-              </div>
-              <div style={{ fontSize: '1.1rem', color: '#222', fontWeight: 500 }}>{stat.label}</div>
+              <div className="stats-number">{count}</div>
+              <div className="stats-label">{stat.label}</div>
             </Col>
           );
         })}

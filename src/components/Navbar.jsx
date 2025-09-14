@@ -126,7 +126,7 @@ export default function NavBarComponent() {
           </Nav.Link>
         ))}
       <NavDropdown
-        title={<span className={presentationDropdownOpen ? "text-white" : "text-primary"}>Présentation</span>}
+        title={<span>Présentation</span>}
         id="presentation-dropdown"
         menuVariant="dark"
         className="nav-btn"
@@ -140,7 +140,7 @@ export default function NavBarComponent() {
         <NavDropdown.Item as={Link} to="/village">Le Village</NavDropdown.Item>
       </NavDropdown>
       <NavDropdown
-        title={<span className={aideDropdownOpen ? "text-white" : "text-primary"}>Aide</span>}
+        title={<span>Aide</span>}
         id="aide-dropdown"
         menuVariant="dark"
         className="nav-btn"
@@ -155,7 +155,7 @@ export default function NavBarComponent() {
       </NavDropdown>
       {!isSignedIn && (
         <NavDropdown
-          title={<span className={authDropdownOpen ? "text-white" : "text-primary"}>Mon SKZ</span>}
+          title={<span>Mon SKZ</span>}
           id="auth-dropdown"
           menuVariant="dark"
           className="nav-btn"
@@ -170,7 +170,7 @@ export default function NavBarComponent() {
       )}
       {isSignedIn && (
         <NavDropdown
-          title={<span className={profilDropdownOpen ? "text-white" : "text-primary"}>Mon SKZ</span>}
+          title={<span>Mon SKZ</span>}
           id="skz-dropdown"
           menuVariant="dark"
           className="nav-btn"
