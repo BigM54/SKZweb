@@ -1,3 +1,16 @@
+/* Affiche les chiffres à la verticale sur mobile */
+@media (max-width: 767px) {
+  .stats-row-responsive {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .stats-row-responsive > .col {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+}
 /* Titre sponsors plus petit */
 .sponsors-title {
   font-size: 1.3rem !important;

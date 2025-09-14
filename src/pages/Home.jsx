@@ -154,7 +154,7 @@ function AnimatedStats() {
 function AnimatedStatsNumbers({ stats }) {
   return (
     <Container fluid className="py-4 stats-section" style={{ background: '#fff' }}>
-      <Row className="justify-content-center align-items-center">
+  <Row className="justify-content-center align-items-center stats-row-responsive">
         {stats.map((stat, idx) => {
           const count = useCountUp(stat.value, 1200 + idx * 200);
           return (
