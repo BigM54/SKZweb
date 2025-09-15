@@ -369,6 +369,8 @@ export default function NavBarComponent() {
         >
           {/* Logo gauche */}
           <img src="/skz_logo.png" alt="Logo Skioz'Arts" className="navbar-logo-left" />
+          {/* Logo droite */}
+          <img src="/navbar_droite.jpg" alt="Logo Zivisu" className="navbar-logo-right" />
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <div className="navbar-offset">
