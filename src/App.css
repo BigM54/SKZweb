@@ -1,3 +1,32 @@
+/* Footer global */
+.site-footer {
+  width: 100vw;
+  background: #003652;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 1.2rem 0 0.7rem 0;
+  text-align: center;
+  margin: 0;
+  margin-top: 2rem;
+}
+.site-footer a {
+  color: #fff;
+  text-decoration: underline;
+  margin: 0 0.5rem;
+  font-size: 1.05em;
+  transition: color 0.2s;
+}
+.site-footer a:hover {
+  color: #1c86ee;
+}
+.site-footer .footer-socials {
+  margin-bottom: 0.5rem;
+}
+.site-footer .footer-socials a {
+  font-size: 1.3em;
+  margin: 0 0.4em;
+  vertical-align: middle;
+}
 /* Décale les onglets de la navbar desktop vers la droite pour laisser la place au logo */
 .navbar-offset {
   margin-left: 260px;
@@ -13,11 +42,17 @@ html, body, #root {
 }
 
 .custom-navbar {
-  width: 100vw;
+  width: auto;
   background: url('/navbar.jpg') no-repeat center center/cover !important;
-  min-height: 520px;
   border: none !important;
   box-shadow: none !important;
+  min-height: 140px;
+  height: auto;
+  max-height: 140px;
+  display: flex;
+  align-items: stretch;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* Rendre les enfants transparents */
@@ -26,6 +61,8 @@ html, body, #root {
 .custom-navbar .navbar-nav,
 .custom-navbar .nav-link,
 .custom-navbar .navbar-brand {
+  z-index: 1050;
+  position: relative;
   border: none !important;
   box-shadow: none !important;
 }
@@ -34,6 +71,8 @@ html, body, #root {
 html, body, #root {
   margin: 0;
   padding: 0;
+  z-index: 2000 !important;
+  position: absolute !important;
   width: 100vw;
   min-width
   : 100vw;
@@ -104,7 +143,8 @@ main, .container-fluid {
   background: transparent !important;
 }
 #root {
-  margin: 0 auto;
+  margin: 0 !important;
+  padding: 0 !important;
   text-align: center;
   display: flex;
   height: 100%;
@@ -420,12 +460,13 @@ header {
   padding: 0.25rem 0.75rem;
   transition: color 0.2s;
 }
-/* Augmentation de la hauteur globale de la navbar */
+/* La navbar s'adapte à la hauteur de son fond */
 .navbar {
-  min-height: 220px;
-  height: 220px;
+  height: 100%;
   --bs-navbar-padding-y: 0.1rem;
   background-color: transparent !important;
+  display: flex;
+  align-items: stretch;
 }
 .navbar .dropdown-menu .dropdown-item:hover,
 .navbar .dropdown-menu .dropdown-item:focus {

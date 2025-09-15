@@ -3,6 +3,7 @@ import { Container, Image} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'; // pour les animations
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import { Routes, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -54,10 +55,10 @@ function App() {
         {/* La navbar horizontale en haut */}
         <Navbar />
 
-        {/* Le contenu principal en dessous */}
-        <div style={{ flex: 1 }}>
-          <main className="p-0 m-0 w-100">
-            <Container fluid className="p-0 m-0 w-100">
+        {/* Le contenu principal en dessous, sans Container ni marges/paddings */}
+        <div style={{ flex: 1, margin: 0, padding: 0, width: '100vw', minWidth: '100vw', maxWidth: '100vw' }}>
+          <main style={{ margin: 0, padding: 0, width: '100vw', minWidth: '100vw', maxWidth: '100vw' }}>
+            <Container fluid style={{ padding: 0, margin: 0 }}>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -77,7 +78,9 @@ function App() {
               </Routes>
             </Container>
           </main>
+
         </div>
+        <Footer />
       </div>
     </Suspense>
   );

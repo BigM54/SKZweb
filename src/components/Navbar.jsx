@@ -367,18 +367,16 @@ export default function NavBarComponent() {
           style={{ position: 'sticky', top: 0, zIndex: 1040 }}
           className="custom-navbar"
         >
-          <Container fluid>
-            {/* Logo à gauche, si besoin décommenter la ligne suivante et adapter le src */}
-            {/* <Navbar.Brand href="/">
-              <img src="/skiozarts_logo.png" alt="Logo" style={{ height: '40px', marginRight: '1.5rem' }} />
-            </Navbar.Brand> */}
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <div className="navbar-offset">
-                {renderNavLinksDesktop("d-flex flex-row gap-2 align-items-center")}
-              </div>
-            </Navbar.Collapse>
-          </Container>
+          {/* Logo à gauche, si besoin décommenter la ligne suivante et adapter le src */}
+          {/* <Navbar.Brand href="/">
+            <img src="/skiozarts_logo.png" alt="Logo" style={{ height: '40px', marginRight: '1.5rem' }} />
+          </Navbar.Brand> */}
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <div className="navbar-offset">
+              {renderNavLinksDesktop("d-flex flex-row gap-2 align-items-center")}
+            </div>
+          </Navbar.Collapse>
         </Navbar>
       )}
     </>
