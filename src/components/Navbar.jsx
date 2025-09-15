@@ -367,10 +367,8 @@ export default function NavBarComponent() {
           style={{ position: 'sticky', top: 0, zIndex: 1040 }}
           className="custom-navbar"
         >
-          {/* Logo à gauche, si besoin décommenter la ligne suivante et adapter le src */}
-          {/* <Navbar.Brand href="/">
-            <img src="/skiozarts_logo.png" alt="Logo" style={{ height: '40px', marginRight: '1.5rem' }} />
-          </Navbar.Brand> */}
+          {/* Logo gauche */}
+          <img src="/skz_logo.png" alt="Logo Skioz'Arts" className="navbar-logo-left" />
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <div className="navbar-offset">
