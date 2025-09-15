@@ -51,14 +51,7 @@ function App() {
   return (
     <Suspense fallback={null}>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Bannière tout en haut */}
-        <img
-          src="/banniereV2.png"
-          alt="Bannière"
-          style={{ width: '100%', height: 'auto', display: 'block' }}
-        />
-
-        {/* La navbar horizontale en dessous de la bannière */}
+        {/* La navbar horizontale en haut */}
         <Navbar />
 
         {/* Le contenu principal en dessous */}

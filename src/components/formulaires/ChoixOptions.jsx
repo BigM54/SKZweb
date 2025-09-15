@@ -183,7 +183,7 @@ export default function ChoixOptions() {
           .map(([cle, val]) => (
             <div key={cle}><strong>{cle}</strong>: {val}</div>
           ))}
-        <Button variant="primary" className="mt-3" onClick={() => setModeAffichage(false)}>
+        <Button variant="primary" className="mt-3" onClick={() => setModeAffichage(false)} disabled={joursRestants === 0}>
           Modifier mes options
         </Button>
       </>

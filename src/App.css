@@ -1,3 +1,56 @@
+/* Décale les onglets de la navbar desktop vers la droite pour laisser la place au logo */
+.navbar-offset {
+  margin-left: 260px;
+}
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: none;
+}
+
+.custom-navbar {
+  width: 100vw;
+  background: url('/navbar.jpg') no-repeat center center/cover !important;
+  min-height: 520px;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Rendre les enfants transparents */
+.custom-navbar .container-fluid,
+.custom-navbar .navbar-collapse,
+.custom-navbar .navbar-nav,
+.custom-navbar .nav-link,
+.custom-navbar .navbar-brand {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-width
+  : 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: none;
+} 
+
+main, .container-fluid {
+  background: none !important;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
 /* Affiche les chiffres à la verticale sur mobile */
 @media (max-width: 767px) {
   .stats-row-responsive {
@@ -76,7 +129,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white; /* facultatif: fond gris clair autour */
+  background: transparent !important;
+}
+
+header {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 
@@ -362,11 +420,12 @@
   padding: 0.25rem 0.75rem;
   transition: color 0.2s;
 }
-/* Réduction de la hauteur globale de la navbar */
+/* Augmentation de la hauteur globale de la navbar */
 .navbar {
-  min-height: 58px;
-  height: 58px;
+  min-height: 220px;
+  height: 220px;
   --bs-navbar-padding-y: 0.1rem;
+  background-color: transparent !important;
 }
 .navbar .dropdown-menu .dropdown-item:hover,
 .navbar .dropdown-menu .dropdown-item:focus {

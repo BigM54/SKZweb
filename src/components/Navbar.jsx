@@ -185,16 +185,11 @@ export default function NavBarComponent() {
           {isAdmin && (
             <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
           )}
+          <NavDropdown.Divider />
+          <NavDropdown.Item onClick={handleLogout} style={{fontWeight: 600 }}>
+            Se déconnecter
+          </NavDropdown.Item>
         </NavDropdown>
-      )}
-      {isSignedIn && (
-        <Button
-          variant="outline-danger"
-          onClick={handleLogout}
-          className="ms-2"
-        >
-          Se déconnecter
-        </Button>
       )}
     </Nav>
   );
@@ -246,8 +241,9 @@ export default function NavBarComponent() {
               {isSignedIn && (
                 <div className="flex-column mt-4 d-flex">
                   <Button
-                    variant="outline-danger"
+                    variant="link"
                     onClick={handleLogout}
+                    style={{ color: '#dc3545', fontWeight: 600, textDecoration: 'none', fontSize: '1.1rem' }}
                   >
                     Se déconnecter
                   </Button>
@@ -368,14 +364,19 @@ export default function NavBarComponent() {
       {!isMobile && (
         <Navbar
           expand="lg"
-          style={{ backgroundColor: '#0d1c31', position: 'sticky', top: 0, zIndex: 1040}}
-          variant="dark"
-          className="px-4"
+          style={{ position: 'sticky', top: 0, zIndex: 1040 }}
+          className="custom-navbar"
         >
           <Container fluid>
+            {/* Logo à gauche, si besoin décommenter la ligne suivante et adapter le src */}
+            {/* <Navbar.Brand href="/">
+              <img src="/skiozarts_logo.png" alt="Logo" style={{ height: '40px', marginRight: '1.5rem' }} />
+            </Navbar.Brand> */}
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
-              {renderNavLinksDesktop("d-flex flex-row gap-2 align-items-center")}
+            <Navbar.Collapse id="basic-navbar-nav">
+              <div className="navbar-offset">
+                {renderNavLinksDesktop("d-flex flex-row gap-2 align-items-center")}
+              </div>
             </Navbar.Collapse>
           </Container>
         </Navbar>
