@@ -3,7 +3,7 @@ import AdminUtilisateurs from '../components/admin/AdminUtilisateurs';
 import AdminPoles from '../components/admin/AdminPoles';
 import QrScanner from '../components/admin/QrScanner';
 import AdminPaiements from '../components/admin/AdminPaiements';
-import AdminShotgunDates from '../components/admin/AdminShotgunDates';
+import AdminGestionWeb from '../components/admin/AdminGestionWeb';
 
 export default function AdminPanel() {
   return (
@@ -22,8 +22,8 @@ export default function AdminPanel() {
           <Tab eventKey="scan" title="📷 Qr Scanner">
             <QrScanner />
         </Tab>
-          <Tab eventKey="shotgun" title="📅 Dates Shotgun">
-            <AdminShotgunDates />
+          <Tab eventKey="gestion" title="💻 Gestion Web">
+            <AdminGestionWeb />
         </Tab>
       </Tabs>
     </div>

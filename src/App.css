@@ -73,6 +73,7 @@ html, body, #root {
   top: 50%;
   transform: translateY(-50%);
   height: 90px;
+  z-index: 2001;
 }
 
 /* Logo à droite de la navbar */

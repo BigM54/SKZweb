@@ -367,8 +367,10 @@ export default function NavBarComponent() {
           style={{ position: 'sticky', top: 0, zIndex: 1040 }}
           className="custom-navbar"
         >
-          {/* Logo gauche */}
-          <img src="/skz_logo.png" alt="Logo Skioz'Arts" className="navbar-logo-left" />
+          {/* Logo gauche cliquable dans Navbar.Brand */}
+          <Navbar.Brand as={Link} to="/" className="p-0 m-0">
+            <img src="/skz_logo.png" alt="Logo Skioz'Arts" className="navbar-logo-left" style={{ cursor: 'pointer' }} />
+          </Navbar.Brand>
           {/* Logo droite */}
           <img src="/navbar_droite.jpg" alt="Logo Zivisu" className="navbar-logo-right" />
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
