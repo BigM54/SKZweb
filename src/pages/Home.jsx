@@ -37,7 +37,7 @@ function CountdownBanner() {
       maxWidth: '100vw',
       marginLeft: 'calc(-50vw + 50%)',
       marginRight: 'calc(-50vw + 50%)',
-      minHeight: '160px',
+      minHeight: '520px', // hauteur augmentée
       backgroundImage: 'url("/laPlagne2.jpg")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -55,10 +55,22 @@ function CountdownBanner() {
       }}>
         <div style={{ fontSize: '1.2rem', fontWeight: 600, marginBottom: '0.5rem' }}>Début de l'évènement dans :</div>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem', fontSize: '1.1rem', flexWrap: 'wrap' }}>
-          <div><AnimatedNumber value={timeLeft.days} /> <span style={{ fontSize: '1rem' }}>jours</span></div>
-          <div><AnimatedNumber value={timeLeft.hours} /> <span style={{ fontSize: '1rem' }}>heures</span></div>
-          <div><AnimatedNumber value={timeLeft.minutes} /> <span style={{ fontSize: '1rem' }}>minutes</span></div>
-          <div><AnimatedNumber value={timeLeft.seconds} /> <span style={{ fontSize: '1rem' }}>secondes</span></div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <AnimatedNumber value={timeLeft.days} />
+            <span style={{ fontSize: '1rem', marginTop: '0.3rem' }}>jours</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <AnimatedNumber value={timeLeft.hours} />
+            <span style={{ fontSize: '1rem', marginTop: '0.3rem' }}>heures</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <AnimatedNumber value={timeLeft.minutes} />
+            <span style={{ fontSize: '1rem', marginTop: '0.3rem' }}>minutes</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <AnimatedNumber value={timeLeft.seconds} />
+            <span style={{ fontSize: '1rem', marginTop: '0.3rem' }}>secondes</span>
+          </div>
         </div>
       </div>
     </div>
@@ -87,7 +99,7 @@ export default function Home() {
         style={{
           backgroundImage: 'url("/laPlagne.jpg")',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'top center', // haut bien visible
           height: 'calc(100vh - 80px)',
           display: 'flex',
           alignItems: 'center',
@@ -133,16 +145,10 @@ export default function Home() {
           Ils nous soutiennent
         </h2>
       </Container>
-      {/* Iframe Instagram feed */}
-      <div style={{ width: '100vw', maxWidth: '100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', background: '#fff', padding: '2rem 0', textAlign: 'center' }}>
-        <h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>Suivez-nous sur Instagram</h2>
-        <iframe
-          src="https://snapwidget.com/embed/1053242"
-          title="Instagram Feed"
-          style={{ width: '100%', height: '600px', border: 'none', overflow: 'hidden' }}
-          allowtransparency="true"
-          allow="encrypted-media"
-        ></iframe>
+      {/* Instagram feed via iframe SociableKit */}
+      <div style={{ width: '100vw', maxWidth: '100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', background: '#fff', padding: '0', textAlign: 'center' }}>
+        <h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', margin: '2rem 0 1rem 0' }}>Suivez-nous sur Instagram</h2>
+        <iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/25599978' frameborder='0' width='100%' height='1000'></iframe>
       </div>
     </>
   );
