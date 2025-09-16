@@ -141,7 +141,7 @@ main, .container-fluid {
 
 /* Réduit la taille de police dans l'espace chiffres */
 .stats-section {
-  font-size: 0.95rem !important;
+  font-size: 1.3rem !important;
 }
 .stats-number {
   font-size: 1.3rem !important;
