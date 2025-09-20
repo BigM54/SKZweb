@@ -148,6 +148,42 @@ export default function Home() {
           Ils nous soutiennent
         </h2>
       </Container>
+      {/* Section Nos engagements */}
+      <div style={{
+        width: '100vw',
+        maxWidth: '100vw',
+        marginLeft: 'calc(-50vw + 50%)',
+        marginRight: 'calc(-50vw + 50%)',
+        background: '#f4f8fb',
+        padding: '3rem 1rem', // marges latérales
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <h2 style={{ fontWeight: 'bold', fontSize: '1.5rem', marginBottom: '2.5rem', color: '#003652' }}>Nos engagements</h2>
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '2rem',
+        }}>
+          <EngagementAnimatedSide
+            imgSrc="/reeve.png"
+            imgAlt="Label Reeve"
+            direction="left"
+            title=""
+            text="Cette année plus que jamais, SKZ place l’éco-responsabilité et l’inclusion au cœur de l’organisation de son séjour. Transport raisonné, réduction des déchets, utilisation de matériel réutilisable, valorisation de partenaires locaux… chaque action s’inscrit dans une démarche globale de respect de l’environnement. Pour donner encore plus de force à cet engagement, SKZ a choisi d’entamer une démarche de labellisation « Événement Éco-Engagé », proposée par le Reeve."
+          />
+          <EngagementAnimatedSide
+            imgSrc="/vss.png"
+            imgAlt="VSS"
+            direction="right"
+            title=""
+            text="Nous nous engageons pour la sécurité et la prévention des violences sexuelles et sexistes, avec des dispositifs d'accompagnement et de sensibilisation. Aucun comportement déplacé ne sera toléré : toute attitude inappropriée entraînera une exclusion immédiate de l'évènement."
+          />
+        </div>
+      </div>
       {/* Instagram feed via iframe SociableKit */}
       <div style={{ width: '100vw', maxWidth: '100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', background: '#fff', padding: '0', textAlign: 'center' }}>
         <h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', margin: '2rem 0 1rem 0' }}>Suivez-nous sur Instagram</h2>
@@ -228,5 +264,48 @@ function AnimatedStatsNumbers({ stats }) {
         })}
       </Row>
     </Container>
+  );
+}
+
+// Composant animé pour chaque engagement
+function EngagementAnimatedSide({ imgSrc, imgAlt, direction, title, text }) {
+  const ref = useRef();
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const observer = new window.IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <div
+      ref={ref}
+      style={{
+        display: 'flex',
+        flexDirection: direction === 'left' ? 'row' : 'row-reverse',
+        alignItems: 'center',
+        gap: '1.5rem',
+        minWidth: 280,
+        opacity: visible ? 1 : 0,
+        transform: visible
+          ? 'translateX(0)'
+          : direction === 'left'
+          ? 'translateX(-80px)'
+          : 'translateX(80px)',
+        transition: 'all 0.7s cubic-bezier(.77,0,.18,1)',
+      }}
+    >
+      <img
+        src={imgSrc}
+        alt={imgAlt}
+        style={{ width: 580, height: 580, objectFit: 'contain', borderRadius: 18, boxShadow: '0 2px 18px #00365222' }}
+      />
+      <div>
+        {/* Pas de titre individuel */}
+        <div style={{ fontSize: '0.98rem', color: '#003652' }}>{text}</div>
+      </div>
+    </div>
   );
 }
