@@ -300,7 +300,7 @@ function EngagementAnimatedSide({ imgSrc, imgAlt, direction, title, text }) {
       <img
         src={imgSrc}
         alt={imgAlt}
-        style={{ width: 580, height: 580, objectFit: 'contain', borderRadius: 18, boxShadow: '0 2px 18px #00365222' }}
+        style={{ width: 350, height: 350, objectFit: 'contain', borderRadius: 18, boxShadow: '0 2px 18px #00365222' }}
       />
       <div>
         {/* Pas de titre individuel */}
