@@ -187,7 +187,7 @@ export default function Home() {
       {/* Instagram feed via iframe SociableKit */}
       <div style={{ width: '100vw', maxWidth: '100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', background: '#fff', padding: '0', textAlign: 'center' }}>
         <h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', margin: '2rem 0 1rem 0' }}>Suivez-nous sur Instagram</h2>
-        <iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/25599978' frameborder='0' width='100%' height='1000'></iframe>
+        <iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/25599978' frameborder='0' width='100%' height='820'></iframe>
       </div>
     </>
   );
