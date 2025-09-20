@@ -31,15 +31,30 @@ function CountdownBanner() {
     return <span style={{ fontWeight: 700, fontSize: '2rem', transition: 'color 0.2s' }}>{display}</span>;
   }
 
+  // Détection mobile
+  const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+
   return (
-    <div className="parallax" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{
+      width: '100vw',
+      maxWidth: '100vw',
+      marginLeft: 'calc(-50vw + 50%)',
+      marginRight: 'calc(-50vw + 50%)',
+      minHeight: '520px', // hauteur augmentée
+      backgroundImage: 'url("/laPlagne2.jpg")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: isMobile ? 'scroll' : 'fixed',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
       <div style={{
         color: '#fff',
         textAlign: 'center',
         padding: '1.2rem 0',
         borderRadius: '0',
         width: '100%',
-        zIndex: 2,
       }}>
         <div style={{ fontSize: '1.2rem', fontWeight: 600, marginBottom: '0.5rem' }}>Début de l'évènement dans :</div>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem', fontSize: '1.1rem', flexWrap: 'wrap' }}>
@@ -80,27 +95,6 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Ajout du style global pour la parallax
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .parallax {
-        background-image: url('/laPlagne2.jpg');
-        min-height: 220px;
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        width: 100vw;
-        max-width: 100vw;
-        margin-left: calc(-50vw + 50%);
-        margin-right: calc(-50vw + 50%);
-      }
-    `;
-    document.head.appendChild(style);
-    return () => { document.head.removeChild(style); };
-  }, []);
-
   return (
     <>
       {/* Image responsive et effet zoom au scroll */}
@@ -129,8 +123,6 @@ export default function Home() {
       </div>
       {/* Bandeau compte à rebours avant l'évènement */}
       <CountdownBanner />
-      {/* Bandeau parallax derrière le compte à rebours */}
-      <div className="parallax" />
       {/* Section avec image de fond + partenaires */}
       <Container
         fluid
