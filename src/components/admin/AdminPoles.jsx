@@ -70,7 +70,13 @@ export default function AdminPoles() {
       g.materiel_location[opt.materiel_location] = (g.materiel_location[opt.materiel_location] || 0) + 1;
       g.assurance[opt.assurance] = (g.assurance[opt.assurance] || 0) + 1;
       g.bus[opt.bus] = (g.bus[opt.bus] || 0) + 1;
-      g.type_forfait[opt.type_forfait] = (g.type_forfait[opt.type_forfait] || 0) + 1
+      g.type_forfait[opt.type_forfait] = (g.type_forfait[opt.type_forfait] || 0) + 1;
+      // taille pull
+      g.taille_pull = g.taille_pull || {};
+      g.taille_pull[opt.taille_pull] = (g.taille_pull[opt.taille_pull] || 0) + 1;
+      // régime
+      g.regime = g.regime || {};
+      g.regime[opt.regime] = (g.regime[opt.regime] || 0) + 1;
     });
 
     // Fetch tous les paiements pour la somme totale
@@ -125,6 +131,18 @@ export default function AdminPoles() {
                   ⛑️Casque: {data.casque} 
                 </td>
               </tr>
+              <tr>
+                <td>Pull</td>
+                <td>
+                  {Object.entries(data.taille_pull || {}).map(([k,v]) => `${k} (${v})`).join(', ')}
+                </td>
+              </tr>
+              <tr>
+                <td>Régime alimentaire</td>
+                <td>
+                  {Object.entries(data.regime || {}).map(([k,v]) => `${k} (${v})`).join(', ')}
+                </td>
+              </tr>
                 <tr>
                 <td>Forfait et Assurance</td>
                 <td> 
@@ -139,11 +157,7 @@ export default function AdminPoles() {
               <tr>
                 <td>Bus</td>
                 <td>
-                    <pre>
-                        🚌
-                        {Object.entries(data.bus).map(([k,v]) => `${k} (${v})`)
-                        .join('\n')}
-                    </pre>
+                  🚌 {Object.entries(data.bus).map(([k,v]) => `${k} (${v})`).join(' | ')}
                 </td>
               </tr>
               <tr>
