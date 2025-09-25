@@ -199,7 +199,6 @@ export default function NavBarComponent() {
       {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
       {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && (
         <Button
-          variant="light"
           onClick={() => setSidebarOpen(true)}
           style={{
             position: 'sticky',
@@ -372,7 +371,7 @@ export default function NavBarComponent() {
             <img src="/skz_logo.png" alt="Logo Skioz'Arts" className="navbar-logo-left" style={{ cursor: 'pointer' }} />
           </Navbar.Brand>
           {/* Logo droite */}
-          <img src="/navbar_droite.jpg" alt="Logo Zivisu" className="navbar-logo-right" />
+          <img src="/navbar_droite.png" alt="Logo Zivisu" className="navbar-logo-right" />
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <div className="navbar-offset">

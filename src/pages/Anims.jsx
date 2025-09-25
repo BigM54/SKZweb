@@ -4,14 +4,15 @@ import { Container, Row, Col, Card, Badge, Form } from 'react-bootstrap';
 export default function Animations() {
   const [filters, setFilters] = useState({
     type: { ski: true, snowboard: true, autres: true },
-    difficulte: { debutant: true, intermediaire: true, avance: true, expert: true, initiation: true }
+    difficulte: { debutant: true, intermediaire: true, avance: true }
   });
 
   const animations = [
+    // Cours de ski
     {
       id: 1,
       title: "Cours de Ski - Débutant",
-      description: "Apprends les bases du ski avec nos moniteurs qualifiés. Parfait pour ceux qui n'ont jamais chaussé de skis !",
+      description: "Apprends les bases du ski avec nos moniteurs qualifiés.",
       niveau: "Débutant",
       type: "ski",
       typeIcon: "⛷️",
@@ -23,7 +24,7 @@ export default function Animations() {
     {
       id: 2,
       title: "Cours de Ski - Intermédiaire",
-      description: "Perfectionne ta technique et découvre de nouvelles pistes avec plus de confiance.",
+      description: "Perfectionne ta technique et découvre de nouvelles pistes.",
       niveau: "Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
@@ -44,10 +45,11 @@ export default function Animations() {
       image: "/baniere-lowres.jpeg",
       color: "danger"
     },
+    // Cours de snowboard
     {
       id: 4,
       title: "Cours de Snowboard - Débutant",
-      description: "Découvre l'univers du snowboard avec nos instructeurs passionnés. Premier contact avec la planche garantie fun !",
+      description: "Découvre l'univers du snowboard avec nos instructeurs passionnés.",
       niveau: "Débutant",
       type: "snowboard",
       typeIcon: "🏂",
@@ -59,7 +61,7 @@ export default function Animations() {
     {
       id: 5,
       title: "Cours de Snowboard - Intermédiaire",
-      description: "Développe ton style et apprends de nouveaux tricks sur les pistes bleues et rouges.",
+      description: "Développe ton style et apprends de nouveaux tricks.",
       niveau: "Intermédiaire",
       type: "snowboard",
       typeIcon: "🏂",
@@ -80,81 +82,248 @@ export default function Animations() {
       image: "/baniere-lowres.jpeg",
       color: "danger"
     },
+    // Animations demandées
     {
       id: 7,
-      title: "Initiation Freestyle",
-      description: "Découvre l'univers du freestyle : sauts, rails, boxes. Apprends tes premiers tricks en toute sécurité !",
-      niveau: "Initiation",
-      type: "autres",
-      typeIcon: "🎢",
-      difficulty: "initiation",
-      category: "cours",
-      image: "/baniere-lowres.jpeg",
-      color: "info"
-    },
-    {
-      id: 8,
-      title: "Compétition Freestyle",
-      description: "Pour les riders expérimentés qui veulent repousser leurs limites et participer aux compétitions.",
-      niveau: "Expert",
-      type: "autres",
-      typeIcon: "🏆",
-      difficulty: "expert",
-      category: "competition",
-      image: "/baniere-lowres.jpeg",
-      color: "dark"
-    },
-    {
-      id: 9,
       title: "Slalom",
-      description: "Apprends la précision et la vitesse avec nos sessions de slalom. Technique et adrénaline garanties !",
-      niveau: "Intermédiaire",
+      description: "Session de slalom pour les skieurs avancés.",
+      niveau: "Avancé",
       type: "ski",
       typeIcon: "⛷️",
-      difficulty: "intermediaire",
+      difficulty: "avance",
       category: "competition",
       image: "/baniere-lowres.jpeg",
       color: "primary"
     },
     {
+      id: 8,
+      title: "Derby",
+      description: "Course fun en groupe, ski et snow, tous niveaux.",
+      niveau: "Tout niveau",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "tout",
+      category: "competition",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 9,
+      title: "Compétition de débutant",
+      description: "Compétition accessible aux débutants, ski et snow.",
+      niveau: "Débutant",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "debutant",
+      category: "competition",
+      image: "/baniere-lowres.jpeg",
+      color: "success"
+    },
+    {
       id: 10,
-      title: "Bordercross",
-      description: "Course en groupe sur un parcours avec obstacles, virages relevés et sauts. Pure adrénaline !",
+      title: "Boarder Cross",
+      description: "Parcours avec obstacles, ski et snow, avancé.",
       niveau: "Avancé",
-      type: "snowboard",
-      typeIcon: "🏂",
+      type: "ski",
+      typeIcon: "⛷️",
       difficulty: "avance",
       category: "competition",
       image: "/baniere-lowres.jpeg",
       color: "danger"
+    },
+    {
+      id: 11,
+      title: "Olympiades ESF",
+      description: "Jeux et défis organisés par l'ESF, tous niveaux.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🎉",
+      difficulty: "tout",
+      category: "defi",
+      image: "/baniere-lowres.jpeg",
+      color: "warning"
+    },
+    {
+      id: 12,
+      title: "Biathlon",
+      description: "Combine ski et tir, pour les avancés.",
+      niveau: "Avancé",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "avance",
+      category: "defi",
+      image: "/baniere-lowres.jpeg",
+      color: "danger"
+    },
+    {
+      id: 13,
+      title: "Compétition freestyle",
+      description: "Pour les riders expérimentés, ski et snow.",
+      niveau: "Avancé",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "avance",
+      category: "competition",
+      image: "/baniere-lowres.jpeg",
+      color: "primary"
+    },
+    {
+      id: 14,
+      title: "Jeu de piste",
+      description: "Parcours découverte, autre, sans niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🗺️",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 15,
+      title: "First track",
+      description: "Premiers sur les pistes, ski et snow, tout niveau.",
+      niveau: "Tout niveau",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 16,
+      title: "Last track",
+      description: "Derniers sur les pistes, ski et snow, tout niveau.",
+      niveau: "Tout niveau",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 17,
+      title: "ARVA Gourmand",
+      description: "Recherche de balises gourmande, ski et snow, avancé.",
+      niveau: "Avancé",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "avance",
+      category: "defi",
+      image: "/baniere-lowres.jpeg",
+      color: "danger"
+    },
+    {
+      id: 18,
+      title: "Descente au flambeau",
+      description: "Descente nocturne, ski, tout niveau.",
+      niveau: "Tout niveau",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 19,
+      title: "Visite remontée mécanique",
+      description: "Découverte technique, autre, tout niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🚡",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 20,
+      title: "Visite usine à neige",
+      description: "Découverte de la fabrication de neige, autre, tout niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "❄️",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 21,
+      title: "Visite fromagerie",
+      description: "Découverte de la fabrication du fromage, autre, tout niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🧀",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 22,
+      title: "Découverte de la station",
+      description: "Visite guidée de la station, autre, tout niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🏔️",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 23,
+      title: "Tour en dameuse",
+      description: "Balade en dameuse, autre, tout niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🚜",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
+    },
+    {
+      id: 24,
+      title: "Bobsleigh",
+      description: "Descente en bobsleigh, autre, tout niveau.",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🛷",
+      difficulty: "tout",
+      category: "decouverte",
+      image: "/baniere-lowres.jpeg",
+      color: "info"
     }
   ];
 
-  const handleFilterChange = (filterType, filterKey) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: {
-        ...prev[filterType],
-        [filterKey]: !prev[filterType][filterKey]
-      }
-    }));
-  };
-
+  // Adapter le filtrage pour inclure "tout niveau" dans toutes les difficultés cochées
   const filteredAnimations = animations.filter(anim => {
+    // Si la difficulté de l'anim est "tout", elle passe toujours
+    if (anim.difficulty === "tout") return true;
     return filters.type[anim.type] && filters.difficulte[anim.difficulty];
   });
 
   const getCategoryIcon = (category) => {
-    return category === 'cours' ? '🎓' : '🏆';
+    switch (category) {
+      case 'cours': return '🎓';
+      case 'competition': return '🏆';
+      case 'defi': return '🎯';
+      case 'decouverte': return '🗺️';
+      default: return '❄️';
+    }
   };
 
   const getDifficultyIcon = (difficulty) => {
     const icons = {
       debutant: '🟢',
-      intermediaire: '🟡', 
+      intermediaire: '🟡',
       avance: '🔴',
-      expert: '🟣',
-      initiation: '🔵'
+      tout: '⚪'
     };
     return icons[difficulty] || '⚪';
   };
@@ -164,7 +333,7 @@ export default function Animations() {
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold text-primary mb-3">Les Anim's</h1>
         <p className="lead text-muted">
-          Découvre toutes les activités proposées pendant le séjour Skioz'Arts 2026 !
+          Découvre toutes les anim's pistes proposées pendant le séjour Skioz'Arts 2026 !
           <br />
           Des cours pour tous les niveaux aux activités freestyle et compétitions.
         </p>
@@ -224,20 +393,6 @@ export default function Animations() {
                 checked={filters.difficulte.avance}
                 onChange={() => handleFilterChange('difficulte', 'avance')}
               />
-              <Form.Check
-                type="checkbox"
-                id="expert-filter"
-                label="🟣 Expert"
-                checked={filters.difficulte.expert}
-                onChange={() => handleFilterChange('difficulte', 'expert')}
-              />
-              <Form.Check
-                type="checkbox"
-                id="initiation-filter"
-                label="🔵 Initiation"
-                checked={filters.difficulte.initiation}
-                onChange={() => handleFilterChange('difficulte', 'initiation')}
-              />
             </div>
           </Col>
         </Row>
@@ -245,20 +400,20 @@ export default function Animations() {
 
       <Row className="justify-content-center g-4 w-100">
         {filteredAnimations.map((anim) => (
-          <Col key={anim.id} xs={12} md={8} lg={6} xl={4} className="d-flex justify-content-center" style={{ minWidth: 520 }}>
+          <Col key={anim.id} xs={12} md={8} lg={6} xl={4} className="d-flex justify-content-center" style={{ minWidth: 320 }}>
             <Card className="shadow-sm border-0 animation-card">
               <div style={{ height: '200px', overflow: 'hidden' }}>
-                <Card.Img 
-                  variant="top" 
-                  src={anim.image} 
+                <Card.Img
+                  variant="top"
+                  src={anim.image}
                   alt={anim.title}
-                  style={{ 
-                    height: '100%', 
+                  style={{
+                    height: '100%',
                     objectFit: 'cover',
                     transition: 'transform 0.3s ease'
                   }}
-                  onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                  onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                  onMouseOver={e => e.target.style.transform = 'scale(1.05)'}
+                  onMouseOut={e => e.target.style.transform = 'scale(1)'}
                 />
               </div>
               <Card.Body className="d-flex flex-column">
@@ -287,9 +442,19 @@ export default function Animations() {
 
       {filteredAnimations.length === 0 && (
         <div className="text-center mt-4">
-          <p className="text-muted">Aucune animation ne correspond aux filtres sélectionnés.</p>
+          <p className="text-muted">Aucune anim's ne correspond aux filtres sélectionnés.</p>
         </div>
       )}
     </Container>
   );
+
+  function handleFilterChange(filterType, filterKey) {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: {
+        ...prev[filterType],
+        [filterKey]: !prev[filterType][filterKey]
+      }
+    }));
+  }
 }
