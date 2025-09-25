@@ -3,6 +3,19 @@ import { useEffect, useState } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
+function formatDateLong(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  const jours = [
+    "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"
+  ];
+  const mois = [
+    "janvier", "février", "mars", "avril", "mai", "juin",
+    "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+  ];
+  return `<b>${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()} à ${d.getHours()}h${d.getMinutes().toString().padStart(2, '0')}</b>`;
+}
+
 export default function Paiement3() {
   const { user, isLoaded } = useUser();
   const [hasPaid, setHasPaid] = useState(null); 
@@ -16,25 +29,33 @@ export default function Paiement3() {
   const [hasPaid1, setHasPaid1] = useState(null); // Paiement 1 status
   const [hasPaid2, setHasPaid2] = useState(null); // Paiement 2 status
   const { getToken } = useAuth();
+  const [datePaiement3, setDatePaiement3] = useState(null);
+  const [paiementOuvert, setPaiementOuvert] = useState(true);
 
-  useEffect(() => {
-    const checkPayment = async () => {
-      if (!user) return;
 
-      const token = await getToken({ template: 'supabase' });
-
-      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+  const getSupabase = async () => {
+    const token = await getToken({ template: 'supabase' });
+    return createClient(
+      'https://vwwnyxyglihmsabvbmgs.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw',
+      {
         global: {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
-      });
+      }
+    );
+  };
+
+  useEffect(() => {
+    const checkPayment = async () => {
 
       if (!isLoaded || !user?.primaryEmailAddress?.emailAddress) return;
 
       const email = user.primaryEmailAddress.emailAddress;
 
+      const supabase = await getSupabase();
       const { data, error } = await supabase
         .from('Paiements')
         .select('paiement3Recu,paiement3Montant,Fraude,paiement1Statut,paiement2Statut')
@@ -53,6 +74,20 @@ export default function Paiement3() {
 
     };
 
+    const fetchDatePaiement3 = async () => {
+      const supabase = await getSupabase();
+      const { data, error } = await supabase
+        .from('datePaiement')
+        .select('Paiement3')
+        .eq('id', 1)
+        .single();
+      if (!error && data?.Paiement3) {
+        setDatePaiement3(data.Paiement3);
+        setPaiementOuvert(new Date() > new Date(data.Paiement3));
+      }
+    };
+    
+    fetchDatePaiement3();
     checkPayment();
   }, [isLoaded, user]);
 
@@ -98,6 +133,20 @@ export default function Paiement3() {
         <Card.Body>
           <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Spinner animation="border" />
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (!paiementOuvert) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
+          <Alert variant="info">
+            Le paiement n'est pas encore ouvert.<br />
+            Ouverture prévue le <span dangerouslySetInnerHTML={{__html: datePaiement3 ? formatDateLong(datePaiement3) : '...'}} /> <br />
+          </Alert>
         </Card.Body>
       </Card>
     );

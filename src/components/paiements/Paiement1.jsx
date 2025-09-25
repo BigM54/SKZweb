@@ -3,6 +3,20 @@ import { useEffect, useState } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
+function formatDateLong(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  const jours = [
+    "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"
+  ];
+  const mois = [
+    "janvier", "février", "mars", "avril", "mai", "juin",
+    "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+  ];
+  return `<b>${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()} à ${d.getHours()}h${d.getMinutes().toString().padStart(2, '0')}</b>`;
+}
+
+
 export default function Paiement1() {
   const { user, isLoaded } = useUser();
   const [hasPaid, setHasPaid] = useState(null); 
@@ -11,25 +25,32 @@ export default function Paiement1() {
   const [step, setStep] = useState(0); // 0: avertissement, 1: paiement
   const [canConfirm, setCanConfirm] = useState(false);
   const { getToken } = useAuth();
+  const [datePaiement1, setDatePaiement1] = useState(null);
+  const [paiementOuvert, setPaiementOuvert] = useState(true);
 
-  useEffect(() => {
-    const checkPayment = async () => {
-      if (!user) return;
-
-      const token = await getToken({ template: 'supabase' });
-
-      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+  const getSupabase = async () => {
+    const token = await getToken({ template: 'supabase' });
+    return createClient(
+      'https://vwwnyxyglihmsabvbmgs.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw',
+      {
         global: {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
-      });
+      }
+    );
+  };
+
+  useEffect(() => {
+    const checkPayment = async () => {
 
       if (!isLoaded || !user?.primaryEmailAddress?.emailAddress) return;
 
       const email = user.primaryEmailAddress.emailAddress;
 
+      const supabase = await getSupabase();
       const { data, error } = await supabase
         .from('Paiements')
         .select('paiement1Statut')
@@ -44,6 +65,20 @@ export default function Paiement1() {
 
     };
 
+    const fetchDatePaiement1 = async () => {
+      const supabase = await getSupabase();
+      const { data, error } = await supabase
+        .from('datePaiement')
+        .select('Paiement1')
+        .eq('id', 1)
+        .single();
+      if (!error && data?.Paiement1) {
+        setDatePaiement1(data.Paiement1);
+        setPaiementOuvert(new Date() > new Date(data.Paiement1));
+      }
+    };
+    
+    fetchDatePaiement1();
     checkPayment();
   }, [isLoaded, user]);
 
@@ -107,6 +142,20 @@ export default function Paiement1() {
           <Card.Title>1er Paiement (200€)</Card.Title>
           <Alert variant="success">
             ✅ Tu as déjà effectué ce paiement. Merci !
+          </Alert>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  if (!paiementOuvert) {
+    return (
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>1er Paiement (200€)</Card.Title>
+          <Alert variant="info">
+            Le paiement n'est pas encore ouvert.<br />
+            Ouverture prévue le <span dangerouslySetInnerHTML={{__html: datePaiement1 ? formatDateLong(datePaiement1) : '...'}} /> <br />
           </Alert>
         </Card.Body>
       </Card>

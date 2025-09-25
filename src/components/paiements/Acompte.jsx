@@ -47,15 +47,13 @@ export default function Acompte() {
       const promoConscrits = shotgunDates.promsConscrits ? Number(shotgunDates.promsConscrits) : null;
 
       if (promoUser === null || promoConscrits === null) {
-        dateOuverture = shotgunDates.Archis;
+        dateOuverture = shotgunDates.Peks;
       } else if (promoUser === promoConscrits) {
         dateOuverture = shotgunDates.Conscrits;
       } else if (promoUser === promoConscrits - 1) {
         dateOuverture = shotgunDates.Anciens;
-      } else if (promoUser === promoConscrits - 2) {
-        dateOuverture = shotgunDates.P3;
-      } else if (promoUser <= promoConscrits - 3) {
-        dateOuverture = shotgunDates.Archis;
+      } else if (promoUser <= promoConscrits - 2) {
+        dateOuverture = shotgunDates.P3Archis;
       } else {
         dateOuverture = null;
       }

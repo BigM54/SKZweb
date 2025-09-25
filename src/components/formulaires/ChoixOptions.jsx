@@ -116,7 +116,7 @@ export default function ChoixOptions() {
     // Vérification des champs requis
     const champsRequis = [
       'materiel_location', 'casque', 'type_forfait', 'assurance',
-      'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus'
+      'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus', 'taille_pull', 'regime'
     ];
     const champsNonRemplis = champsRequis.filter(champ => !form[champ]);
     if (champsNonRemplis.length > 0) {
@@ -232,6 +232,8 @@ export default function ChoixOptions() {
       {renderSelect("🧀 Combien de fromages (par 3) ?", "fromage", ['0', '1', '2', '3'])}
       {renderSelect("🍺 Combien de bières (par 3) ?", "biere", ['0', '1', '2', '3'])}
       {renderSelect("🚌 Tu veux un bus ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
+      {renderSelect("👕 Taille du pull ?", "taille_pull", ["S", "M", "L", "XL", "XXL"])}
+      {renderSelect("🥗 Régime alimentaire ?", "regime", ["normal", "vege"])}
       
       <div
         style={{

@@ -23,7 +23,8 @@ export default function RegisterAndVerify() {
     numero: '',
     tabagns: '',
     proms: 0,
-    peks: false
+    peks: false,
+    charte: false
   });
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
@@ -213,7 +214,15 @@ export default function RegisterAndVerify() {
           <FormGroup><Label>Mot de passe</Label><Input type="password" name="password" value={formData.password} onChange={handleChange} required /></FormGroup>
           <FormGroup><Label>Confirmer</Label><Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required /></FormGroup>
 
-          <Button color="primary" type="submit" block disabled={loading}>
+          <FormGroup check className="mb-3 d-flex align-items-center gap-2">
+            <Input type="checkbox" name="charte" checked={formData.charte} onChange={handleChange} required style={{ width: '1.5rem', height: '1.5rem' }} />
+            <Label check>
+              J'ai lu et je m'engage à respecter la
+              {' '}<a href="/Charte_De_Bonne_Conduite_Participant_SKZ_2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>charte de bonne conduite</a> (obligatoire)
+            </Label>
+          </FormGroup>
+
+          <Button color="primary" type="submit" block disabled={loading || !formData.charte}>
             {loading ? <Spinner size="sm" /> : 'Créer mon compte'}
           </Button>
         </Form>
