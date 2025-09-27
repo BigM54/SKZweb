@@ -161,23 +161,22 @@ export default function RegisterAndVerify() {
       }]);
       // Ajout des infos cousins si accepté
       if (acceptCousins && !peks) {
-        profilData.mail = mail;
-        profilData.numero = numero;
-        profilData.bucque = bucque;
+        const cousinData = {
+          mail,
+          numero,
+          bucque,
+        };
         numsArr.forEach((n, i) => {
-          profilData[`nums${i+1}`] = n;
+          cousinData[`nums${i+1}`] = n;
         });
+        const { error: cousinError } = await supabase.from('cousin').insert([cousinData]);
+        if (cousinError) {
+          console.error('Supabase cousin insert error:', cousinError);
+          setError("Erreur lors de l'enregistrement des cousins.");
+          setLoading(false);
+          return;
+        }
       }
-      const { error: cousinError } = await supabase.from('cousin').insert([profilData]);
-
-      if (insertError || cousinError) {
-        console.error('Supabase insert error:', insertError);
-        console.error('Supabase cousin insert error:', cousinError);
-        setError("Erreur lors de l'enregistrement du profil ou des cousins.");
-        setLoading(false);
-        return;
-      }
-
       setStep('done');
       setTimeout(() => navigate('/'), 2000);
 
