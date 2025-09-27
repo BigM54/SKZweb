@@ -162,7 +162,7 @@ export default function RegisterAndVerify() {
       // Ajout des infos cousins si accepté
       if (acceptCousins && !peks) {
         const cousinData = {
-          mail,
+          email,
           numero,
           bucque,
         };
