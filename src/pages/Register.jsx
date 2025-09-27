@@ -24,7 +24,8 @@ export default function RegisterAndVerify() {
     tabagns: '',
     proms: 0,
     peks: false,
-    charte: false
+    charte: false,
+    acceptCousins: false
   });
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
@@ -41,7 +42,7 @@ export default function RegisterAndVerify() {
     setError(null);
     setLoading(true);
 
-    const { email, password, confirmPassword, prenom, nom, numero, peks } = formData;
+    const { email, password, confirmPassword, prenom, nom, numero, peks, acceptCousins, bucque, num } = formData;
 
     if (password !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas.");
@@ -66,6 +67,18 @@ export default function RegisterAndVerify() {
       return setLoading(false);
     }
 
+    // Vérification du format de num si acceptCousins est coché
+    let numsArr = [];
+    if (acceptCousins && !peks) {
+      if (!num || !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
+        setError("Format du champ num invalide. Exemple attendu : 12-234-2-34");
+        setLoading(false);
+        return;
+      }
+      numsArr = num.split('-');
+      if (numsArr.length > 6) numsArr = numsArr.slice(0, 6);
+    }
+
     try {
       await signUp.create({
         emailAddress: email,
@@ -76,8 +89,8 @@ export default function RegisterAndVerify() {
           prenom,
           nom,
           peks,
-          num: peks ? null : formData.num,
-          bucque: peks ? null : formData.bucque,
+          num: peks ? null : num,
+          bucque: peks ? null : bucque,
           proms: peks ? null : formData.proms,
           tabagns: peks ? null : formData.tabagns,
         },
@@ -88,10 +101,13 @@ export default function RegisterAndVerify() {
         nom,
         numero,
         peks,
-        num: peks ? null : formData.num,
-        bucque: peks ? null : formData.bucque,
+        num: peks ? null : num,
+        bucque: peks ? null : bucque,
         proms: peks ? null : formData.proms,
         tabagns: peks ? null : formData.tabagns,
+        acceptCousins,
+        email,
+        numsArr,
       };
       setStep('verify');
     } catch (err) {
@@ -105,7 +121,6 @@ export default function RegisterAndVerify() {
 
       setError(fallback);
     }
-
     setLoading(false);
   };
 
@@ -131,7 +146,7 @@ export default function RegisterAndVerify() {
 
       const metadata = userMetadataRef.current;
       const {
-        prenom, nom, numero, num: nums, tabagns, proms, bucque, peks,
+        prenom, nom, numero, num: nums, tabagns, proms, bucque, peks, acceptCousins, email: mail, numsArr
       } = metadata;
 
       const { error: insertError } = await supabase.from('profils').insert([{
@@ -144,10 +159,21 @@ export default function RegisterAndVerify() {
         tabagns,
         peks,
       }]);
+      // Ajout des infos cousins si accepté
+      if (acceptCousins && !peks) {
+        profilData.mail = mail;
+        profilData.numero = numero;
+        profilData.bucque = bucque;
+        numsArr.forEach((n, i) => {
+          profilData[`nums${i+1}`] = n;
+        });
+      }
+      const { error: cousinError } = await supabase.from('cousin').insert([profilData]);
 
-      if (insertError) {
+      if (insertError || cousinError) {
         console.error('Supabase insert error:', insertError);
-        setError("Erreur lors de l'enregistrement du profil.");
+        console.error('Supabase cousin insert error:', cousinError);
+        setError("Erreur lors de l'enregistrement du profil ou des cousins.");
         setLoading(false);
         return;
       }
@@ -163,11 +189,6 @@ export default function RegisterAndVerify() {
 
     setLoading(false);
   };
-
-
-
-
-    
 
   if (!isLoaded) return null;
 
@@ -221,6 +242,14 @@ export default function RegisterAndVerify() {
               {' '}<a href="/Charte_De_Bonne_Conduite_Participant_SKZ_2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>charte de bonne conduite</a> (obligatoire)
             </Label>
           </FormGroup>
+          {!formData.peks && (
+            <FormGroup check className="mb-3 d-flex align-items-center gap-2">
+              <Input type="checkbox" name="acceptCousins" checked={formData.acceptCousins} onChange={handleChange} style={{ width: '1.5rem', height: '1.5rem' }} />
+              <Label check>
+                J'accepte de transmettre mes coordonnées à mes cousins des autres tabagn's
+              </Label>
+            </FormGroup>
+          )}
 
           <Button color="primary" type="submit" block disabled={loading || !formData.charte}>
             {loading ? <Spinner size="sm" /> : 'Créer mon compte'}
