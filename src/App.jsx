@@ -21,6 +21,7 @@ const Anims = lazy(() => import('./pages/Anims'));
 const Soirees = lazy(() => import('./pages/Soirees'));
 const Village = lazy(() => import('./pages/Village'));
 const QrCodePage = lazy(() => import('./pages/QrCode'));
+const MesCousins = lazy(() => import('./pages/MesCousins'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -75,6 +76,7 @@ function App() {
                 <Route path="/soirees" element={<Soirees />} />
                 <Route path="/village" element={<Village />} />
                 <Route path="/qrcode" element={<QrCodePage />} />
+                <Route path="/mescousins" element={<MesCousins />} />
               </Routes>
             </Container>
           </main>

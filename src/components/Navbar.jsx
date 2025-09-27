@@ -182,6 +182,7 @@ export default function NavBarComponent() {
           <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>
           {isAdmin && (
             <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
           )}
