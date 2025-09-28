@@ -9,6 +9,7 @@ export default function MesCousins() {
   const [loading, setLoading] = useState(true);
   const [cousins, setCousins] = useState([]);
   const [error, setError] = useState(null);
+  const [nums, setNums] = useState([]);
 
   useEffect(() => {
     const fetchCousins = async () => {
@@ -30,30 +31,33 @@ export default function MesCousins() {
         setLoading(false);
         return;
       }
-      // Récupère tous les cousins qui ont au moins un num en commun
-      const nums = [myCousin.nums1, myCousin.nums2, myCousin.nums3, myCousin.nums4, myCousin.nums5, myCousin.nums6].filter(Boolean);
-      if (nums.length === 0) {
+      const userNums = [myCousin.nums1, myCousin.nums2, myCousin.nums3, myCousin.nums4, myCousin.nums5, myCousin.nums6].filter(Boolean);
+      setNums(userNums);
+      if (userNums.length === 0) {
         setCousins([]);
         setLoading(false);
         return;
       }
       // Recherche tous les cousins qui ont au moins un num en commun
-      let query = nums.map((n, i) => `nums${i+1}.eq.${n}`).join(',');
-      // On fait une requête pour chaque num
-      let allCousins = [];
-      for (let n of nums) {
-        const { data: found, error: err } = await supabase
-          .from('cousin')
-          .select('*')
-          .or(`nums1.eq.${n},nums2.eq.${n},nums3.eq.${n},nums4.eq.${n},nums5.eq.${n},nums6.eq.${n}`);
-        if (!err && found) {
-          allCousins = allCousins.concat(found);
+      const orConditions = [];
+      for (let n of userNums) {
+        for (let col of ['nums1','nums2','nums3','nums4','nums5','nums6']) {
+          orConditions.push(`${col}.eq.${n}`);
         }
       }
-      // Filtre doublons et soi-même
+      const { data: allCousins, error: err } = await supabase
+        .from('cousin')
+        .select('*')
+        .or(orConditions.join(','));
+      if (err) {
+        setError("Erreur Supabase : " + err.message);
+        setLoading(false);
+        return;
+      }
+      // Filtre doublons
       const unique = {};
       allCousins.forEach(c => {
-        if (c.email !== myCousin.email) unique[c.email] = c;
+        unique[c.email] = c;
       });
       setCousins(Object.values(unique));
       setLoading(false);
@@ -89,7 +93,7 @@ export default function MesCousins() {
                   <td>{c.bucque || '-'}</td>
                   <td>{c.email}</td>
                   <td>{c.numero || '-'}</td>
-                  <td>{[c.nums1, c.nums2, c.nums3, c.nums4, c.nums5, c.nums6].filter(n => n && nums.includes(n)).join(', ')}</td>
+                  <td>{[c.nums1, c.nums2, c.nums3, c.nums4, c.nums5, c.nums6].filter(n => n && nums.includes(n)).join(' - ')}</td>
                 </tr>
               ))}
             </tbody>

@@ -4,7 +4,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 const cards = [
   {
     title: 'Les Stands fast food',
-    img: '/village_fastfood.png',
+    img: '/stand_bouffe.jpg',
     desc: "Des stands pour te régaler tous les soirs !"
   },
   {
