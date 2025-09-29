@@ -49,10 +49,10 @@ export default function Soirees() {
               <Card.Body className="d-flex flex-column">
                 <div style={{ marginBottom: '1.2rem' }}>
                   <Card.Title className="mb-3" style={{ fontSize: '1.4rem', fontWeight: 600, letterSpacing: '1px', lineHeight: 1.1 }}>{card.title}</Card.Title>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 500, marginTop: 8, marginBottom: 8 }}>
-                    <span style={{ marginRight: 12 }}><span role="img" aria-label="lieu">📍</span> {card.location}</span>
-                    <span style={{ marginRight: 12 }}><span role="img" aria-label="date">📅</span> {card.date}</span>
-                    <span><span role="img" aria-label="heure">🕒</span> {card.time}</span>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 500, marginTop: 8, marginBottom: 8, lineHeight: 1.7 }}>
+                    <div><span role="img" aria-label="lieu">📍</span> {card.location}</div>
+                    <div><span role="img" aria-label="date">📅</span> {card.date}</div>
+                    <div><span role="img" aria-label="heure">🕒</span> {card.time}</div>
                   </div>
                 </div>
                 <Card.Text className="flex-grow-1" style={{ color: '#fff'}}>
