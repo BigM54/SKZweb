@@ -79,7 +79,6 @@ export default function MesCousins() {
           <Table striped bordered hover className="mt-3 align-middle">
             <thead>
               <tr>
-                <th>Nom</th>
                 <th>Bucque</th>
                 <th>Email</th>
                 <th>Numéro</th>
@@ -89,7 +88,6 @@ export default function MesCousins() {
             <tbody>
               {cousins.map(c => (
                 <tr key={c.email}>
-                  <td>{c.nom || '-'}</td>
                   <td>{c.bucque || '-'}</td>
                   <td>{c.email}</td>
                   <td>{c.numero || '-'}</td>

@@ -226,26 +226,23 @@ export default function NavBarComponent() {
     <>
       {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
       {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && (
-        <Button
-          onClick={() => setSidebarOpen(true)}
-          style={{
-            position: 'sticky',
-            top: 0,
-            marginTop: '0rem',
-            marginLeft: '0.75rem',
-            zIndex: 1050,
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-            border: 'none',
-            fontSize: '2rem',
-            padding: '0.3rem 0.7rem',
-            borderRadius: '6px',
-            backdropFilter: 'blur(4px)',
-            color: 'black',
-            alignSelf: 'flex-start'
-          }}
-        >
-          ☰
-        </Button>
+          <Button
+            onClick={() => setSidebarOpen(true)}
+            className="burger-btn-skz"
+            style={{
+              position: 'sticky',
+              top: 0,
+              marginTop: '0rem',
+              marginLeft: '0.75rem',
+              zIndex: 1050,
+              fontSize: '2rem',
+              padding: '0.3rem 0.7rem',
+              borderRadius: '6px',
+              alignSelf: 'flex-start'
+            }}
+          >
+            ☰
+          </Button>
       )}
 
       {/* Sidebar mobile (Offcanvas) */}

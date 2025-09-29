@@ -12,7 +12,7 @@ const FAQ_DATA = [
 			},
 			{
 				q: 'Puis-je modifier mes informations personnelles après inscription ?',
-				a: "Oui, tu peux modifier certaines informations depuis ton compte. Cependant, les informations relatives à tes packs ne sont modifiables qu’à partir d’une semaine après le shotgun.",
+				a: "Oui, tu peux modifier certaines informations depuis ton compte. Cependant, les informations relatives à tes packs ne sont modifiables que pendant une semaine à compter de ton paiement d'acompte.",
 			},
 			{
 				q: 'Comment retrouver ou réinitialiser mon mot de passe ?',
@@ -78,7 +78,7 @@ const FAQ_DATA = [
 			},
 			{
 				q: 'Comment sont attribués les logements ?',
-				a: "Les logements sont attribués par la team SKZ en fonction des groupes et des disponibilités.",
+				a: "",
 			},
 			{
 				q: 'Dois-je avoir mon propre matériel de ski ?',
@@ -104,7 +104,7 @@ const FAQ_DATA = [
 		questions: [
 			{
 				q: 'Une assurance accident est-elle incluse ?',
-				a: 'Oui, des assurances optionnelles sont proposées lors de l’inscription.',
+				a: 'Non, mais des assurances optionnelles sont proposées lors de l’inscription.',
 			},
 			{
 				q: 'Que faire en cas de blessure sur place ?',

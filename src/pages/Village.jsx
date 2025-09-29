@@ -4,22 +4,22 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 const cards = [
   {
     title: 'Les Stands fast food',
-    img: '/stand_bouffe.jpg',
+    img: '/stand_bouffe.jpeg',
     desc: "Des stands pour te régaler tous les soirs !"
   },
   {
     title: 'After ski et soirée festival',
-    img: '/village_festival.png',
+    img: '/village_festival.jpeg',
     desc: "Le Village s’anime dès la fin des pistes avec des after ski festifs !"
   },
   {
     title: 'Bar du village',
-    img: '/village_bar.png',
+    img: '/village_bar.jpg',
     desc: "Un espace convivial pour partager un verre entre ch'ticop's"
   },
   {
     title: 'Les Défis & Jeux du village',
-    img: '/village_jeux.png',
+    img: '/village_jeux.jpg',
     desc: "Des animations, défis et jeux pour tous"
   },
 ];

@@ -140,7 +140,7 @@ export default function Paiement2() {
     return (
       <Card className="mb-4">
         <Card.Body>
-          <Card.Title>1er Paiement (200€)</Card.Title>
+          <Card.Title>2ème Paiement (200€)</Card.Title>
           <Alert variant="info">
             Le paiement n'est pas encore ouvert.<br />
             Ouverture prévue le <span dangerouslySetInnerHTML={{__html: datePaiement2 ? formatDateLong(datePaiement2) : '...'}} /> <br />

@@ -116,6 +116,17 @@ main, .container-fluid {
   max-width: 100vw;
   box-sizing: border-box;
 }
+
+/* Bouton burger transparent et flou, priorité maximale */
+.burger-btn-skz, .burger-btn-skz.btn, .burger-btn-skz:active, .burger-btn-skz:focus, .burger-btn-skz:hover {
+  background: rgba(255,255,255,0.12) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: none !important;
+  color: black !important;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08) !important;
+}
+
 /* Affiche les chiffres à la verticale on mobile */
 @media (max-width: 767px) {
   .stats-row-responsive {
