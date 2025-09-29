@@ -8,13 +8,11 @@ export default function Contact() {
         <Col xs={12} md={8} lg={6} xl={4} className="d-flex justify-content-center" style={{ minWidth: 520 }}>
           <Card>
             <Card.Body>
-              <Card.Title>Problème informatique</Card.Title>
+              <Card.Title>Sponsors</Card.Title>
               <Card.Text>
-                Pour toute difficulté technique ou bug sur le site, contactez :
-                <br />
-                <a href="tel:0769394470"><b>07 69 39 44 70</b></a>
-                <br />
-                ou par mail : <a href="mailto:info@skz.com">info@skz.com</a>
+                Pour toute question liée aux sponsors, contactez :<br />
+                <a href="tel:0782861927"><b>07 82 86 19 27</b></a><br />
+                ou par mail : <a href="mailto:skz.ue@gadz.org">skz.ue@gadz.org</a>
               </Card.Text>
             </Card.Body>
           </Card>
@@ -22,13 +20,23 @@ export default function Contact() {
         <Col xs={12} md={8} lg={6} xl={4} className="d-flex justify-content-center" style={{ minWidth: 520 }}>
           <Card>
             <Card.Body>
-              <Card.Title>Problème de financement</Card.Title>
+              <Card.Title>Informatique</Card.Title>
               <Card.Text>
-                Pour toute question concernant le paiement ou un souci financier, contactez :
-                <br />
-                <a href="tel:062345XXXX"><b>06 23 45 XX XX</b></a>
-                <br />
-                ou par mail : <a href="mailto:finances@skz.com">finances@skz.com</a>
+                Pour toute difficulté technique ou bug sur le site, contactez :<br />
+                <a href="tel:0769394470"><b>07 69 39 44 70</b></a><br />
+                ou par mail : <a href="mailto:skz.ue@gadz.org">skz.ue@gadz.org</a>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xs={12} md={8} lg={6} xl={4} className="d-flex justify-content-center" style={{ minWidth: 520 }}>
+          <Card>
+            <Card.Body>
+              <Card.Title>Financement</Card.Title>
+              <Card.Text>
+                Pour toute question concernant le paiement ou un souci financier, contactez :<br />
+                <a href="tel:0767436024"><b>07 67 43 60 24</b></a><br />
+                ou par mail : <a href="mailto:skz.ue@gadz.org">skz.ue@gadz.org</a>
               </Card.Text>
             </Card.Body>
           </Card>
@@ -38,11 +46,9 @@ export default function Contact() {
             <Card.Body>
               <Card.Title>Autre question</Card.Title>
               <Card.Text>
-                Pour toute autre demande, contactez :
-                <br />
-                <a href="tel:069876XXXX"><b>06 98 76 XX XX</b></a>
-                <br />
-                ou par mail : <a href="mailto:contact@skz.com">contact@skz.com</a>
+                Pour toute autre demande, contactez :<br />
+                <a href="tel:0665243376"><b>06 65 24 33 76</b></a><br />
+                ou par mail : <a href="mailto:skz.ue@gadz.org">skz.ue@gadz.org</a>
               </Card.Text>
             </Card.Body>
           </Card>
