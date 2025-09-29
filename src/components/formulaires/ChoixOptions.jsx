@@ -67,12 +67,10 @@ export default function ChoixOptions() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // ← Important de le mettre en haut
+    setLoading(true);
 
-    // Si pas de location, on force pack_location à 'aucun'
     if (form.materiel_location === 'aucun') form.pack_location = 'aucun';
 
-    // Vérification des champs requis
     const champsRequis = [
       'materiel_location', 'casque', 'type_forfait', 'assurance',
       'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus', 'taille_pull', 'regime', 'biere'
@@ -87,25 +85,29 @@ export default function ChoixOptions() {
     try {
       const token = await getToken({ template: 'supabase' });
 
-      // Appel de l’Edge Function pour mettre à jour le montant
+      // Appel Edge Function
       const response = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/update_montant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          ...form
-        })
+        body: JSON.stringify({ ...form })
       });
-
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Erreur lors du calcul montant');
       }
 
-      setModeAffichage(true);
+      // Recharger le montant à jour depuis Supabase
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: { headers: { Authorization: `Bearer ${token}` } },
+      });
+      const email = user?.primaryEmailAddress?.emailAddress;
+      const { data: paiementData } = await supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single();
+      setPaiement3Montant(paiementData?.paiement3Montant || 0);
 
+      setModeAffichage(true);
     } catch (err) {
       console.error('❌ Erreur:', err.message);
       alert('Une erreur est survenue : ' + err.message);
