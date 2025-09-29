@@ -9,7 +9,6 @@ export default function ChoixOptions() {
   const [modeAffichage, setModeAffichage] = useState(false);
   const { getToken } = useAuth();
   const { user } = useUser();
-  const [total, setTotal] = useState(0);
   const [acomptePaid, setAcomptePaid] = useState(null);
   const [acompteDate, setAcompteDate] = useState(null);
   const [joursRestants, setJoursRestants] = useState(null);
@@ -223,7 +222,7 @@ export default function ChoixOptions() {
     <Form onSubmit={handleSubmit} className="text-start">
       {!acomptePaid && (
         <div className="mt-2 text-danger">
-          ⚠️ Tu peux tester les options mais pas enregistrer tant que tu n'as pas payer l'acompte.
+          ⚠️ Tu peux tester les options mais pas enregistrer tant que tu n'as pas payé l'acompte.
         </div>
       )}
       {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski","snowboard", "chaussures"])}
