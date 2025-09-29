@@ -13,6 +13,7 @@ export default function ChoixOptions() {
   const [acomptePaid, setAcomptePaid] = useState(null);
   const [acompteDate, setAcompteDate] = useState(null);
   const [joursRestants, setJoursRestants] = useState(null);
+  const [paiement3Montant, setPaiement3Montant] = useState(null);
 
   // Récupère d'un coup les données options et paiements
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function ChoixOptions() {
       // Récupère options et acompte en parallèle
       const [{ data: optionsData }, { data: paiementData }] = await Promise.all([
         supabase.from('options').select('*').eq('id', user.id).single(),
-        supabase.from('Paiements').select('acompteStatut, dateAcompte').eq('email', email).single(),
+        supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single(),
       ]);
 
       if (optionsData) {
@@ -39,12 +40,13 @@ export default function ChoixOptions() {
           pack_location: '',
           materiel_location: '', casque: '', type_forfait: '', assurance: '',
           masque: '', pack_fumeur: '', pack_soiree: '', pack_grand_froid: '',
-          pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '0', bus: ''
+          pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '', bus: ''
         });
         setModeAffichage(false);
       }
       setAcomptePaid(paiementData?.acompteStatut);
       setAcompteDate(paiementData?.dateAcompte);
+      setPaiement3Montant(paiementData?.paiement3Montant || 0);
       // Calcul du temps restant
       if (paiementData?.dateAcompte) {
         const acompteDateObj = new Date(paiementData.dateAcompte);
@@ -57,52 +59,9 @@ export default function ChoixOptions() {
     fetchData();
   }, [user, getToken]);
 
-  useEffect(() => {
-    if (form) {
-      const newTotal = calculateTotal();
-      setTotal(newTotal);
-    }
-  }, [form]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
-  };
-
-  const calculateTotal = () => {
-    const prix = {
-      pack_location: { snowboard: { bronze: 68, argent: 88, or: 108, platine: 142 }, ski: { bronze: 68, argent: 88, or: 108, platine: 142 }, chaussures: { bronze: 51, argent: 73, or: 94, platine: 127 }, complet: { bronze: 75, argent: 92, or: 112, platine: 147 } },
-      casque: { oui: 28, non: 0 },
-      type_forfait: { standard: 0, étendu: 50 },
-      assurance: { aucune: 0, zen: 38, skieur: 37, 'zen+skieur': 55 },
-      masque: { oui: 48, non: 0 },
-      pack_fumeur: { oui: 10, non: 0 },
-      pack_soiree: { oui: 12, non: 0 },
-      pack_grand_froid: { oui: 14, non: 0 },
-      pain: 12, croissant: 10, pain_choco: 13,
-      saucisson: 13, fromage: 15, biere: 12,
-      bus: { non: 0, sibers: 125, kin: 115, cluns: 105, p3: 115, boquette: 130, bordels: 125, birse: 130, chalons: 120 }
-    };
-
-    const total =
-      459+
-      (prix.pack_location[form.materiel_location]?.[form.pack_location] || 0) +
-      (prix.casque[form.casque] || 0) +
-      (prix.type_forfait[form.type_forfait] || 0) +
-      (prix.assurance[form.assurance] || 0) +
-      (prix.masque[form.masque] || 0) +
-      (prix.pack_fumeur[form.pack_fumeur] || 0) +
-      (prix.pack_soiree[form.pack_soiree] || 0) +
-      (prix.pack_grand_froid[form.pack_grand_froid] || 0) +
-      (parseInt(form.pain || '0') * prix.pain) +
-      (parseInt(form.croissant || '0') * prix.croissant) +
-      (parseInt(form.pain_choco || '0') * prix.pain_choco) +
-      (parseInt(form.saucisson || '0') * prix.saucisson) +
-      (parseInt(form.fromage || '0') * prix.fromage) +
-      (parseInt(form.biere || '0') * prix.biere) +
-      (prix.bus[form.bus] || 0);
-
-    return total;
   };
 
 
@@ -116,7 +75,7 @@ export default function ChoixOptions() {
     // Vérification des champs requis
     const champsRequis = [
       'materiel_location', 'casque', 'type_forfait', 'assurance',
-      'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus', 'taille_pull', 'regime'
+      'masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid', 'bus', 'taille_pull', 'regime', 'biere'
     ];
     const champsNonRemplis = champsRequis.filter(champ => !form[champ]);
     if (champsNonRemplis.length > 0) {
@@ -162,9 +121,9 @@ export default function ChoixOptions() {
     return (
       <>
         <div className="mb-3">
-          <h4>💰 Total : {total} €</h4>
+          <h4>💰 Total : {paiement3Montant + 450} €</h4>
           <p>
-            (50€ + 200€ + 200€ + {total-450}€)
+            (50€ + 200€ + 200€ + {paiement3Montant}€)
           </p>
         </div>
         {/* Affichage du délai restant ou expiré */}
@@ -190,12 +149,70 @@ export default function ChoixOptions() {
     );
   }
 
+  // Prix pour affichage
+  const prixAffichage = {
+    pack_location: {
+      bronze: 75, argent: 95, or: 112, platine: 147
+    },
+    ski: { bronze: 68, argent: 85, or: 108, platine: 142 },
+    chaussures: { bronze: 51, argent: 73, or: 94, platine: 127 },
+    casque: { oui: 28, non: 0 },
+    type_forfait: { standard: 0, étendu: 50 },
+    assurance: { aucune: 0, zen: 38, skieur: 37, 'zen+skieur': 55 },
+    masque: { oui: 37, non: 0 },
+    pack_fumeur: { oui: 8, non: 0 },
+    pack_soiree: { oui: 14, non: 0 },
+    pack_grand_froid: { oui: 14, non: 0 },
+    pack_jeux: { oui: 14, non: 0 },
+    pain: 10,
+    croissant: 9.5,
+    pain_choco: 9.5,
+    saucisson: 13,
+    fromage: 14,
+    biere: {
+      'aucun': 0,
+      'Blonde + Génép + Myrtille': 9,
+      'Blonde + Ambrée + Blanche': 9,
+      'Les 2 packs': 17
+    },
+    bus: {
+      non: 0,
+      sibers: 120,
+      kin: 110,
+      cluns: 100,
+      p3: 120,
+      boquette: 125,
+      bordels: 125,
+      birse: 125,
+      chalons: 110
+    }
+  };
+
   const renderSelect = (label, name, options) => (
     <Form.Group className="mb-3" controlId={name}>
       <Form.Label>{label}</Form.Label>
       <Form.Select name={name} value={form[name]} onChange={handleChange}>
         <option value="">-- Choisir --</option>
-        {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+        {options.map(opt => {
+          let prix = '';
+          // Prix total pour les packs à quantité
+          if (["pain","croissant","pain_choco","saucisson","fromage"].includes(name)) {
+            const n = parseInt(opt);
+            prix = n > 0 ? ` (${n * prixAffichage[name]}€)` : '';
+          }
+          if (name === 'pack_location') prix = prixAffichage.pack_location[opt] ? ` (${prixAffichage.pack_location[opt]}€)` : '';
+          if (name === 'biere') prix = prixAffichage.biere[opt] ? ` (${prixAffichage.biere[opt]}€)` : '';
+          if (name === 'casque') prix = prixAffichage.casque[opt] ? ` (${prixAffichage.casque[opt]}€)` : '';
+          if (name === 'type_forfait') prix = prixAffichage.type_forfait[opt] ? ` (${prixAffichage.type_forfait[opt]}€)` : '';
+          if (name === 'assurance') prix = prixAffichage.assurance[opt] ? ` (${prixAffichage.assurance[opt]}€)` : '';
+          if (name === 'masque') prix = prixAffichage.masque[opt] ? ` (${prixAffichage.masque[opt]}€)` : '';
+          if (name === 'pack_fumeur') prix = prixAffichage.pack_fumeur[opt] ? ` (${prixAffichage.pack_fumeur[opt]}€)` : '';
+          if (name === 'pack_soiree') prix = prixAffichage.pack_soiree[opt] ? ` (${prixAffichage.pack_soiree[opt]}€)` : '';
+          if (name === 'pack_grand_froid') prix = prixAffichage.pack_grand_froid[opt] ? ` (${prixAffichage.pack_grand_froid[opt]}€)` : '';
+          if (name === 'pack_jeux') prix = prixAffichage.pack_jeux[opt] ? ` (${prixAffichage.pack_jeux[opt]}€)` : '';
+          if (name === 'bus') prix = prixAffichage.bus[opt] ? ` (${prixAffichage.bus[opt]}€)` : '';
+          return <option key={opt} value={opt}>{opt}{prix}</option>;
+        })}
       </Form.Select>
     </Form.Group>
   );
@@ -228,29 +245,18 @@ export default function ChoixOptions() {
       {renderSelect("🥖 Combien de baguettes par jour ?", "pain", ['0', '1', '2', '3'])}
       {renderSelect("🥐 Combien de croissants par jour ?", "croissant", ['0', '1', '2', '3'])}
       {renderSelect("🍫 Combien de pains au choco par jour ?", "pain_choco", ['0', '1', '2', '3'])}
-      {renderSelect("🥓 Combien de saucissons (par 3) ?", "saucisson", ['0', '1', '2', '3'])}
-      {renderSelect("🧀 Combien de fromages (par 3) ?", "fromage", ['0', '1', '2', '3'])}
-      {renderSelect("🍺 Combien de bières (par 3) ?", "biere", ['0', '1', '2', '3'])}
+      {renderSelect("🥓 Pack Saucissons (par 3) ?", "saucisson", ['0', '1', '2', '3'])}
+      {renderSelect("🧀 Pack Fromages (par 3) ?", "fromage", ['0', '1', '2', '3'])}
+      {renderSelect("🍺 Choisis ton pack bière :", "biere", [
+        'aucun',
+        'Blonde + Génép + Myrtille',
+        'Blonde + Ambrée + Blanche',
+        'Les 2 packs'
+      ])}
       {renderSelect("🚌 Tu veux un bus ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
       {renderSelect("👕 Taille du pull ?", "taille_pull", ["S", "M", "L", "XL", "XXL"])}
       {renderSelect("🥗 Régime alimentaire ?", "regime", ["normal", "vege"])}
       
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          backgroundColor: '#f8f9fa',
-          borderTop: '1px solid #dee2e6',
-          padding: '0.75rem 1rem',
-          textAlign: 'center',
-          zIndex: 1050,
-          boxShadow: '0 -2px 5px rgba(0,0,0,0.1)',
-        }}
-      >
-        <strong>💰 Total : {total} €</strong>
-      </div>
       {!acomptePaid && (
         <div className="mt-2 text-danger">
           ⚠️ Tu dois d'abord payer l'acompte pour valider tes choix d'options.

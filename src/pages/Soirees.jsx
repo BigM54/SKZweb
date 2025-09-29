@@ -26,7 +26,7 @@ export default function Soirees() {
       date: "Mardi 20 janvier",
       time: "20h30 - 00h30",
       description: "Skioz'Arts ne serait pas complet sans sa mythique Soirée Fluo !.",
-      highlights: ["Des décorations fluorescentes", "Du bodypainting et accessoires fluo pour briller sous les UV", "Une ambiance unique où chacun devient une partie du spectacle"],
+      highlights: ["Ambiance lumineuse et festive au foy’s avec éclairage UV", "Du bodypainting et accessoires fluo pour briller sous les UV", "Une ambiance unique où chacun devient une partie du spectacle","Dress code néon/fluo encourag"],
       location: "Foy's SKZ"
     },
     {
