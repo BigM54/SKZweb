@@ -219,8 +219,8 @@ export default function RegisterAndVerify() {
           <FormGroup><Label>Nom</Label><Input name="nom" value={formData.nom} onChange={handleChange} required /></FormGroup>
 
           <Collapse isOpen={!formData.peks}>
-            <FormGroup><Label>Bucque</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} required={!formData.peks} /></FormGroup>
-            <FormGroup><Label>Num'ss</Label><Input name="num" value={formData.num} onChange={handleChange} required={!formData.peks} /></FormGroup>
+            <FormGroup><Label>Bucque</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} /></FormGroup>
+            <FormGroup><Label>Num'ss</Label><Input name="num" value={formData.num} onChange={handleChange} /></FormGroup>
             <FormGroup>
               <Label>Tabagn's</Label>
               <Input type="select" name="tabagns" value={formData.tabagns} onChange={handleChange} required={!formData.peks}>
