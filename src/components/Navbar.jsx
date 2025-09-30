@@ -210,6 +210,7 @@ export default function NavBarComponent() {
           <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
           {canSeeCousins && <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>}
+          <NavDropdown.Item as={Link} to="/mesinfos">Mes Informations</NavDropdown.Item>
           {isAdmin && (
             <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
           )}
@@ -317,6 +318,9 @@ export default function NavBarComponent() {
               <Nav className="flex-column mobile-nav">
                 <Nav.Link as={Link} to="/formulaire" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Choix
+                </Nav.Link>
+                <Nav.Link as={Link} to="/mesinfos" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                  Mes Informations
                 </Nav.Link>
                 <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Paiements

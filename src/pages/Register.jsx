@@ -4,7 +4,6 @@ import {
 } from 'reactstrap';
 import { useSignUp, useAuth} from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
 import { createClient } from '@supabase/supabase-js';
 
 export default function RegisterAndVerify() {
@@ -42,7 +41,7 @@ export default function RegisterAndVerify() {
     setError(null);
     setLoading(true);
 
-    const { email, password, confirmPassword, prenom, nom, numero, peks, acceptCousins, bucque, num } = formData;
+    const { email, password, confirmPassword, prenom, nom, numero, peks, acceptCousins, bucque, num, proms } = formData;
 
     if (password !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas.");
@@ -65,6 +64,16 @@ export default function RegisterAndVerify() {
     if (!pwdRegex.test(password) || password.length < 8) {
       setError("Mot de passe invalide.");
       return setLoading(false);
+    }
+
+    // Vérification du format de proms (doit être un entier positif raisonnable)
+    if (!peks) {
+      const promsInt = parseInt(proms, 10);
+      if (isNaN(promsInt)) {
+        setError("Le champ Prom's doit être un entier valide (ex: 224).");
+        setLoading(false);
+        return;
+      }
     }
 
     // Vérification du format de num si acceptCousins est coché
