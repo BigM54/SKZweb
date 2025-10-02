@@ -52,7 +52,7 @@ export default function MesPaiements() {
           mountOnEnter
           unmountOnExit
         >
-          <Tab eventKey="acompte" title="Acompte (50€)">
+          <Tab eventKey="acompte" title="Acompte (25€)">
             <Acompte />
           </Tab>
 

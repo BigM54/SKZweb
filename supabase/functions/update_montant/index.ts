@@ -128,7 +128,7 @@ serve(async (req)=>{
     // mise à jour du montant dans la table Paiements
     const { error: updateError } = await supabase.from("Paiements").upsert({
       email: userEmail,
-      paiement3Montant: montant - 450
+      paiement3Montant: montant - 425
     }).eq("email", userEmail);
     if (updateError) {
       throw updateError;
