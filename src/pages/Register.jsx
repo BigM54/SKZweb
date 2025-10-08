@@ -205,8 +205,6 @@ export default function RegisterAndVerify() {
       <h2 className="text-center text-primary mb-3">
         {step === 'register' ? 'Créer un compte' : 'Vérifie ton email'}
       </h2>
-      <div className="mb-3 text-danger text-center" style={{fontWeight:'bold'}}>Les inscriptions sont en pause pour cause d'un problème technique, nous travaillons pour résoudre au plus vite.</div>
-      <div className="mb-3 text-danger text-center" style={{fontWeight:'bold'}}>Merci pour votre confiance ❤️</div>
       {error && <Alert color="danger">{error}</Alert>}
 
       {step === 'register' && (
@@ -260,7 +258,7 @@ export default function RegisterAndVerify() {
             </FormGroup>
           )}
 
-          <Button color="primary" type="submit" block disabled>
+          <Button color="primary" type="submit" block disabled={loading || !formData.charte}>
             {loading ? <Spinner size="sm" /> : 'Créer mon compte'}
           </Button>
         </Form>
