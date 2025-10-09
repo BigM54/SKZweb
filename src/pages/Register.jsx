@@ -209,6 +209,7 @@ export default function RegisterAndVerify() {
 
       {step === 'register' && (
         <Form onSubmit={handleRegister}>
+          <div className="mb-2 text-start" style={{fontSize:'0.9em'}}><span style={{color:'red'}}>*</span> Champs obligatoires</div>
           <FormGroup check className="mb-3 d-flex align-items-center gap-2">
             <Input type="checkbox" name="peks" checked={formData.peks} onChange={handleChange} style={{ width: '1.5rem', height: '1.5rem' }} />
             <Label check>{"Je suis un Pek’s (non-gadz, les .onscrits vous êtes pas Pek's) ?"}</Label>
@@ -261,8 +262,7 @@ export default function RegisterAndVerify() {
           <Button color="primary" type="submit" block disabled={loading || !formData.charte}>
             {loading ? <Spinner size="sm" /> : 'Créer mon compte'}
           </Button>
-  <div className="mt-2" style={{fontSize:'0.9em'}}><span style={{color:'red'}}>*</span> Champs obligatoires</div>
-  </Form>
+        </Form>
       )}
       {step === 'verify' && (
         <Form onSubmit={handleVerification}>
