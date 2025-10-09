@@ -214,14 +214,14 @@ export default function RegisterAndVerify() {
             <Label check>{"Je suis un Pek’s (non-gadz, les .onscrits vous êtes pas Pek's) ?"}</Label>
           </FormGroup>
 
-          <FormGroup><Label>Prénom</Label><Input name="prenom" value={formData.prenom} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Nom</Label><Input name="nom" value={formData.nom} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Prénom <span style={{color:'red'}}>*</span></Label><Input name="prenom" value={formData.prenom} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Nom <span style={{color:'red'}}>*</span></Label><Input name="nom" value={formData.nom} onChange={handleChange} required /></FormGroup>
 
           <Collapse isOpen={!formData.peks}>
             <FormGroup><Label>Bucque / Surnom</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} /></FormGroup>
             <FormGroup><Label>Num's / Fam's</Label><Input name="num" value={formData.num} onChange={handleChange} /></FormGroup>
             <FormGroup>
-              <Label>{"Tabagn's (Campus)"}</Label>
+              <Label>{"Tabagn's (Campus)"} <span style={{color:'red'}}>*</span></Label>
               <Input type="select" name="tabagns" value={formData.tabagns} onChange={handleChange} required={!formData.peks}>
                 <option value="">-- Choisir --</option>
                 <option value="sibers">Siber's</option>
@@ -234,13 +234,13 @@ export default function RegisterAndVerify() {
                 <option value="chalons">Chalon's</option>
               </Input>
             </FormGroup>
-            <FormGroup><Label>{"Prom's (1A : 225, 2A : 224)"}</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
+            <FormGroup><Label>{"Prom's (1A : 225, 2A : 224)"} <span style={{color:'red'}}>*</span></Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
           </Collapse>
 
-          <FormGroup><Label>Email</Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Numéro</Label><Input type="tel" name="numero" value={formData.numero} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Mot de passe</Label><Input type="password" name="password" value={formData.password} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Confirmer</Label><Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Email <span style={{color:'red'}}>*</span></Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Numéro <span style={{color:'red'}}>*</span></Label><Input type="tel" name="numero" value={formData.numero} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Mot de passe <span style={{color:'red'}}>*</span></Label><Input type="password" name="password" value={formData.password} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Confirmer <span style={{color:'red'}}>*</span></Label><Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required /></FormGroup>
 
           <FormGroup check className="mb-3 d-flex align-items-center gap-2">
             <Input type="checkbox" name="charte" checked={formData.charte} onChange={handleChange} required style={{ width: '1.5rem', height: '1.5rem' }} />
@@ -261,7 +261,8 @@ export default function RegisterAndVerify() {
           <Button color="primary" type="submit" block disabled={loading || !formData.charte}>
             {loading ? <Spinner size="sm" /> : 'Créer mon compte'}
           </Button>
-        </Form>
+  <div className="mt-2" style={{fontSize:'0.9em'}}><span style={{color:'red'}}>*</span> Champs obligatoires</div>
+  </Form>
       )}
       {step === 'verify' && (
         <Form onSubmit={handleVerification}>
