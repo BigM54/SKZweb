@@ -211,17 +211,17 @@ export default function RegisterAndVerify() {
         <Form onSubmit={handleRegister}>
           <FormGroup check className="mb-3 d-flex align-items-center gap-2">
             <Input type="checkbox" name="peks" checked={formData.peks} onChange={handleChange} style={{ width: '1.5rem', height: '1.5rem' }} />
-            <Label check>Je suis un Pek’s (non-gadz) ?</Label>
+            <Label check>{"Je suis un Pek’s (non-gadz, les .onscrits vous êtes pas Pek's) ?"}</Label>
           </FormGroup>
 
           <FormGroup><Label>Prénom</Label><Input name="prenom" value={formData.prenom} onChange={handleChange} required /></FormGroup>
           <FormGroup><Label>Nom</Label><Input name="nom" value={formData.nom} onChange={handleChange} required /></FormGroup>
 
           <Collapse isOpen={!formData.peks}>
-            <FormGroup><Label>Bucque</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} /></FormGroup>
-            <FormGroup><Label>Num'ss</Label><Input name="num" value={formData.num} onChange={handleChange} /></FormGroup>
+            <FormGroup><Label>Bucque / Surnom</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} /></FormGroup>
+            <FormGroup><Label>Num's / Fam's</Label><Input name="num" value={formData.num} onChange={handleChange} /></FormGroup>
             <FormGroup>
-              <Label>Tabagn's</Label>
+              <Label>{"Tabagn's (Campus)"}</Label>
               <Input type="select" name="tabagns" value={formData.tabagns} onChange={handleChange} required={!formData.peks}>
                 <option value="">-- Choisir --</option>
                 <option value="sibers">Siber's</option>
@@ -234,7 +234,7 @@ export default function RegisterAndVerify() {
                 <option value="chalons">Chalon's</option>
               </Input>
             </FormGroup>
-            <FormGroup><Label>Prom's</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
+            <FormGroup><Label>{"Prom's (1A : 225, 2A : 224"}</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
           </Collapse>
 
           <FormGroup><Label>Email</Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required /></FormGroup>
