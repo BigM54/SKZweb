@@ -234,7 +234,7 @@ export default function RegisterAndVerify() {
                 <option value="chalons">Chalon's</option>
               </Input>
             </FormGroup>
-            <FormGroup><Label>{"Prom's (1A : 225, 2A : 224"}</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
+            <FormGroup><Label>{"Prom's (1A : 225, 2A : 224)"}</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
           </Collapse>
 
           <FormGroup><Label>Email</Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required /></FormGroup>
