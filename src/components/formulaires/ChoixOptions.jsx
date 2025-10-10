@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Accordion } from 'react-bootstrap';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -238,6 +238,24 @@ export default function ChoixOptions() {
       )}
       {renderSelect("🪖 Tu veux louer un casque ?", "casque", ["oui", "non"])}
       {renderSelect("⛷️ Quel forfait veux-tu ? (Accès aux pistes)", "type_forfait", ["standard", "étendu (+ 200km)"])}
+
+      {/* Accordéons explicatifs pour les assurances */}
+      <Accordion className="mb-3">
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>🛡️ Assurance Zen — Qu'est-ce que c'est ?</Accordion.Header>
+          <Accordion.Body>
+            Cette assurance te protège financièrement si tu ne peux pas participer au séjour ou si tu dois l’écourter. Elle rembourse les frais que tu as déjà payés lorsque tu es contraint d’annuler pour une raison sérieuse comme une maladie, un accident, un décès dans la famille ou des dommages importants à ton domicile. Elle couvre aussi certaines situations spécifiques liées au séjour, comme la perte ou le vol de ton forfait de ski, la fermeture des remontées mécaniques ou un accident de ski qui t’empêche de pratiquer. En cas de retour anticipé, les jours non utilisés du séjour peuvent également être remboursés. Cette assurance est donc utile si tu veux sécuriser ton argent en cas d’imprévu avant ou pendant le départ.<br/>
+            <a href="/public/Assurance_Annulation.pdf" target="_blank" rel="noopener noreferrer">Voir le contrat Assurance Annulation (PDF)</a>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>🛡️ Assurance Skieur — Qu'est-ce que c'est ?</Accordion.Header>
+          <Accordion.Body>
+            Cette assurance inclut toutes les garanties de l’Assurance Annulation, mais va beaucoup plus loin en te protégeant pendant tout le séjour. En plus du remboursement en cas d’annulation ou d’interruption, elle prend en charge les frais médicaux à l’étranger, organise et paie un rapatriement si nécessaire, et t’assure si tu blesses quelqu’un ou causes des dégâts matériels grâce à la responsabilité civile. Elle prévoit aussi une indemnisation en cas d’accident grave ou de décès (individuelle accident) et propose une assistance complète : aide en cas de perte ou vol de papiers, prolongation du séjour pour raisons médicales, visite d’un proche à l’hôpital, véhicule de remplacement, frais de recherche et secours, ainsi qu’une prise en charge spécifique en cas de COVID (quarantaine, modification ou achat d’un billet retour, poursuite du voyage). C’est la formule la plus complète pour voyager sereinement, car elle te couvre avant le départ, pendant le séjour et dans toutes les situations d’urgence.<br/>
+            <a href="/public/Assurance_Multirisques.pdf" target="_blank" rel="noopener noreferrer">Voir le contrat Assurance Multirisques (PDF)</a>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
       {renderSelect("🛡️ Quelle assurance tu prends ?", "assurance", ["aucune", "zen", "skieur", "zen+skieur"])}
       {renderSelect("😎 Tu veux un masque SKZ stylé ?", "masque", ["oui", "non"])}
       {renderSelect("🚬 Pack fumeur : tu fumes ? (zippo gravé / cendar de poche)", "pack_fumeur", ["oui", "non"])}

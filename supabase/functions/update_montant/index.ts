@@ -8,10 +8,11 @@ function calculerMontant(form) {
       snowboard: { bronze: 68, argent: 85, or: 108, platine: 142 },
       ski: { bronze: 68, argent: 85, or: 108, platine: 142 },
       chaussures: { bronze: 51, argent: 73, or: 94, platine: 127 },
-      complet: { bronze: 75, argent: 95, or: 112, platine: 147 }
+      "ski + chaussures": { bronze: 75, argent: 95, or: 112, platine: 147 },
+      "snow + chaussures": { bronze: 75, argent: 95, or: 112, platine: 147 }
     },
     casque: { oui: 28, non: 0 },
-    type_forfait: { standard: 0, étendu: 50 },
+  type_forfait: { standard: 0, 'étendu (+200km)': 50 },
     assurance: { aucune: 0, zen: 38, skieur: 37, 'zen+skieur': 55 },
     masque: { oui: 37, non: 0 },
     pack_fumeur: { oui: 8, non: 0 },
