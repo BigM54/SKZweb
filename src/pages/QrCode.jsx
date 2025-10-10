@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
 import QRCodeStyling from "qr-code-styling";
 import { useUser } from '@clerk/clerk-react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
@@ -53,6 +56,8 @@ function QrCode({ style }) {
 }
 
 export default function QrCodePage() {
+  // Lien vers le .pkpass généré côté serveur (à adapter selon ton backend)
+  const pkpassUrl = "/skz-pass.pkpass";
   return (
     <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
       <Row className="justify-content-center w-100">
@@ -66,6 +71,14 @@ export default function QrCodePage() {
                   <QrCode style={{ width: '100%', height: 'auto', maxWidth: 320, display: 'block', margin: '0 auto' }} />
                 </div>
               </div>
+              {isIOS() && (
+                <div className="text-center mt-4">
+                  <a href={pkpassUrl} download style={{ textDecoration: 'none' }}>
+                    <button className="btn btn-success">Ajouter à Cartes (Apple Wallet)</button>
+                  </a>
+                  <div style={{ fontSize: '0.9em', color: '#888', marginTop: 4 }}>Format Apple Wallet (.pkpass)</div>
+                </div>
+              )}
             </Card.Body>
           </Card>
         </Col>

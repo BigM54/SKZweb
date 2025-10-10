@@ -15,6 +15,10 @@ const FAQ_DATA = [
 				a: "Oui, tu peux modifier certaines informations depuis ton compte. Cependant, les informations relatives à tes packs ne sont modifiables que pendant une semaine à compter de ton paiement d'acompte.",
 			},
 			{
+				q: "Je me suis trompé lors de l'inscription, puis-je corriger mes informations ?",
+				a: "Oui, tu peux corriger la plupart de tes informations personnelles (prénom, nom, numéro, tabagn's, etc.) depuis la page 'Mes informations' une fois connecté. Si tu rencontres un blocage, contacte la team SKZ.",
+			},
+			{
 				q: 'Comment retrouver ou réinitialiser mon mot de passe ?',
 				a: 'Clique sur “Mot de passe oublié” à la connexion et suis les instructions envoyées par e-mail.',
 			},
