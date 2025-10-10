@@ -15,9 +15,7 @@ export default function MesInformations() {
     numero: '',
     tabagns: '',
     proms: null,
-    peks: false,
-    charte: false,
-    acceptCousins: false
+    peks: false
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,9 +39,7 @@ export default function MesInformations() {
           numero: profil.numero || '',
           tabagns: profil.tabagns || '',
           proms: profil.proms || null,
-          peks: profil.peks || false,
-          charte: profil.charte || false,
-          acceptCousins: profil.acceptCousins || false
+          peks: profil.peks || false
         });
       }
       setLoading(false);
