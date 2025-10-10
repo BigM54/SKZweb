@@ -225,7 +225,7 @@ export default function ChoixOptions() {
           ⚠️ Tu peux tester les options mais pas enregistrer tant que tu n'as pas payé l'acompte.
         </div>
       )}
-      {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","complet", "ski","snowboard", "chaussures"])}
+      {renderSelect("🎿 Quel matos tu veux louer ?", "materiel_location", ["aucun","ski + chaussures","snow + chaussures", "ski","snowboard", "chaussures"])}
       {form.materiel_location !== 'aucun' ? (
         <Form.Group className="mb-3">
           {renderSelect("📦 Choisis ton pack location (qualité du matos)", "pack_location", ["bronze", "argent", "or", "platine"])}
@@ -237,17 +237,17 @@ export default function ChoixOptions() {
         </Form.Group>
       )}
       {renderSelect("🪖 Tu veux louer un casque ?", "casque", ["oui", "non"])}
-      {renderSelect("⛷️ Quel forfait veux-tu ? (Accès aux pistes)", "type_forfait", ["standard", "étendu"])}
+      {renderSelect("⛷️ Quel forfait veux-tu ? (Accès aux pistes)", "type_forfait", ["standard", "étendu (+ 200km)"])}
       {renderSelect("🛡️ Quelle assurance tu prends ?", "assurance", ["aucune", "zen", "skieur", "zen+skieur"])}
       {renderSelect("😎 Tu veux un masque SKZ stylé ?", "masque", ["oui", "non"])}
-      {renderSelect("🚬 Pack fumeur : tu fumes ?", "pack_fumeur", ["oui", "non"])}
-      {renderSelect("🎉 Tu veux le pack soirée ?", "pack_soiree", ["oui", "non"])}
-      {renderSelect("🧣 Tu veux le pack grand froid ?", "pack_grand_froid", ["oui", "non"])}
+      {renderSelect("🚬 Pack fumeur : tu fumes ? (zippo gravé / cendar de poche)", "pack_fumeur", ["oui", "non"])}
+      {renderSelect("🎉 Tu veux le pack soirée ? (jeu de carte / Flasque gravé / Banane)", "pack_soiree", ["oui", "non"])}
+      {renderSelect("🧣 Tu veux le pack grand froid ? (chaussettes / Bonnet / cache cou)", "pack_grand_froid", ["oui", "non"])}
       {renderSelect("🥖 Combien de baguettes par jour ?", "pain", ['0', '1', '2', '3'])}
       {renderSelect("🥐 Combien de croissants par jour ?", "croissant", ['0', '1', '2', '3'])}
       {renderSelect("🍫 Combien de pains au choco par jour ?", "pain_choco", ['0', '1', '2', '3'])}
-      {renderSelect("🥓 Pack Saucissons (par 3) ?", "saucisson", ['0', '1', '2', '3'])}
-      {renderSelect("🧀 Pack Fromages (par 3) ?", "fromage", ['0', '1', '2', '3'])}
+      {renderSelect("🥓 Pack Saucissons (3 x 180g) ?", "saucisson", ['0', '1', '2', '3'])}
+      {renderSelect("🧀 Pack Fromages (3 x 200g) ?", "fromage", ['0', '1', '2', '3'])}
       {renderSelect("🍺 Choisis ton pack bière :", "biere", [
         'aucun',
         'Blonde + Génép + Myrtille',
