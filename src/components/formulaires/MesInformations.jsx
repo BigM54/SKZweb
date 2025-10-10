@@ -115,9 +115,7 @@ export default function MesInformations() {
         bucque: form.peks ? null : form.bucque,
         nums: form.peks ? null : form.num,
         proms: form.peks ? null : form.proms,
-        tabagns: form.peks ? null : form.tabagns,
-        charte: form.charte,
-        acceptCousins: form.acceptCousins
+        tabagns: form.peks ? null : form.tabagns
       }).eq('email', email);
       console.log('Update profils:', res1);
 
@@ -168,7 +166,7 @@ export default function MesInformations() {
           <Form.Control name="numero" value={form.numero} onChange={handleChange} required />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Check type="checkbox" label="Je suis un Pek’s (non-gadz) ?" name="peks" checked={form.peks} onChange={e => setForm(f => ({ ...f, peks: e.target.checked }))} />
+          <Form.Check type="checkbox" label="Je suis un Pek’s (non-gadz, les .onscrits vous êtes pas Pek's) ?" name="peks" checked={form.peks} onChange={e => setForm(f => ({ ...f, peks: e.target.checked }))} />
         </Form.Group>
         <Collapse in={!form.peks}>
           <div>
