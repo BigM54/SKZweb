@@ -124,6 +124,10 @@ export default function MesInformations() {
       numsArr.forEach((n, i) => {
         cousinData[`nums${i+1}`] = n;
       });
+      // Vide explicitement les colonnes nums3 à nums6 si non fournies
+      for (let i = numsArr.length + 1; i <= 6; i++) {
+        cousinData[`nums${i}`] = '';
+      }
       // On update explicitement la bucque aussi
       const { error: cousinError } = await supabase.from('cousin').update(cousinData).eq('email', email);
       if (cousinError) {
