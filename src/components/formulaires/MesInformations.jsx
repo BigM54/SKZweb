@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { Form, Button, Alert, Spinner, Collapse } from 'react-bootstrap';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,9 +9,15 @@ export default function MesInformations() {
   const { getToken } = useAuth();
   const [form, setForm] = useState({
     bucque: '',
-    nums: '',
+    num: '',
+    prenom: '',
+    nom: '',
     numero: '',
-    tabagns: ''
+    tabagns: '',
+    proms: null,
+    peks: false,
+    charte: false,
+    acceptCousins: false
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,9 +35,15 @@ export default function MesInformations() {
       if (profil) {
         setForm({
           bucque: profil.bucque || '',
-          nums: profil.nums || '',
+          num: profil.nums || '',
+          prenom: profil.prenom || '',
+          nom: profil.nom || '',
           numero: profil.numero || '',
-          tabagns: profil.tabagns || ''
+          tabagns: profil.tabagns || '',
+          proms: profil.proms || null,
+          peks: profil.peks || false,
+          charte: profil.charte || false,
+          acceptCousins: profil.acceptCousins || false
         });
       }
       setLoading(false);
@@ -50,22 +63,40 @@ export default function MesInformations() {
     setSuccess(false);
 
     // Validation stricte des 4 champs
-    const { numero, nums, bucque, tabagns } = form;
+    const { prenom, nom, numero, num, bucque, tabagns, proms, peks } = form;
     const phoneRegex = /^(0[67]\d{8}|\+[\d]{6,15})$/;
+    if (!prenom || prenom.length < 2) {
+      setError("Prénom invalide.");
+      setLoading(false);
+      return;
+    }
+    if (!nom || nom.length < 2) {
+      setError("Nom invalide.");
+      setLoading(false);
+      return;
+    }
     if (!phoneRegex.test(numero.replace(/\s/g, ''))) {
       setError("Numéro invalide.");
       setLoading(false);
       return;
     }
-    if (!bucque || bucque.length < 2) {
-      setError("Bucque invalide.");
-      setLoading(false);
-      return;
-    }
-    if (!nums || !/^\d{1,3}(-\d{1,3})*$/.test(nums)) {
-      setError("Format du champ num invalide. Exemple attendu : 12-234-2-34");
-      setLoading(false);
-      return;
+    if (!peks) {
+      if (!num || !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
+        setError("Format du champ num invalide. Exemple attendu : 12-234-2-34");
+        setLoading(false);
+        return;
+      }
+      const promsInt = parseInt(proms, 10);
+      if (isNaN(promsInt)) {
+        setError("Le champ Prom's doit être un entier valide (ex: 224).");
+        setLoading(false);
+        return;
+      }
+      if (!tabagns) {
+        setError("Tabagn's obligatoire.");
+        setLoading(false);
+        return;
+      }
     }
 
 
@@ -77,10 +108,16 @@ export default function MesInformations() {
       const email = user.primaryEmailAddress?.emailAddress;
       // Update profils
       const res1 = await supabase.from('profils').update({
-        bucque: form.bucque,
-        nums: form.nums,
+        prenom: form.prenom,
+        nom: form.nom,
         numero: form.numero,
-        tabagns: form.tabagns
+        peks: form.peks,
+        bucque: form.peks ? null : form.bucque,
+        nums: form.peks ? null : form.num,
+        proms: form.peks ? null : form.proms,
+        tabagns: form.peks ? null : form.tabagns,
+        charte: form.charte,
+        acceptCousins: form.acceptCousins
       }).eq('email', email);
       console.log('Update profils:', res1);
 
@@ -119,31 +156,50 @@ export default function MesInformations() {
       {success && <Alert variant="success">Modifications enregistrées !</Alert>}
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
-          <Form.Label>Bucque</Form.Label>
-          <Form.Control name="bucque" value={form.bucque} onChange={handleChange} />
+          <Form.Label>Prénom <span style={{color:'red'}}>*</span></Form.Label>
+          <Form.Control name="prenom" value={form.prenom} onChange={handleChange} required />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Num'ss</Form.Label>
-          <Form.Control name="nums" value={form.nums} onChange={handleChange} />
+          <Form.Label>Nom <span style={{color:'red'}}>*</span></Form.Label>
+          <Form.Control name="nom" value={form.nom} onChange={handleChange} required />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Numéro</Form.Label>
-          <Form.Control name="numero" value={form.numero} onChange={handleChange} />
+          <Form.Label>Numéro <span style={{color:'red'}}>*</span></Form.Label>
+          <Form.Control name="numero" value={form.numero} onChange={handleChange} required />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Tabagn's</Form.Label>
-          <Form.Select name="tabagns" value={form.tabagns} onChange={handleChange}>
-            <option value="">-- Choisir --</option>
-            <option value="sibers">Siber's</option>
-            <option value="kin">KIN</option>
-            <option value="cluns">Clun's</option>
-            <option value="p3">P3</option>
-            <option value="boquette">Boquette</option>
-            <option value="bordels">Bordel's</option>
-            <option value="birse">Birse</option>
-            <option value="chalons">Chalon's</option>
-          </Form.Select>
+          <Form.Check type="checkbox" label="Je suis un Pek’s (non-gadz) ?" name="peks" checked={form.peks} onChange={e => setForm(f => ({ ...f, peks: e.target.checked }))} />
         </Form.Group>
+        <Collapse in={!form.peks}>
+          <div>
+            <Form.Group className="mb-3">
+              <Form.Label>Bucque <span style={{color:'red'}}>*</span></Form.Label>
+              <Form.Control name="bucque" value={form.bucque} onChange={handleChange} />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Num's / Fam's <span style={{color:'red'}}>*</span></Form.Label>
+              <Form.Control name="num" value={form.num} onChange={handleChange} />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Tabagn's (Campus) <span style={{color:'red'}}>*</span></Form.Label>
+              <Form.Select name="tabagns" value={form.tabagns} onChange={handleChange} required>
+                <option value="">-- Choisir --</option>
+                <option value="sibers">Siber's</option>
+                <option value="kin">KIN</option>
+                <option value="cluns">Clun's</option>
+                <option value="p3">P3</option>
+                <option value="boquette">Boquette</option>
+                <option value="bordels">Bordel's</option>
+                <option value="birse">Birse</option>
+                <option value="chalons">Chalon's</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Prom's (1A : 225, 2A : 224) <span style={{color:'red'}}>*</span></Form.Label>
+              <Form.Control type="number" name="proms" value={form.proms} onChange={handleChange} />
+            </Form.Group>
+          </div>
+        </Collapse>
         <Button type="submit" variant="primary" disabled={loading}>Enregistrer</Button>
       </Form>
     </div>

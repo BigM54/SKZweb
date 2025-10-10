@@ -21,7 +21,7 @@ export default function RegisterAndVerify() {
     confirmPassword: '',
     numero: '',
     tabagns: '',
-    proms: 0,
+    proms: null,
     peks: false,
     charte: false,
     acceptCousins: false
