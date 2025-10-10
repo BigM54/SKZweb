@@ -122,7 +122,7 @@ export default function MesInformations() {
       console.log('Update profils:', res1);
 
       // Ajout/MAJ des nums dans cousin (format nums1, nums2, ...)
-      const numsArr = form.nums.split('-');
+  const numsArr = (form.num || '').split('-');
       const cousinData = {
         numero: form.numero,
         bucque: form.bucque,
