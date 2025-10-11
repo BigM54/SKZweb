@@ -76,16 +76,18 @@ export default function RegisterAndVerify() {
       }
     }
 
-    // Vérification du format de num si acceptCousins est coché
+        // Num's devient facultatif même si acceptCousins est coché
     let numsArr = [];
     if (acceptCousins && !peks) {
-      if (!num || !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
+          if (num && !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
         setError("Format du champ num invalide. Exemple attendu : 12-234-2-34");
         setLoading(false);
         return;
       }
-      numsArr = num.split('-');
-      if (numsArr.length > 6) numsArr = numsArr.slice(0, 6);
+          if (num) {
+            numsArr = num.split('-');
+            if (numsArr.length > 6) numsArr = numsArr.slice(0, 6);
+          }
     }
 
     try {
@@ -220,7 +222,7 @@ export default function RegisterAndVerify() {
 
           <Collapse isOpen={!formData.peks}>
             <FormGroup><Label>Bucque / Surnom</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} /></FormGroup>
-            <FormGroup><Label>Num's / Fam's</Label><Input name="num" value={formData.num} onChange={handleChange} /></FormGroup>
+            <FormGroup><Label>Num's / Fam's</Label><Input name="num" value={formData.num} onChange={handleChange} placeholder="Ex: 12-234-2-34 (facultatif)" /></FormGroup>
             <FormGroup>
               <Label>{"Tabagn's (Campus)"} <span style={{color:'red'}}>*</span></Label>
               <Input type="select" name="tabagns" value={formData.tabagns} onChange={handleChange} required={!formData.peks}>

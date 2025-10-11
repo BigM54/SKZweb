@@ -58,7 +58,7 @@ export default function MesInformations() {
     setError(null);
     setSuccess(false);
 
-    // Validation stricte des 4 champs
+    // Validation stricte des champs principaux, num devient facultatif
     const { prenom, nom, numero, num, bucque, tabagns, proms, peks } = form;
     const phoneRegex = /^(0[67]\d{8}|\+[\d]{6,15})$/;
     if (!prenom || prenom.length < 2) {
@@ -77,7 +77,7 @@ export default function MesInformations() {
       return;
     }
     if (!peks) {
-      if (!num || !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
+      if (num && !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
         setError("Format du champ num invalide. Exemple attendu : 12-234-2-34");
         setLoading(false);
         return;
@@ -115,18 +115,14 @@ export default function MesInformations() {
       }).eq('email', email);
       console.log('Update profils:', res1);
 
-      // Ajout/MAJ des nums dans cousin (format nums1, nums2, ...)
-  const numsArr = (form.num || '').split('-');
+      // Ajout/MAJ des nums dans cousin (format nums1, nums2, ...), num facultatif
+      const numsArr = (form.num || '').split('-').filter(Boolean);
       const cousinData = {
         numero: form.numero,
         bucque: form.bucque,
       };
-      numsArr.forEach((n, i) => {
-        cousinData[`nums${i+1}`] = n;
-      });
-      // Vide explicitement les colonnes nums3 à nums6 si non fournies
-      for (let i = numsArr.length + 1; i <= 6; i++) {
-        cousinData[`nums${i}`] = '';
+      for (let i = 0; i < 6; i++) {
+        cousinData[`nums${i+1}`] = numsArr[i] || '';
       }
       // On update explicitement la bucque aussi
       const { error: cousinError } = await supabase.from('cousin').update(cousinData).eq('email', email);
@@ -175,8 +171,8 @@ export default function MesInformations() {
               <Form.Control name="bucque" value={form.bucque} onChange={handleChange} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Num's / Fam's <span style={{color:'red'}}>*</span></Form.Label>
-              <Form.Control name="num" value={form.num} onChange={handleChange} />
+              <Form.Label>Num's / Fam's <span style={{color:'gray'}}>(facultatif)</span></Form.Label>
+                <Form.Control name="num" value={form.num} onChange={handleChange} placeholder="Ex: 12-234-2-34 (facultatif)" />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Tabagn's (Campus) <span style={{color:'red'}}>*</span></Form.Label>
