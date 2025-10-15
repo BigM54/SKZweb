@@ -236,6 +236,11 @@ export default function ChoixOptions() {
         <option value="">-- Choisir --</option>
         {options.map(opt => {
           let prix = '';
+          let disabled = false;
+          // Désactive bronze et platine si snowboard ou snow + chaussures
+          if (name === 'pack_location' && (form.materiel_location === 'snowboard' || form.materiel_location === 'snow + chaussures')) {
+            if (opt === 'bronze' || opt === 'platine') disabled = true;
+          }
           // Prix total pour les packs à quantité
           if (["pain","croissant","pain_choco","saucisson","fromage"].includes(name)) {
             const n = parseInt(opt);
@@ -254,7 +259,7 @@ export default function ChoixOptions() {
           if (name === 'pack_grand_froid') prix = prixAffichage.pack_grand_froid[opt] ? ` (${prixAffichage.pack_grand_froid[opt]}€)` : '';
           if (name === 'pack_jeux') prix = prixAffichage.pack_jeux[opt] ? ` (${prixAffichage.pack_jeux[opt]}€)` : '';
           if (name === 'bus') prix = prixAffichage.bus[opt] ? ` (${prixAffichage.bus[opt]}€)` : '';
-          return <option key={opt} value={opt}>{opt}{prix}</option>;
+          return <option key={opt} value={opt} disabled={disabled}>{opt}{prix}</option>;
         })}
       </Form.Select>
     </Form.Group>
