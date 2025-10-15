@@ -1,9 +1,191 @@
+/* Force Offcanvas (sidebar) to be above any background image */
+.offcanvas {
+  z-index: 3000 !important;
+}
+/* Petite police pour la FAQ */
+.faq-small-text {
+  font-size: 0.8rem;
+}
+/* Footer global */
+.site-footer {
+  width: 100vw;
+  background: #00314f;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 1.2rem 0 0.7rem 0;
+  text-align: center;
+  margin: 0;
+}
+.site-footer a {
+  color: #fff;
+  text-decoration: underline;
+  margin: 0 0.5rem;
+  font-size: 1.05em;
+  transition: color 0.2s;
+}
+.site-footer a:hover {
+  color: #1c86ee;
+}
+.site-footer .footer-socials {
+  margin-bottom: 0.5rem;
+}
+.site-footer .footer-socials a {
+  font-size: 1.3em;
+  margin: 0 0.4em;
+  vertical-align: middle;
+}
+/* Décale les onglets de la navbar desktop vers la droite pour laisser la place au logo */
+.navbar-offset {
+  margin-left: 160px;
+}
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: #ffffff !important;
+}
+
+.custom-navbar {
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  height: 140px;
+  min-height: 140px;
+  max-height: 140px;
+  position: relative;
+  background: #00314f !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex;
+  align-items: stretch;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Logo à gauche de la navbar */
+.navbar-logo-left {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 90px;
+  z-index: 2001;
+}
+
+/* Logo à droite de la navbar */
+.navbar-logo-right {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 140px;
+}
+
+/* Rendre les enfants transparents */
+.custom-navbar .container-fluid,
+.custom-navbar .navbar-collapse,
+.custom-navbar .navbar-nav,
+.custom-navbar .nav-link,
+.custom-navbar .navbar-brand {
+  z-index: 1050;
+  position: relative;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  z-index: 2000 !important;
+  position: absolute !important;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+main, .container-fluid {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Bouton burger transparent et flou, priorité maximale */
+.burger-btn-skz, .burger-btn-skz.btn, .burger-btn-skz:active, .burger-btn-skz:focus, .burger-btn-skz:hover {
+  background: rgba(255,255,255,0.12) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: none !important;
+  color: black !important;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08) !important;
+}
+
+/* Affiche les chiffres à la verticale on mobile */
+@media (max-width: 767px) {
+  .stats-row-responsive {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .stats-row-responsive > .col {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+}
+/* Titre sponsors plus petit */
+.sponsors-title {
+  font-size: 1.3rem !important;
+}
+/* Réduit la taille de police dans l'espace sponsors */
+.sponsors-section {
+  font-size: 0.95rem !important;
+}
+
+/* Réduit la taille de police dans l'espace chiffres */
+.stats-section {
+  font-size: 1.3rem !important;
+}
+.stats-number {
+  font-size: 1.3rem !important;
+  font-weight: 700;
+  color: #003652;
+  line-height: 1;
+}
+.stats-label {
+  font-size: 0.95rem !important;
+  color: #222;
+  font-weight: 500;
+}
+/* Supprime le contour du bouton Se déconnecter (btn-outline-danger) */
+.btn-outline-danger {
+  border: none !important;
+  box-shadow: none !important;
+  color: #dc3545 !important; /* rouge Bootstrap par défaut */
+  background: transparent !important;
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+  border: none !important;
+  box-shadow: none !important;
+  color: #b94a57 !important; /* rouge grisé au hover */
+  background: transparent !important;
+}
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0 !important;
+  padding: 0 !important;
   text-align: center;
   display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .logo {
@@ -18,6 +200,20 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
+.full-height-card {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+}
+
+header {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
 
 @keyframes logo-spin {
   from {
@@ -40,4 +236,288 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.animated-logo {
+  opacity: 0;
+  animation: fadeInFill 2s ease-in-out forwards;
+}
+
+.flip-box {
+  background-color: transparent;
+  color: white;
+  width: 65px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: transform 0.6s;
+  will-change: transform;
+}
+
+.flip-box.flip .flip-value {
+  animation: flip 0.6s ease;
+}
+
+.flip-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.flip-label {
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  text-align: center;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  40% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+
+
+@keyframes fadeInFill {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+    filter: grayscale(100%);
+  }
+  50% {
+    opacity: 0.5;
+    filter: grayscale(50%);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: grayscale(0%);
+  }
+}
+
+.full-width {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+
+/* Couleur du texte des boutons et dropdowns : bleu par défaut, blanc si ouvert */
+.nav-btn, .nav-btn .dropdown-toggle {
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+  height: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  color: #0d6efd !important; /* bleu Bootstrap */
+  background: transparent !important;
+  border: none;
+  transition: color 0.2s, background 0.2s;
+}
+
+/* Quand le dropdown est ouvert, texte blanc */
+.nav-btn.show > .dropdown-toggle,
+.nav-btn .dropdown-toggle.show,
+.nav-btn .dropdown-toggle[aria-expanded="true"] {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+/* Hover sur bouton ou dropdown : texte blanc, fond bleu foncé */
+.nav-btn:hover,
+.nav-btn:focus,
+.nav-btn .dropdown-toggle:hover,
+.nav-btn .dropdown-toggle:focus,
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: transparent !important;
+  color: #fff !important; /* garde le texte blanc au hover si tu veux */
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  background-color: #0d1c31 !important;
+  min-width: 180px;
+  padding: 0;
+  border: none;
+}
+
+/* Dropdown items : bleu par défaut, blanc au hover */
+.dropdown-item {
+  color: #0d6efd !important;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+  background: transparent !important;
+  transition: color 0.2s, background 0.2s;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: #fff !important;
+  background-color: #19325a !important;
+}
+
+.animation-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.animation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.animation-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.animation-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+@media (max-width: 999px) {
+  .mobile-nav .nav-btn,
+  .mobile-nav .dropdown {
+    margin-bottom: 1.2rem !important;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start !important;
+    text-align: left;
+  }
+  .mobile-nav .dropdown-toggle {
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+  }
+  .mobile-nav .dropdown-menu {
+    width: 100%;
+    min-width: unset;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+  }
+}
+
+/* Styles responsive pour le récapitulatif des animations */
+.min-width-0 {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  /* Sur petit écran, assure que les éléments ne débordent pas */
+  .text-wrap {
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  /* Réduit l'espacement sur petits écrans */
+  .g-3 > * {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Améliore la gestion des badges sur petits écrans */
+  .flex-wrap {
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Sur très petit écran, stack les badges verticalement si nécessaire */
+  .badge {
+    margin-bottom: 2px;
+  }
+}
+
+/* Désactive l'effet de survol gris sur les boutons de choix */
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  background-color: transparent !important;
+  border-color: #6c757d !important;
+  color: #6c757d !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: transparent !important;
+  border-color: #0d6efd !important;
+  color: #0d6efd !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-warning:hover,
+.btn-warning:focus,
+.btn-danger:hover,
+.btn-danger:focus {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary,
+.bg-primary,
+.card.bg-primary,
+.badge-primary {
+  background-color: #003652 !important; /* ton bleu personnalisé */
+  border-color: #003652 !important;
+}
+
+.btn-primary:hover,
+.bg-primary:hover {
+  background-color: #1c86ee !important; /* variante hover */
+  border-color: #1c86ee !important;
+}
+
+/* NAVBAR TEXTE BLANC PAR DÉFAUT, GRIS AU SURVOL */
+.navbar .nav-link, .navbar .navbar-brand, .navbar .dropdown-toggle {
+  color: #fff !important;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.navbar .nav-link:hover, .navbar .navbar-brand:hover, .navbar .dropdown-toggle:hover {
+  color: #b0b0b0 !important;
+}
+
+/* Dropdown items de la navbar : blanc par défaut, gris au hover */
+.navbar .dropdown-menu .dropdown-item {
+  color: #fff !important;
+  background: transparent !important;
+  font-size: 1rem;
+  padding: 0.25rem 0.75rem;
+  transition: color 0.2s;
+}
+/* La navbar s'adapte à la hauteur de son fond */
+.navbar {
+  height: 100%;
+  --bs-navbar-padding-y: 0.1rem;
+  /* background-color: transparent !important; */
+  display: flex;
+  align-items: stretch;
+}
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus {
+  color: #b0b0b0 !important;
+  background: transparent !important;
+}
+
+/* Bouton dropdown de la navbar : blanc par défaut, gris au hover */
+.navbar .dropdown-toggle, .navbar .nav-link.dropdown-toggle {
+  color: #fff !important;
+  background: transparent !important;
+  transition: color 0.2s;
+}
+.navbar .dropdown-toggle:hover, .navbar .nav-link.dropdown-toggle:hover, .navbar .dropdown-toggle:focus, .navbar .nav-link.dropdown-toggle:focus {
+  color: #b0b0b0 !important;
+  background: transparent !important;
 }

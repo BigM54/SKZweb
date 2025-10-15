@@ -19,8 +19,8 @@ export default function Formulaires() {
   const [ongletActif, setOngletActif] = useState('Options');
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
-      <Container className="py-4">
+    <div className="full-width" style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
+      <div className="py-4">
         <Tabs
           activeKey={ongletActif}
           onSelect={(k) => setOngletActif(k)}
@@ -30,7 +30,6 @@ export default function Formulaires() {
           <Tab eventKey="Anim's" title="Anim's" />
           <Tab eventKey="Res'" title="Res'" />
         </Tabs>
-
         <Card className="shadow">
           <Card.Body>
             {ongletActif === 'Options' && <ChoixOptions />}
@@ -38,7 +37,7 @@ export default function Formulaires() {
             {ongletActif === "Res'" && <ChoixRes />}
           </Card.Body>
         </Card>
-      </Container>
+      </div>
     </div>
   );
 }

@@ -4,7 +4,6 @@ import {
 } from 'reactstrap';
 import { useSignUp, useAuth} from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
 import { createClient } from '@supabase/supabase-js';
 
 export default function RegisterAndVerify() {
@@ -22,8 +21,10 @@ export default function RegisterAndVerify() {
     confirmPassword: '',
     numero: '',
     tabagns: '',
-    proms: 0,
-    peks: false
+    proms: null,
+    peks: false,
+    charte: false,
+    acceptCousins: false
   });
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
@@ -40,7 +41,7 @@ export default function RegisterAndVerify() {
     setError(null);
     setLoading(true);
 
-    const { email, password, confirmPassword, prenom, nom, numero, peks } = formData;
+    const { email, password, confirmPassword, prenom, nom, numero, peks, acceptCousins, bucque, num, proms } = formData;
 
     if (password !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas.");
@@ -65,6 +66,30 @@ export default function RegisterAndVerify() {
       return setLoading(false);
     }
 
+    // Vérification du format de proms (doit être un entier positif raisonnable)
+    if (!peks) {
+      const promsInt = parseInt(proms, 10);
+      if (isNaN(promsInt)) {
+        setError("Le champ Prom's doit être un entier valide (ex: 224).");
+        setLoading(false);
+        return;
+      }
+    }
+
+        // Num's devient facultatif même si acceptCousins est coché
+    let numsArr = [];
+    if (acceptCousins && !peks) {
+          if (num && !/^\d{1,3}(-\d{1,3})*$/.test(num)) {
+        setError("Format du champ num invalide. Exemple attendu : 12-234-2-34");
+        setLoading(false);
+        return;
+      }
+          if (num) {
+            numsArr = num.split('-');
+            if (numsArr.length > 6) numsArr = numsArr.slice(0, 6);
+          }
+    }
+
     try {
       await signUp.create({
         emailAddress: email,
@@ -75,8 +100,8 @@ export default function RegisterAndVerify() {
           prenom,
           nom,
           peks,
-          num: peks ? null : formData.num,
-          bucque: peks ? null : formData.bucque,
+          num: peks ? null : num,
+          bucque: peks ? null : bucque,
           proms: peks ? null : formData.proms,
           tabagns: peks ? null : formData.tabagns,
         },
@@ -87,10 +112,13 @@ export default function RegisterAndVerify() {
         nom,
         numero,
         peks,
-        num: peks ? null : formData.num,
-        bucque: peks ? null : formData.bucque,
+        num: peks ? null : num,
+        bucque: peks ? null : bucque,
         proms: peks ? null : formData.proms,
         tabagns: peks ? null : formData.tabagns,
+        acceptCousins,
+        email,
+        numsArr,
       };
       setStep('verify');
     } catch (err) {
@@ -104,7 +132,6 @@ export default function RegisterAndVerify() {
 
       setError(fallback);
     }
-
     setLoading(false);
   };
 
@@ -130,7 +157,7 @@ export default function RegisterAndVerify() {
 
       const metadata = userMetadataRef.current;
       const {
-        prenom, nom, numero, num: nums, tabagns, proms, bucque, peks,
+        prenom, nom, numero, num: nums, tabagns, proms, bucque, peks, acceptCousins, email: mail, numsArr
       } = metadata;
 
       const { error: insertError } = await supabase.from('profils').insert([{
@@ -143,14 +170,24 @@ export default function RegisterAndVerify() {
         tabagns,
         peks,
       }]);
-
-      if (insertError) {
-        console.error('Supabase insert error:', insertError);
-        setError("Erreur lors de l'enregistrement du profil.");
-        setLoading(false);
-        return;
+      // Ajout des infos cousins si accepté
+      if (acceptCousins && !peks) {
+        const cousinData = {
+          email: mail?.toLowerCase(),
+          numero,
+          bucque,
+        };
+        numsArr.forEach((n, i) => {
+          cousinData[`nums${i+1}`] = n;
+        });
+        const { error: cousinError } = await supabase.from('cousin').insert([cousinData]);
+        if (cousinError) {
+          console.error('Supabase cousin insert error:', cousinError);
+          setError("Erreur lors de l'enregistrement des cousins.");
+          setLoading(false);
+          return;
+        }
       }
-
       setStep('done');
       setTimeout(() => navigate('/'), 2000);
 
@@ -163,36 +200,31 @@ export default function RegisterAndVerify() {
     setLoading(false);
   };
 
-
-
-
-    
-
   if (!isLoaded) return null;
 
   return (
-    <Container className="mt-4 p-4 border rounded shadow" style={{ maxWidth: 600 }}>
+    <div className="full-width mt-4 p-4 border rounded shadow">
       <h2 className="text-center text-primary mb-3">
         {step === 'register' ? 'Créer un compte' : 'Vérifie ton email'}
       </h2>
-
       {error && <Alert color="danger">{error}</Alert>}
 
       {step === 'register' && (
         <Form onSubmit={handleRegister}>
+          <div className="mb-2 text-start" style={{fontSize:'0.9em'}}><span style={{color:'red'}}>*</span> Champs obligatoires</div>
           <FormGroup check className="mb-3 d-flex align-items-center gap-2">
             <Input type="checkbox" name="peks" checked={formData.peks} onChange={handleChange} style={{ width: '1.5rem', height: '1.5rem' }} />
-            <Label check>Je suis un Pek’s (non-gadz) ?</Label>
+            <Label check>{"Je suis un Pek’s (non-gadz, les .onscrits vous êtes pas Pek's) ?"}</Label>
           </FormGroup>
 
-          <FormGroup><Label>Prénom</Label><Input name="prenom" value={formData.prenom} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Nom</Label><Input name="nom" value={formData.nom} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Prénom <span style={{color:'red'}}>*</span></Label><Input name="prenom" value={formData.prenom} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Nom <span style={{color:'red'}}>*</span></Label><Input name="nom" value={formData.nom} onChange={handleChange} required /></FormGroup>
 
           <Collapse isOpen={!formData.peks}>
-            <FormGroup><Label>Bucque</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} required={!formData.peks} /></FormGroup>
-            <FormGroup><Label>Num'ss</Label><Input name="num" value={formData.num} onChange={handleChange} required={!formData.peks} /></FormGroup>
+            <FormGroup><Label>Bucque / Surnom</Label><Input name="bucque" value={formData.bucque} onChange={handleChange} /></FormGroup>
+            <FormGroup><Label>Num's / Fam's</Label><Input name="num" value={formData.num} onChange={handleChange} placeholder="Ex: 12-234-2-34 (facultatif)" /></FormGroup>
             <FormGroup>
-              <Label>Tabagn's</Label>
+              <Label>{"Tabagn's (Campus)"} <span style={{color:'red'}}>*</span></Label>
               <Input type="select" name="tabagns" value={formData.tabagns} onChange={handleChange} required={!formData.peks}>
                 <option value="">-- Choisir --</option>
                 <option value="sibers">Siber's</option>
@@ -202,17 +234,34 @@ export default function RegisterAndVerify() {
                 <option value="boquette">Boquette</option>
                 <option value="bordels">Bordel's</option>
                 <option value="birse">Birse</option>
+                <option value="chalons">Chalon's</option>
               </Input>
             </FormGroup>
-            <FormGroup><Label>Prom's</Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
+            <FormGroup><Label>{"Prom's (1A : 225, 2A : 224)"} <span style={{color:'red'}}>*</span></Label><Input type="number" name="proms" value={formData.proms} onChange={handleChange} required={!formData.peks} /></FormGroup>
           </Collapse>
 
-          <FormGroup><Label>Email</Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Numéro</Label><Input type="tel" name="numero" value={formData.numero} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Mot de passe</Label><Input type="password" name="password" value={formData.password} onChange={handleChange} required /></FormGroup>
-          <FormGroup><Label>Confirmer</Label><Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Email <span style={{color:'red'}}>*</span></Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Numéro <span style={{color:'red'}}>*</span></Label><Input type="tel" name="numero" value={formData.numero} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Mot de passe <span style={{color:'red'}}>*</span></Label><Input type="password" name="password" value={formData.password} onChange={handleChange} required /></FormGroup>
+          <FormGroup><Label>Confirmer <span style={{color:'red'}}>*</span></Label><Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required /></FormGroup>
 
-          <Button color="primary" type="submit" block disabled={loading}>
+          <FormGroup check className="mb-3 d-flex align-items-center gap-2">
+            <Input type="checkbox" name="charte" checked={formData.charte} onChange={handleChange} required style={{ width: '1.5rem', height: '1.5rem' }} />
+            <Label check>
+              J'ai lu et je m'engage à respecter la
+              {' '}<a href="/Charte_De_Bonne_Conduite_Participant_SKZ_2026.pdf" target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'underline' }}>charte de bonne conduite</a> (obligatoire)
+            </Label>
+          </FormGroup>
+          {!formData.peks && (
+            <FormGroup check className="mb-3 d-flex align-items-center gap-2">
+              <Input type="checkbox" name="acceptCousins" checked={formData.acceptCousins} onChange={handleChange} style={{ width: '1.5rem', height: '1.5rem' }} />
+              <Label check>
+                J'accepte de transmettre mes coordonnées à mes cousins des autres tabagn's
+              </Label>
+            </FormGroup>
+          )}
+
+          <Button color="primary" type="submit" block disabled={loading || !formData.charte}>
             {loading ? <Spinner size="sm" /> : 'Créer mon compte'}
           </Button>
         </Form>
@@ -235,6 +284,6 @@ export default function RegisterAndVerify() {
           🔄 Redirection en cours...
         </Alert>
       )}
-    </Container>
+    </div>
   );
 }
