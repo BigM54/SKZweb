@@ -206,7 +206,7 @@ export default function ChoixOptions() {
       sibers: 120,
       kin: 110,
       cluns: 100,
-      p3: 120,
+      p3: 140,
       boquette: 125,
       bordels: 125,
       birse: 125,
@@ -307,7 +307,7 @@ export default function ChoixOptions() {
         'Blonde + Ambrée + Blanche',
         'Les 2 packs'
       ])}
-      {renderSelect("🚌 Tu veux un bus ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
+      {renderSelect("🚌 Tu veux un bus (train pour P3) ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
       {renderSelect("👕 Taille du pull ?", "taille_pull", ["S", "M", "L", "XL", "XXL"])}
       {renderSelect("🥗 Régime alimentaire ?", "regime", ["normal", "vege", "halal"])}
       

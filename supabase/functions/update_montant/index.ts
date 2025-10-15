@@ -32,7 +32,7 @@ function calculerMontant(form) {
     },
     bus: {
       non: 0,
-      sibers: 120,
+      sibers: 140,
       kin: 110,
       cluns: 100,
       p3: 120,
