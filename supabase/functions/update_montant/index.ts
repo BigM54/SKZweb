@@ -88,7 +88,7 @@ serve(async (req)=>{
       status: 401
     });
     // Vérifie le token JWT en HS256 avec la clé secrète Supabase
-    const secret = Deno.env.get("SUPABASE_JWT_SECRET");
+    const secret = Deno.env.get("JWT_SECRET_SUPABASE");
     if (!secret) {
       return new Response("Clé secrète JWT manquante", { status: 500 });
     }
@@ -165,6 +165,25 @@ serve(async (req)=>{
     if (updateError) {
       throw updateError;
     }
+    const { data: oldOptions } = await supabase.from('options').select('bus').eq('id', userId).single();
+    const oldBus = oldOptions?.bus || null;
+    const newBus = form.bus;
+    // Si l'utilisateur change de bus
+    if (oldBus && oldBus !== 'non' && oldBus !== newBus) {
+      // -1 sur l'ancien bus
+      const { data: oldBusRow } = await supabase.from('busPlace').select('nbInscrits').eq('tabagns', oldBus).single();
+      if (oldBusRow) {
+        await supabase.from('busPlace').update({ nbInscrits: Math.max(0, oldBusRow.nbInscrits - 1) }).eq('tabagns', oldBus);
+      }
+    }
+    // +1 sur le nouveau bus
+    if (newBus && newBus !== 'non' && oldBus !== newBus) {
+      const { data: newBusRow } = await supabase.from('busPlace').select('nbInscrits').eq('tabagns', newBus).single();
+      if (newBusRow) {
+        await supabase.from('busPlace').update({ nbInscrits: newBusRow.nbInscrits + 1 }).eq('tabagns', newBus);
+      }
+    }
+    // Mise à jour des options
     const { error: optionsError } = await supabase.from('options').upsert({
       ...form,
       id: userId
