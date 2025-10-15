@@ -84,7 +84,16 @@ export default function ChoixOptions() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    // Si on change le matériel vers snowboard ou snow + chaussures, et pack_location est bronze ou platine, on le reset
+    if (name === 'materiel_location' && (value === 'snowboard' || value === 'snow + chaussures')) {
+      setForm(prev => ({
+        ...prev,
+        [name]: value,
+        pack_location: (prev.pack_location === 'bronze' || prev.pack_location === 'platine') ? '' : prev.pack_location
+      }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   };
 
 
