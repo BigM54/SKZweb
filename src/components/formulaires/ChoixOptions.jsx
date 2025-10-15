@@ -175,10 +175,19 @@ export default function ChoixOptions() {
     );
   }
 
+  const prixLocation = {
+    "ski + chaussures": { bronze: 75, argent: 95, or: 112, platine: 147 },
+    "snow + chaussures": { bronze: 75, argent: 95, or: 112, platine: 147 },
+    ski: { bronze: 68, argent: 85, or: 108, platine: 142 },
+    snowboard: { bronze: 68, argent: 85, or: 108, platine: 142 },
+    chaussures: { bronze: 51, argent: 73, or: 94, platine: 127 }
+  };
+
   // Prix pour affichage
   const prixAffichage = {
     pack_location: {
-      bronze: 75, argent: 95, or: 112, platine: 147
+      "ski + chaussures": { bronze: 75, argent: 95, or: 112, platine: 147 },
+      "snow + chaussures": { bronze: 75, argent: 95, or: 112, platine: 147 }
     },
     ski: { bronze: 68, argent: 85, or: 108, platine: 142 },
     chaussures: { bronze: 51, argent: 73, or: 94, platine: 127 },
@@ -226,7 +235,9 @@ export default function ChoixOptions() {
             const n = parseInt(opt);
             prix = n > 0 ? ` (${n * prixAffichage[name]}€)` : '';
           }
-          if (name === 'pack_location') prix = prixAffichage.pack_location[opt] ? ` (${prixAffichage.pack_location[opt]}€)` : '';
+          if (name === 'pack_location' && form.materiel_location && prixLocation[form.materiel_location]) {
+            prix = prixLocation[form.materiel_location][opt] ? ` (${prixLocation[form.materiel_location][opt]}€)` : '';
+          }
           if (name === 'biere') prix = prixAffichage.biere[opt] ? ` (${prixAffichage.biere[opt]}€)` : '';
           if (name === 'casque') prix = prixAffichage.casque[opt] ? ` (${prixAffichage.casque[opt]}€)` : '';
           if (name === 'type_forfait') prix = prixAffichage.type_forfait[opt] ? ` (${prixAffichage.type_forfait[opt]}€)` : '';
