@@ -33,7 +33,7 @@ export default function ChoixOptions() {
         supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single(),
         supabase.from('profils').select('proms, peks').eq('email', email).single(),
         supabase.from('dateShotgun').select('promsConscrits').single(),
-        supabase.from('busPlace').select('tabagns, nbInscrits, nbMax').eq('email', email).single()
+        supabase.from('busPlace').select('tabagns, nbInscrits, nbMax')
       ]);
 
       // Récupère la promo de l'utilisateur depuis profils
@@ -321,7 +321,7 @@ export default function ChoixOptions() {
       ])}
       {renderSelect("🚌 Tu veux un bus (train pour P3) ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
       {/* Message d'alerte si le bus sélectionné est plein */}
-      {form.bus && form.bus !== 'non' && busData && busData.tabagns === form.bus && busData.nbInscrits >= busData.nbMax && (
+      {form.bus && form.bus !== 'non' && busData && busData.tabagns === form.bus && busData.nbInscrits >= busData.place && (
         <div className="mt-2 text-danger">
           Le nombre de place max est atteint pour ce bus mais des places peuvent se débloquer, nous te tiendrons au courant
         </div>
