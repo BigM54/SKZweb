@@ -16,7 +16,9 @@ export default function ChoixOptions() {
   const [joursRestants, setJoursRestants] = useState(null);
   const [paiement3Montant, setPaiement3Montant] = useState(null);
 
-  // Récupère d'un coup les données options et paiements
+  // Ajout d'un state pour la liste des bus
+  const [busPlaces, setBusPlaces] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
@@ -28,13 +30,16 @@ export default function ChoixOptions() {
       const email = user.primaryEmailAddress.emailAddress;
 
       // Récupère options, acompte, profils et dateShotgun en parallèle
-      const [{ data: optionsData }, { data: paiementData }, { data: profilData }, { data: shotgunData }, { data: busData }] = await Promise.all([
+      const [{ data: optionsData }, { data: paiementData }, { data: profilData }, { data: shotgunData }, { data: busPlacesData }] = await Promise.all([
         supabase.from('options').select('*').eq('id', user.id).single(),
         supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single(),
         supabase.from('profils').select('proms, peks').eq('email', email).single(),
         supabase.from('dateShotgun').select('promsConscrits').single(),
         supabase.from('busPlace').select('tabagns, nbInscrits, nbMax')
       ]);
+
+      // Stocke la liste des bus
+      setBusPlaces(busPlacesData || []);
 
       // Récupère la promo de l'utilisateur depuis profils
       let promoUser = null;
@@ -321,7 +326,10 @@ export default function ChoixOptions() {
       ])}
       {renderSelect("🚌 Tu veux un bus (train pour P3) ? D'où tu pars ?", "bus", ['non', 'sibers', 'kin', 'cluns', 'p3', 'boquette', 'bordels', 'birse','chalons'])}
       {/* Message d'alerte si le bus sélectionné est plein */}
-      {form.bus && form.bus !== 'non' && busData && busData.tabagns === form.bus && busData.nbInscrits >= busData.place && (
+      {form.bus && form.bus !== 'non' && (() => {
+        const bus = busPlaces.find(b => b.tabagns === form.bus);
+        return bus && bus.nbInscrits >= bus.nbMax;
+      })() && (
         <div className="mt-2 text-danger">
           Le nombre de place max est atteint pour ce bus mais des places peuvent se débloquer, nous te tiendrons au courant
         </div>
