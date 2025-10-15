@@ -35,7 +35,7 @@ export default function ChoixOptions() {
         supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single(),
         supabase.from('profils').select('proms, peks').eq('email', email).single(),
         supabase.from('dateShotgun').select('promsConscrits').single(),
-        supabase.from('busPlace').select('tabagns, nbInscrits, nbMax')
+        supabase.from('busPlace').select('tabagns, nbInscrits, place')
       ]);
 
       // Stocke la liste des bus
@@ -328,7 +328,7 @@ export default function ChoixOptions() {
       {/* Message d'alerte si le bus sélectionné est plein */}
       {form.bus && form.bus !== 'non' && (() => {
         const bus = busPlaces.find(b => b.tabagns === form.bus);
-        return bus && bus.nbInscrits >= bus.nbMax;
+        return bus && bus.nbInscrits >= bus.place;
       })() && (
         <div className="mt-2 text-danger">
           Le nombre de place max est atteint pour ce bus mais des places peuvent se débloquer, nous te tiendrons au courant
