@@ -1,0 +1,64 @@
+import React from 'react';
+import './Tarifs.css';
+
+const tarifs = [
+  { label: 'Pack classique PG', price: '445€', details: 'Pack classique pour PG.' },
+  { label: 'Pack Archi (si pas sur TBK)', price: '495€', details: 'Pack spécial Archi hors TBK.' },
+  { label: 'Pack bronze', price: '75€', details: 'Location ski + chaussures qualité bronze.' },
+  { label: 'Pack ski bronze', price: '68€', details: 'Location ski qualité bronze.' },
+  { label: 'Pack chaussures bronze', price: '51€', details: 'Location chaussures qualité bronze.' },
+  { label: 'Pack argent', price: '95€', details: 'Location ski + chaussures qualité argent.' },
+  { label: 'Pack ski argent', price: '85€', details: 'Location ski qualité argent.' },
+  { label: 'Pack chaussures argent', price: '73€', details: 'Location chaussures qualité argent.' },
+  { label: 'Pack or', price: '112€', details: 'Location ski + chaussures qualité or.' },
+  { label: 'Pack ski or', price: '108€', details: 'Location ski qualité or.' },
+  { label: 'Pack chaussures or', price: '94€', details: 'Location chaussures qualité or.' },
+  { label: 'Pack platine', price: '147€', details: 'Location ski + chaussures qualité platine.' },
+  { label: 'Pack ski platine', price: '142€', details: 'Location ski qualité platine.' },
+  { label: 'Pack chaussures platine', price: '127€', details: 'Location chaussures qualité platine.' },
+  { label: 'Masques', price: '37€', details: 'Masque SKZ stylé.' },
+  { label: 'Extension Paradiski', price: '50€', details: 'Forfait étendu (+200km de pistes).' },
+  { label: 'Casque', price: '28€', details: 'Location casque.' },
+  { label: 'Assurance Zen', price: '38€', details: 'Assurance annulation Zen.' },
+  { label: 'Assurance Ski', price: '37€', details: 'Assurance multirisques Ski.' },
+  { label: 'Assurance Zen + Ski', price: '55€', details: 'Assurance Zen + Ski.' },
+  { label: 'Pack Croust (pain)', price: '10€', details: 'Baguette par jour.' },
+  { label: 'Pack Croissant', price: '9,5€', details: 'Croissant par jour.' },
+  { label: 'Pack Pain au choc’s', price: '9,5€', details: 'Pain au chocolat par jour.' },
+  { label: 'Pack Bandar’s (saucisson)', price: '13€', details: 'Pack saucisson (3 x 180g).' },
+  { label: 'Pack Fromage', price: '14€', details: 'Pack fromage (3 x 200g).' },
+  { label: 'Pack Bière', price: '9,00€', details: 'Pack bière (blonde/genep/myrtille ou blonde/ambreé/blanche). Les 2 packs : 17€.' },
+  { label: 'Pack Tariflette', price: '14€', details: 'Par kgib’ss.' },
+  { label: 'Pack croziflette', price: '15,5€', details: 'Par kgib’ss.' },
+  { label: 'Pack Fumeur', price: '8€', details: 'Zippo gravé / cendar de poche.' },
+  { label: 'Pack Grand froid', price: '14€', details: 'Chaussettes / Bonnet / cache cou.' },
+  { label: 'Pack Jeux', price: '14€', details: 'Jeu de carte / Flasque gravé / Banane.' },
+  { label: 'Transport BUS Birse', price: '125€', details: 'Départ Birse.' },
+  { label: 'Transport BUS Boquette', price: '125€', details: 'Départ Boquette.' },
+  { label: 'Transport BUS Bordel’s', price: '125€', details: 'Départ Bordel’s.' },
+  { label: 'Transport BUS KIN', price: '110€', details: 'Départ KIN.' },
+  { label: 'Transport BUS Clun’s', price: '100€', details: 'Départ Clun’s.' },
+  { label: 'Transport BUS Chalon’s', price: '110€', details: 'Départ Chalon’s.' },
+  { label: 'Transport BUS Siber’s', price: '120€', details: 'Départ Siber’s.' },
+  { label: 'Transport BUS P3', price: '120€', details: 'Départ P3.' },
+];
+
+export default function Tarifs() {
+  return (
+    <div className="tarifs-container">
+      <h2>Tarifs SKZ 2026</h2>
+      <div className="tarifs-list">
+        {tarifs.map((t, i) => (
+          <div key={i} className="tarif-item">
+            <div className="tarif-label"><strong>{t.label}</strong></div>
+            <div className="tarif-price">{t.price}</div>
+            <div className="tarif-details">{t.details}</div>
+          </div>
+        ))}
+      </div>
+      <div className="tarif-note">
+        <strong>Note :</strong> Certains packs ont des quantités ou des conditions particulières. Consulte la FAQ ou contacte l’équipe pour plus d’infos.
+      </div>
+    </div>
+  );
+}

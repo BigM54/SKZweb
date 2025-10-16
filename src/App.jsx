@@ -23,6 +23,7 @@ const Village = lazy(() => import('./pages/Village'));
 const QrCodePage = lazy(() => import('./pages/QrCode'));
 const MesCousins = lazy(() => import('./pages/MesCousins'));
 const MesInformations = lazy(() => import('./components/formulaires/MesInformations'));
+const tarifs = lazy(() => import('./pages/Tarifs'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -79,6 +80,7 @@ function App() {
                 <Route path="/qrcode" element={<QrCodePage />} />
                 <Route path="/mescousins" element={<MesCousins />} />
                 <Route path="/mesinfos" element={<MesInformations />} />
+                <Route path="/tarifs" element={<Tarifs />} />
               </Routes>
             </Container>
           </main>

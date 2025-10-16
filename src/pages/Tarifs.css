@@ -1,0 +1,52 @@
+.tarifs-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+.tarifs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.tarif-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+.tarif-label {
+  font-size: 1.1rem;
+  color: #222;
+}
+.tarif-price {
+  font-size: 1.2rem;
+  color: #007bff;
+  font-weight: bold;
+  margin-top: 0.2rem;
+}
+.tarif-details {
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 0.2rem;
+}
+.tarif-note {
+  margin-top: 2rem;
+  font-size: 0.95rem;
+  color: #888;
+  background: #f1f1f1;
+  padding: 1rem;
+  border-radius: 8px;
+}
+@media (max-width: 600px) {
+  .tarifs-container {
+    padding: 1rem 0.2rem;
+  }
+  .tarif-item {
+    padding: 0.7rem;
+  }
+}
