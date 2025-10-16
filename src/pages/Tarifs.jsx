@@ -4,18 +4,6 @@ import './Tarifs.css';
 const tarifs = [
   { label: 'Pack classique PG', price: '445€', details: 'Pack classique pour PG.' },
   { label: 'Pack Archi (si pas sur TBK)', price: '495€', details: 'Pack spécial Archi hors TBK.' },
-  { label: 'Pack bronze', price: '75€', details: 'Location ski + chaussures qualité bronze.' },
-  { label: 'Pack ski bronze', price: '68€', details: 'Location ski qualité bronze.' },
-  { label: 'Pack chaussures bronze', price: '51€', details: 'Location chaussures qualité bronze.' },
-  { label: 'Pack argent', price: '95€', details: 'Location ski + chaussures qualité argent.' },
-  { label: 'Pack ski argent', price: '85€', details: 'Location ski qualité argent.' },
-  { label: 'Pack chaussures argent', price: '73€', details: 'Location chaussures qualité argent.' },
-  { label: 'Pack or', price: '112€', details: 'Location ski + chaussures qualité or.' },
-  { label: 'Pack ski or', price: '108€', details: 'Location ski qualité or.' },
-  { label: 'Pack chaussures or', price: '94€', details: 'Location chaussures qualité or.' },
-  { label: 'Pack platine', price: '147€', details: 'Location ski + chaussures qualité platine.' },
-  { label: 'Pack ski platine', price: '142€', details: 'Location ski qualité platine.' },
-  { label: 'Pack chaussures platine', price: '127€', details: 'Location chaussures qualité platine.' },
   { label: 'Masques', price: '37€', details: 'Masque SKZ stylé.' },
   { label: 'Extension Paradiski', price: '50€', details: 'Forfait étendu (+200km de pistes).' },
   { label: 'Casque', price: '28€', details: 'Location casque.' },
@@ -53,7 +41,7 @@ export default function Tarifs() {
   ];
 
   return (
-    <div className="tarifs-container">
+  <div className="tarifs-container" style={{ width: '100vw', maxWidth: '100vw', margin: 0, borderRadius: 0, boxShadow: 'none', padding: '2rem 0.5rem', background: '#fff' }}>
       <h2>Tarifs SKZ 2026</h2>
       <h4 className="mt-4 mb-2">Location matériel : tableau des prix</h4>
       <div className="table-responsive mb-4">
