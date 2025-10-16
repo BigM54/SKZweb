@@ -179,6 +179,7 @@ export default function NavBarComponent() {
         <NavDropdown.Item as={Link} to="/faq">FAQ</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/contact">Contact</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/infos">Infos</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/tarifs">Tarifs</NavDropdown.Item>
       </NavDropdown>
       {!isSignedIn && (
         <NavDropdown
@@ -298,6 +299,9 @@ export default function NavBarComponent() {
                 </Nav.Link>
                 <Nav.Link as={Link} to="/infos" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
                   Infos
+                </Nav.Link>
+                <Nav.Link as={Link} to="/tarifs" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
+                  Tarifs
                 </Nav.Link>
               </Nav>
             </Offcanvas.Body>

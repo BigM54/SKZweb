@@ -23,7 +23,7 @@ const Village = lazy(() => import('./pages/Village'));
 const QrCodePage = lazy(() => import('./pages/QrCode'));
 const MesCousins = lazy(() => import('./pages/MesCousins'));
 const MesInformations = lazy(() => import('./components/formulaires/MesInformations'));
-const tarifs = lazy(() => import('./pages/Tarifs'));
+const Tarifs = lazy(() => import('./pages/Tarifs'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
