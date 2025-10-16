@@ -44,9 +44,42 @@ const tarifs = [
 ];
 
 export default function Tarifs() {
+  const locationTable = [
+    { equip: 'Ski + chaussures', bronze: 75, argent: 95, or: 112, platine: 147 },
+    { equip: 'Snow + chaussures', bronze: '-', argent: 95, or: 112, platine: '-' },
+    { equip: 'Ski', bronze: 68, argent: 85, or: 108, platine: 142 },
+    { equip: 'Snowboard', bronze: '-', argent: 85, or: 108, platine: '-' },
+    { equip: 'Chaussures', bronze: 51, argent: 73, or: 94, platine: 127 },
+  ];
+
   return (
     <div className="tarifs-container">
       <h2>Tarifs SKZ 2026</h2>
+      <h4 className="mt-4 mb-2">Location matériel : tableau des prix</h4>
+      <div className="table-responsive mb-4">
+        <table className="table table-bordered table-striped" style={{ background: '#fff' }}>
+          <thead>
+            <tr>
+              <th>Équipement</th>
+              <th>Bronze</th>
+              <th>Argent</th>
+              <th>Or</th>
+              <th>Platine</th>
+            </tr>
+          </thead>
+          <tbody>
+            {locationTable.map((row, i) => (
+              <tr key={i}>
+                <td>{row.equip}</td>
+                <td>{row.bronze === '-' ? <span style={{color:'#bbb'}}>Indisponible</span> : row.bronze + '€'}</td>
+                <td>{row.argent + '€'}</td>
+                <td>{row.or + '€'}</td>
+                <td>{row.platine === '-' ? <span style={{color:'#bbb'}}>Indisponible</span> : row.platine + '€'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="tarifs-list">
         {tarifs.map((t, i) => (
           <div key={i} className="tarif-item">
