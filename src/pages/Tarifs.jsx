@@ -28,7 +28,7 @@ const tarifs = [
   { label: 'Transport BUS Clun’s', price: '100€', details: 'Départ Clun’s.' },
   { label: 'Transport BUS Chalon’s', price: '110€', details: 'Départ Chalon’s.' },
   { label: 'Transport BUS Siber’s', price: '120€', details: 'Départ Siber’s.' },
-  { label: 'Transport BUS P3', price: '120€', details: 'Départ P3.' },
+  { label: 'Transport Train P3', price: '140€', details: 'Départ P3.' },
 ];
 
 export default function Tarifs() {
