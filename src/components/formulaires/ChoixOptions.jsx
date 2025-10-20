@@ -12,8 +12,6 @@ export default function ChoixOptions() {
   const { getToken } = useAuth();
   const { user } = useUser();
   const [acomptePaid, setAcomptePaid] = useState(null);
-  const [acompteDate, setAcompteDate] = useState(null);
-  const [joursRestants, setJoursRestants] = useState(null);
   const [paiement3Montant, setPaiement3Montant] = useState(null);
 
   // Ajout d'un state pour la liste des bus
@@ -30,11 +28,10 @@ export default function ChoixOptions() {
       const email = user.primaryEmailAddress.emailAddress;
 
       // Récupère options, acompte, profils et dateShotgun en parallèle
-      const [{ data: optionsData }, { data: paiementData }, { data: profilData }, { data: shotgunData }, { data: busPlacesData }] = await Promise.all([
+      const [{ data: optionsData }, { data: paiementData }, { data: profilData }, { data: busPlacesData }] = await Promise.all([
         supabase.from('options').select('*').eq('id', user.id).single(),
         supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single(),
         supabase.from('profils').select('proms, peks').eq('email', email).single(),
-        supabase.from('dateShotgun').select('promsConscrits').single(),
         supabase.from('busPlace').select('tabagns, nbInscrits, place')
       ]);
 
@@ -68,15 +65,8 @@ export default function ChoixOptions() {
         setModeAffichage(false);
       }
       setAcomptePaid(paiementData?.acompteStatut);
-      setAcompteDate(paiementData?.dateAcompte);
       setPaiement3Montant(paiementData?.paiement3Montant || 0);
       // Calcul du temps restant
-      if (paiementData?.dateAcompte) {
-        const acompteDateObj = new Date(paiementData.dateAcompte);
-        const now = new Date();
-        const diffDays = Math.floor((now.getTime() - acompteDateObj.getTime()) / (1000 * 60 * 60 * 24));
-        setJoursRestants(Math.max(0, 7 - diffDays));
-      }
       setLoading(false);
     };
     fetchData();
@@ -159,6 +149,10 @@ export default function ChoixOptions() {
   if (loading || !form || acomptePaid === null) return <Spinner animation="border" variant="primary" />;
 
   if (modeAffichage) {
+    // Nouvelle logique : date limite fixe
+    const now = new Date();
+    const deadline = new Date('2025-10-24T23:59:00.000Z');
+    const modifPossible = now <= deadline;
     return (
       <>
         <div className="mb-3">
@@ -170,8 +164,8 @@ export default function ChoixOptions() {
         {/* Affichage du délai restant ou expiré */}
         {acomptePaid && acompteDate && (
           <div className="mb-3">
-            {joursRestants > 0 ? (
-              <span className="text-success">⏳ Il te reste <strong>{joursRestants} jour{joursRestants > 1 ? 's' : ''}</strong> pour modifier tes options.</span>
+            {modifPossible ? (
+              <span className="text-success">⏳ Tu peux encore modifier tes options jusqu'au 24 octobre 2025 à 23h59.</span>
             ) : (
               <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
             )}
@@ -183,7 +177,7 @@ export default function ChoixOptions() {
           .map(([cle, val]) => (
             <div key={cle}><strong>{cle}</strong>: {val}</div>
           ))}
-        <Button variant="primary" className="mt-3" onClick={() => setModeAffichage(false)} disabled={joursRestants === 0}>
+        <Button variant="primary" className="mt-3" onClick={() => setModeAffichage(false)} disabled={!modifPossible}>
           Modifier mes options
         </Button>
       </>

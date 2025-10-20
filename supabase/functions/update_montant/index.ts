@@ -143,12 +143,12 @@ serve(async (req)=>{
     }
     // Vérifie la dateAcompte
     if (acompteData.dateAcompte) {
-      const acompteDate = new Date(acompteData.dateAcompte);
+      // Nouvelle logique : date limite fixe
       const now = new Date();
-      const diffDays = (now.getTime() - acompteDate.getTime()) / (1000 * 60 * 60 * 24);
-      if (diffDays > 7) {
+      const deadline = new Date('2025-10-25T02:00:00.000Z');
+      if (now > deadline) {
         return new Response(JSON.stringify({
-          error: "Il n'est plus possible de modifier tes options ou le montant du paiement (plus de 7 jours depuis l'acompte)."
+          error: "Il n'est plus possible de modifier tes options ou le montant du paiement (date limite atteinte)."
         }), {
           status: 403,
           headers: {
