@@ -56,6 +56,9 @@ export default function ChoixOptions() {
 
       if (optionsData) {
         setForm(optionsData);
+        setAcomptePaid(paiementData?.acompteStatut);
+        setAcompteDate(paiementData?.dateAcompte);
+        setPaiement3Montant(paiementData?.paiement3Montant || 0);
         setModeAffichage(true);
       } else {
         setForm({
@@ -67,9 +70,6 @@ export default function ChoixOptions() {
         });
         setModeAffichage(false);
       }
-      setAcomptePaid(paiementData?.acompteStatut);
-      setAcompteDate(paiementData?.dateAcompte);
-      setPaiement3Montant(paiementData?.paiement3Montant || 0);
       setLoading(false);
     };
     fetchData();
