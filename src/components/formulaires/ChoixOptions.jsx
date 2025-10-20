@@ -12,6 +12,8 @@ export default function ChoixOptions() {
   const { getToken } = useAuth();
   const { user } = useUser();
   const [acomptePaid, setAcomptePaid] = useState(null);
+  const [acompteDate, setAcompteDate] = useState(null);
+  const [joursRestants, setJoursRestants] = useState(null);
   const [paiement3Montant, setPaiement3Montant] = useState(null);
 
   // Ajout d'un state pour la liste des bus
@@ -66,8 +68,8 @@ export default function ChoixOptions() {
         setModeAffichage(false);
       }
       setAcomptePaid(paiementData?.acompteStatut);
+      setAcompteDate(paiementData?.dateAcompte);
       setPaiement3Montant(paiementData?.paiement3Montant || 0);
-      // Calcul du temps restant
       setLoading(false);
     };
     fetchData();
