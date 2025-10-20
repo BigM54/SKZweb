@@ -28,10 +28,11 @@ export default function ChoixOptions() {
       const email = user.primaryEmailAddress.emailAddress;
 
       // Récupère options, acompte, profils et dateShotgun en parallèle
-      const [{ data: optionsData }, { data: paiementData }, { data: profilData }, { data: busPlacesData }] = await Promise.all([
+      const [{ data: optionsData }, { data: paiementData }, { data: profilData }, { data: shotgunData }, { data: busPlacesData }] = await Promise.all([
         supabase.from('options').select('*').eq('id', user.id).single(),
         supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single(),
         supabase.from('profils').select('proms, peks').eq('email', email).single(),
+        supabase.from('dateShotgun').select('promsConscrits').single(),
         supabase.from('busPlace').select('tabagns, nbInscrits, place')
       ]);
 
