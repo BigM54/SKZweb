@@ -165,7 +165,7 @@ export default function ChoixOptions() {
           </p>
         </div>
         {/* Affichage du délai restant ou expiré */}
-        {acomptePaid && acompteDate && (
+        {acomptePaid && (
           <div className="mb-3">
             {modifPossible ? (
               <span className="text-success">⏳ Tu peux encore modifier tes options jusqu'au 24 octobre 2025 à 23h59.</span>
@@ -278,6 +278,11 @@ export default function ChoixOptions() {
           ⚠️ Tu peux tester les options mais pas enregistrer tant que tu n'as pas payé l'acompte.
         </div>
       )}
+      {modifPossible ? (
+        <span className="text-success">⏳ Tu peux encore modifier tes options jusqu'au 24 octobre 2025 à 23h59.</span>
+      ) : (
+        <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
+      )}
       {isArchi && (
         <Form.Group className="mb-3">
           <Form.Label>Es-tu toujours étudiant ? <span style={{color:'red'}}>*</span></Form.Label>
@@ -353,7 +358,7 @@ export default function ChoixOptions() {
           ⚠️ Tu dois d'abord payer l'acompte pour valider tes choix d'options.
         </div>
       )}
-      <Button className={"mt-2"} variant="primary" type="submit" disabled={acomptePaid}>
+      <Button className={"mt-2"} variant="primary" type="submit" disabled={!acomptePaid}>
         {loading ? 'Enregistrement...' : 'Valider mes choix'}
       </Button>
     </Form>
