@@ -353,16 +353,7 @@ export default function ChoixOptions() {
           ⚠️ Tu dois d'abord payer l'acompte pour valider tes choix d'options.
         </div>
       )}
-      {acomptePaid && acompteDate && (
-        <div className="mt-2">
-          {joursRestants > 0 ? (
-            <span className="text-success">⏳ Il te reste <strong>{joursRestants} jour{joursRestants > 1 ? 's' : ''}</strong> pour modifier tes options.</span>
-          ) : (
-            <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
-          )}
-        </div>
-      )}
-      <Button className={"mt-2"} variant="primary" type="submit" disabled={acomptePaid && acompteDate && joursRestants === 0}>
+      <Button className={"mt-2"} variant="primary" type="submit" disabled={acomptePaid}>
         {loading ? 'Enregistrement...' : 'Valider mes choix'}
       </Button>
     </Form>
