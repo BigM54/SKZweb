@@ -278,11 +278,6 @@ export default function ChoixOptions() {
           ⚠️ Tu peux tester les options mais pas enregistrer tant que tu n'as pas payé l'acompte.
         </div>
       )}
-      {modifPossible ? (
-        <span className="text-success">⏳ Tu peux encore modifier tes options jusqu'au 24 octobre 2025 à 23h59.</span>
-      ) : (
-        <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
-      )}
       {isArchi && (
         <Form.Group className="mb-3">
           <Form.Label>Es-tu toujours étudiant ? <span style={{color:'red'}}>*</span></Form.Label>
