@@ -32,10 +32,10 @@ function calculerMontant(form) {
     },
     bus: {
       non: 0,
-      sibers: 140,
+      sibers: 120,
       kin: 110,
       cluns: 100,
-      p3: 120,
+      p3: 140,
       boquette: 125,
       bordels: 125,
       birse: 125,
