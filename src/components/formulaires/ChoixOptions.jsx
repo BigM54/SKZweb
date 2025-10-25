@@ -64,6 +64,8 @@ export default function ChoixOptions() {
           masque: '', pack_fumeur: '', pack_soiree: '', pack_grand_froid: '',
           pain: '0', croissant: '0', pain_choco: '0', saucisson: '0', fromage: '0', biere: '', bus: '',
           etudiantArchi: '',
+          // champ local pour refléter le calcul serveur (oui|non)
+          pack_archisPeks: 'non'
         });
         setModeAffichage(false);
       }
@@ -139,7 +141,9 @@ export default function ChoixOptions() {
       const { data: paiementData } = await supabase.from('Paiements').select('acompteStatut, dateAcompte, paiement3Montant').eq('email', email).single();
       setPaiement3Montant(paiementData?.paiement3Montant || 0);
 
-      setModeAffichage(true);
+  // Mettre à jour localement le champ calculé pour affichage
+  setForm(prev => ({ ...prev, pack_archisPeks }));
+  setModeAffichage(true);
     } catch (err) {
       console.error('❌ Erreur:', err.message);
       alert('Une erreur est survenue : ' + err.message);
