@@ -154,7 +154,7 @@ export default function ChoixOptions() {
   if (modeAffichage) {
     // Nouvelle logique : date limite fixe
     const now = new Date();
-    const deadline = new Date('2025-10-24T23:59:00.000Z');
+    const deadline = new Date('2025-10-26T23:59:00.000Z');
     const modifPossible = now <= deadline;
     return (
       <>
@@ -168,7 +168,7 @@ export default function ChoixOptions() {
         {acomptePaid && (
           <div className="mb-3">
             {modifPossible ? (
-              <span className="text-success">⏳ Tu peux encore modifier tes options jusqu'au 24 octobre 2025 à 23h59.</span>
+              <span className="text-success">⏳ Tu peux encore modifier tes options jusqu'au 26 octobre 2025 à 23h59.</span>
             ) : (
               <span className="text-danger">⏰ Délai expiré : tu ne peux plus modifier tes options.</span>
             )}
