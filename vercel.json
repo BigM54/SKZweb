@@ -13,7 +13,7 @@
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://vercel.live 'unsafe-inline'; script-src-elem 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.clerk.dev https://clerk.skiozarts.fr https://api.vercel.com; frame-ancestors 'none'; base-uri 'self';"
+          "value": "default-src 'self'; script-src 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://vercel.live 'unsafe-inline'; script-src-elem 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.clerk.dev https://clerk.skiozarts.fr https://api.vercel.com https://vwwnyxyglihmsabvbmgs.supabase.co; frame-ancestors 'none'; base-uri 'self';"
         }
       ]
     }
