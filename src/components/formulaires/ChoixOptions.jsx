@@ -158,7 +158,7 @@ export default function ChoixOptions() {
   if (modeAffichage) {
     // Nouvelle logique : date limite fixe
     const now = new Date();
-    const deadline = new Date('2025-10-26T23:59:00.000Z');
+    const deadline = new Date('2025-10-29T23:59:00.000Z');
     const modifPossible = now <= deadline;
     return (
       <>
