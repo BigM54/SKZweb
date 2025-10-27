@@ -23,7 +23,6 @@ const Village = lazy(() => import('./pages/Village'));
 const QrCodePage = lazy(() => import('./pages/QrCode'));
 const MesCousins = lazy(() => import('./pages/MesCousins'));
 const MesInformations = lazy(() => import('./components/formulaires/MesInformations'));
-const TestRLS = lazy(() => import('./pages/TestRLS'));
 const Tarifs = lazy(() => import('./pages/Tarifs'));
 
 function App() {
@@ -82,7 +81,6 @@ function App() {
                 <Route path="/mescousins" element={<MesCousins />} />
                 <Route path="/mesinfos" element={<MesInformations />} />
                 <Route path="/tarifs" element={<Tarifs />} />
-                <Route path="/testrls" element={<TestRLS />} />
               </Routes>
             </Container>
           </main>
