@@ -1,7 +1,13 @@
 {
   "redirects": [
-    { "source": "http://skiozarts.fr", "destination": "https://skiozarts.fr", "permanent": true },
-    { "source": "https://www.skiozarts.fr", "destination": "https://skiozarts.fr", "permanent": true }
+    {
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "www.skiozarts.fr" }
+      ],
+      "destination": "https://skiozarts.fr",
+      "permanent": true
+    }
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
