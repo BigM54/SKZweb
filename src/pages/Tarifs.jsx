@@ -16,7 +16,7 @@ const tables = [
   "profils"
 ];
 
-export default function TestRLS() {
+export default function Tarifs() {
   const [dataMap, setDataMap] = useState({});
   const [loading, setLoading] = useState(true);
 
