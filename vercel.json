@@ -1,11 +1,11 @@
 {
   "redirects": [
     {
-      "source": "/(.*)",                       // chemin relatif obligatoire
+      "source": "/(.*)",                    
       "has": [
         { "type": "host", "value": "www.skiozarts.fr" }
       ],
-      "destination": "https://skiozarts.fr/$1", // conserve le path
+      "destination": "https://skiozarts.fr/$1", 
       "permanent": true
     }
   ],
