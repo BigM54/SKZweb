@@ -1,7 +1,5 @@
-// pages/TestRLS.jsx
-import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { useUser, useAuth } from "@clerk/clerk-react";
+import React from 'react';
+import './Tarifs.css';
 
 const { getToken } = useAuth();
 const { user } = useUser();
