@@ -38,7 +38,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://challenges.cloudflare.com https://vercel.live 'unsafe-inline'; script-src-elem 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://challenges.cloudflare.com https://vercel.live; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.clerk.dev; img-src 'self' data: https://cdn.clerk.dev https://challenges.cloudflare.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.clerk.dev https://clerk.skiozarts.fr https://api.vercel.com https://vwwnyxyglihmsabvbmgs.supabase.co https://cdn.clerk.dev https://challenges.cloudflare.com; frame-src https://clerk.skiozarts.fr https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self';"
+          "value": "default-src 'self'; script-src 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://challenges.cloudflare.com https://vercel.live; script-src-elem 'self' https://clerk.skiozarts.fr https://cdn.clerk.dev https://challenges.cloudflare.com https://vercel.live; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.clerk.dev; img-src 'self' data: https://cdn.clerk.dev https://challenges.cloudflare.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.clerk.dev https://clerk.skiozarts.fr https://api.vercel.com https://vwwnyxyglihmsabvbmgs.supabase.co https://cdn.clerk.dev https://challenges.cloudflare.com; frame-src https://clerk.skiozarts.fr https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self';"
         }
       ]
     }
