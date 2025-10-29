@@ -93,28 +93,32 @@ export default function ChoixBus() {
           const full = places <= 0;
           const selected = currentVariant && currentVariant === v.variant;
           return (
-            <Col key={v.variant} md={3} className="mb-3">
-              <Card className={selected ? 'border-success' : ''}>
-                <Card.Body>
-                  <Card.Title>
-                    {v.variant === 'anims+' ? "Anim's+" : v.variant === 'anims++' ? "Anim's++" : v.variant.charAt(0).toUpperCase() + v.variant.slice(1)}
-                  </Card.Title>
-                  <Card.Text>
-                    Places restantes: {places}
-                  </Card.Text>
-                  {selected ? (
-                    <Button variant="outline-danger" disabled={submitting} onClick={leave}>
-                      Quitter ce bus
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="primary"
-                      disabled={submitting || full || !!currentVariant}
-                      onClick={() => reserve(v.variant)}
-                    >
-                      {full ? 'Complet' : currentVariant ? 'Choisir (d’abord quitter)' : 'Choisir'}
-                    </Button>
-                  )}
+            <Col key={v.variant} xs={12} className="mb-3">
+              <Card className={`${selected ? 'border-success' : ''} w-100`}>
+                <Card.Body className="d-flex align-items-center justify-content-between">
+                  <div>
+                    <Card.Title className="mb-1">
+                      {v.variant === 'anims+' ? "Anim's+" : v.variant === 'anims++' ? "Anim's++" : v.variant.charAt(0).toUpperCase() + v.variant.slice(1)}
+                    </Card.Title>
+                    <Card.Text className="mb-0 text-muted">
+                      Places restantes: {places}
+                    </Card.Text>
+                  </div>
+                  <div>
+                    {selected ? (
+                      <Button variant="danger" disabled={submitting} onClick={leave}>
+                        Quitter ce bus
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="primary"
+                        disabled={submitting || full || !!currentVariant}
+                        onClick={() => reserve(v.variant)}
+                      >
+                        {full ? 'Complet' : currentVariant ? 'Choisir (d’abord quitter)' : 'Choisir'}
+                      </Button>
+                    )}
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
