@@ -16,7 +16,7 @@ export default function ChoixBus() {
     setError(null);
     try {
       const token = await getToken({ template: 'supabase' });
-      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/bus_choice', {
+      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/busChoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ action: 'get' })
@@ -40,7 +40,7 @@ export default function ChoixBus() {
     setError(null);
     try {
       const token = await getToken({ template: 'supabase' });
-      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/bus_choice', {
+      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/busChoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ action: 'reserve', variant })
@@ -61,7 +61,7 @@ export default function ChoixBus() {
     setError(null);
     try {
       const token = await getToken({ template: 'supabase' });
-      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/bus_choice', {
+      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/busChoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ action: 'leave' })
