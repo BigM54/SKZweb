@@ -4,6 +4,7 @@ import { Container, Tabs, Tab, Card } from 'react-bootstrap';
 import ChoixOptions from '../components/formulaires/ChoixOptions';
 import ChoixAnims from '../components/formulaires/ChoixAnims';
 import ChoixRes from '../components/formulaires/ChoixRes';
+import ChoixBus from '../components/formulaires/ChoixBus';
 import { useUser } from '@clerk/clerk-react';
 
 export default function Formulaires() {
@@ -29,11 +30,13 @@ export default function Formulaires() {
           <Tab eventKey="Options" title="Options" />
           <Tab eventKey="Anim's" title="Anim's" />
           <Tab eventKey="Res'" title="Res'" />
+          <Tab eventKey="Bus" title="Bus" />
         </Tabs>
         <Card className="shadow">
           <Card.Body>
             {ongletActif === 'Options' && <ChoixOptions />}
             {ongletActif === "Anim's" && <ChoixAnims />}
+            {ongletActif === "Bus" && <ChoixBus />}
             {ongletActif === "Res'" && <ChoixRes />}
           </Card.Body>
         </Card>
