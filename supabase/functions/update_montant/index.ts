@@ -165,24 +165,8 @@ serve(async (req)=>{
     if (updateError) {
       throw updateError;
     }
-    const { data: oldOptions } = await supabase.from('options').select('bus').eq('id', userId).single();
-    const oldBus = oldOptions?.bus || null;
-    const newBus = form.bus;
-    // Si l'utilisateur change de bus
-    if (oldBus && oldBus !== 'non' && oldBus !== newBus) {
-      // -1 sur l'ancien bus
-      const { data: oldBusRow } = await supabase.from('busPlace').select('nbInscrits').eq('tabagns', oldBus).single();
-      if (oldBusRow) {
-        await supabase.from('busPlace').update({ nbInscrits: Math.max(0, oldBusRow.nbInscrits - 1) }).eq('tabagns', oldBus);
-      }
-    }
-    // +1 sur le nouveau bus
-    if (newBus && newBus !== 'non' && oldBus !== newBus) {
-      const { data: newBusRow } = await supabase.from('busPlace').select('nbInscrits').eq('tabagns', newBus).single();
-      if (newBusRow) {
-        await supabase.from('busPlace').update({ nbInscrits: newBusRow.nbInscrits + 1 }).eq('tabagns', newBus);
-      }
-    }
+    // Gestion des places de bus déléguée à la fonction edge bus_choice
+    // (plus de mise à jour ici pour éviter les incohérences)
     // Mise à jour des options
     const { error: optionsError } = await supabase.from('options').upsert({
       ...form,
@@ -200,10 +184,10 @@ serve(async (req)=>{
     });
   } catch (e) {
     console.error("Erreur serveur:", e);
-    let message = '';
-    if (e instanceof Error) message = e.message;
-    else if (typeof e === 'object' && e !== null && 'message' in e) message = e.message;
-    else message = JSON.stringify(e);
+  let message = '';
+  if (e instanceof Error) message = e.message;
+  else if (typeof e === 'object' && e !== null && 'message' in e) message = String((e as any).message);
+  else message = JSON.stringify(e);
     return new Response(JSON.stringify({
       error: message
     }), {

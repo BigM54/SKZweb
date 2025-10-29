@@ -48,7 +48,27 @@ export default function ChoixBus() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erreur lors de la réservation');
       setCurrentVariant(variant);
-      // refresh counts
+      await fetchState();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const leave = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const token = await getToken({ template: 'supabase' });
+      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/functions/v1/bus_choice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: 'leave' })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors du départ du bus");
+      setCurrentVariant(null);
       await fetchState();
     } catch (e) {
       setError(e.message);
@@ -60,33 +80,41 @@ export default function ChoixBus() {
   if (loading) return <Spinner animation="border" role="status" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
 
-  const order = { 'calme': 1, 'anims': 2, 'anims+': 3 };
+  const order = { 'calme': 1, 'anims': 2, 'anims+': 3, 'anims++': 4 };
   const sorted = [...variants].sort((a, b) => (order[a.variant] || 99) - (order[b.variant] || 99));
 
   return (
     <div className="container py-4">
       <h3>Choix des bus ({tabagns})</h3>
-      <p>Pour ton tabagns, choisis entre Calme, Anim's, et Anim's+. Tu peux voir le nombre de places restantes.</p>
+      <p>Pour ton tabagns, choisis ton type de bus. Les places restantes sont affichées pour chaque bus disponible.</p>
       <Row>
         {sorted.map(v => {
-          const full = (v.dispo ?? 0) <= 0;
+          const places = v.places ?? 0;
+          const full = places <= 0;
           const selected = currentVariant && currentVariant === v.variant;
           return (
-            <Col key={v.variant} md={4} className="mb-3">
+            <Col key={v.variant} md={3} className="mb-3">
               <Card className={selected ? 'border-success' : ''}>
                 <Card.Body>
-                  <Card.Title>{v.variant === 'anims+' ? "Anim's+" : v.variant.charAt(0).toUpperCase() + v.variant.slice(1)}</Card.Title>
+                  <Card.Title>
+                    {v.variant === 'anims+' ? "Anim's+" : v.variant === 'anims++' ? "Anim's++" : v.variant.charAt(0).toUpperCase() + v.variant.slice(1)}
+                  </Card.Title>
                   <Card.Text>
-                    Places: {(v.nbInscrits ?? 0)} / {(v.nbMax ?? 0)}<br/>
-                    Restantes: {v.dispo}
+                    Places restantes: {places}
                   </Card.Text>
-                  <Button
-                    variant={selected ? 'success' : 'primary'}
-                    disabled={selected || full || submitting}
-                    onClick={() => reserve(v.variant)}
-                  >
-                    {selected ? 'Sélectionné' : full ? 'Complet' : 'Choisir'}
-                  </Button>
+                  {selected ? (
+                    <Button variant="outline-danger" disabled={submitting} onClick={leave}>
+                      Quitter ce bus
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      disabled={submitting || full || !!currentVariant}
+                      onClick={() => reserve(v.variant)}
+                    >
+                      {full ? 'Complet' : currentVariant ? 'Choisir (d’abord quitter)' : 'Choisir'}
+                    </Button>
+                  )}
                 </Card.Body>
               </Card>
             </Col>
