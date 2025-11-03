@@ -13,10 +13,10 @@ export default function Animations() {
       id: 1,
       title: "Slalom",
       description: "Slalom-géant chronométré organisé par l’ESF",
-      niveau: "Avancé",
+      niveau: "Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
-      difficulty: "avance",
+      difficulty: "intermediaire",
       category: "competition",
       image: "/slalom.png",
       color: "primary"
@@ -25,10 +25,11 @@ export default function Animations() {
       id: 2,
       title: "Derby",
       description: "Dévale une piste fermée le plus rapidement possible",
-      niveau: "Tout niveau",
+      niveau: "Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
-      difficulty: "tout",
+      difficulty: "intermediaire",
+      typeLabel: "Ski-Snow",
       category: "competition",
       image: "/derby.jpeg",
       color: "info"
@@ -37,10 +38,11 @@ export default function Animations() {
       id: 3,
       title: "Boarder Cross",
       description: "Course sur une piste avec des bosses, virages et sauts",
-      niveau: "Avancé",
+      niveau: "Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
-      difficulty: "avance",
+      difficulty: "intermediaire",
+      typeLabel: "Ski-Snow",
       category: "competition",
       image: "/boarder_cross.png",
       color: "danger"
@@ -49,11 +51,11 @@ export default function Animations() {
       id: 4,
       title: "Olympiades ESF x Biathlon",
       description: "Course mêlant plusieurs disciplines (ski, luge, raquette…) avec du tir à la carabine",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      category: "defi",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🏔️",
+      difficulty: "tout",
+      category: "competition",
       image: "/olympiadeESF_Biathlon.jpg",
       color: "warning"
     },
@@ -61,10 +63,11 @@ export default function Animations() {
       id: 5,
       title: "Compétition Freestyle (Big Air)",
       description: "Réalise ton plus beau tricks sur une bosse avec un Big Air",
-      niveau: "Avancé",
+      niveau: "Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
-      difficulty: "avance",
+      difficulty: "intermediaire",
+      typeLabel: "Ski-Snow",
       category: "competition",
       image: "/competition_freestyle(bigair).webp",
       color: "primary"
@@ -77,6 +80,7 @@ export default function Animations() {
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "tout",
+      typeLabel: "Ski-Snow",
       category: "decouverte",
       image: "/first_track.jpg",
       color: "info"
@@ -89,6 +93,7 @@ export default function Animations() {
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "tout",
+      typeLabel: "Ski-Snow",
       category: "decouverte",
       image: "/last_track.jpg",
       color: "info"
@@ -97,11 +102,11 @@ export default function Animations() {
       id: 8,
       title: "ARVA Gourmand",
       description: "Formation au DVA avec des dégustations",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      category: "defi",
+      niveau: "Tout niveau",
+      type: "autres",
+      typeIcon: "🧭",
+      difficulty: "tout",
+      category: "decouverte",
       image: "/arva_gourmand.jpg",
       color: "warning"
     },
@@ -113,7 +118,7 @@ export default function Animations() {
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "tout",
-      category: "decouverte",
+      category: "event",
       image: "/descente_aux_flambeaux.jpg",
       color: "info"
     },
@@ -167,9 +172,9 @@ export default function Animations() {
     },
     {
       id: 14,
-      title: "Cours de Ski début/ intermédiaire",
+      title: "Cours de Ski Débutant-Intermédiaire",
       description: "Leçons de ski encadrées par l’ESF pour les débutants et les intermédiaires",
-      niveau: "Débutant/Intermédiaire",
+      niveau: "Débutant-Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "debutant",
@@ -197,6 +202,7 @@ export default function Animations() {
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "avance",
+      typeLabel: "Ski-Snow",
       category: "cours",
       image: "/initiation_freeride.webp",
       color: "danger"
@@ -209,6 +215,7 @@ export default function Animations() {
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "intermediaire",
+      typeLabel: "Ski-Snow",
       category: "cours",
       image: "/initiation_freestyle.webp",
       color: "warning"
@@ -217,10 +224,10 @@ export default function Animations() {
       id: 18,
       title: "Rando Raquette",
       description: "Sorties en raquettes encadrées par l’ESF",
-      niveau: "Débutant/Intermédiaire",
+      niveau: "Tout niveau",
       type: "autres",
       typeIcon: "🥾",
-      difficulty: "debutant",
+      difficulty: "tout",
       category: "cours",
       image: "/rando_raquette.jpg",
       color: "success"
@@ -233,7 +240,7 @@ export default function Animations() {
       type: "autres",
       typeIcon: "🍖",
       difficulty: "tout",
-      category: "autres",
+      category: "event",
       image: "/bbq.jpg",
       color: "info"
     },
@@ -276,6 +283,7 @@ export default function Animations() {
       case 'competition': return '🏆';
       case 'defi': return '🎯';
       case 'decouverte': return '🗺️';
+      case 'event': return '🎉';
       default: return '❄️';
     }
   };
@@ -389,7 +397,7 @@ export default function Animations() {
                   <Card.Title className="h5 mb-2" style={{ color: 'white' }}>{anim.title}</Card.Title>
                   <div className="d-flex gap-1 flex-wrap mb-2">
                     <Badge bg="primary" className="d-flex align-items-center gap-1" style={{ color: 'white' }}>
-                      {anim.typeIcon} {anim.type.charAt(0).toUpperCase() + anim.type.slice(1)}
+                      {anim.typeIcon} {(anim.typeLabel || (anim.type.charAt(0).toUpperCase() + anim.type.slice(1)))}
                     </Badge>
                     <Badge bg="secondary" className="d-flex align-items-center gap-1" style={{ color: 'white' }}>
                       {getDifficultyIcon(anim.difficulty)} {anim.niveau}

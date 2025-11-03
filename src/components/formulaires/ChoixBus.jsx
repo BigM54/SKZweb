@@ -86,6 +86,9 @@ export default function ChoixBus() {
   return (
     <div className="container py-4">
       <h3>Choix des bus ({tabagns})</h3>
+      <Alert variant="warning" className="mb-3">
+        <strong>ATTENTION&nbsp;:</strong> Sur la route, le chauffeur est le capitaine du navire. Il aura toujours le dernier mot&nbsp;: l'anim'sss et la présence d'alcool ne sont pas acquis, qu'importe le choix du bus effectué. On compte sur chacun pour que le trajet reste cool, en sécurité, et pour qu'aucune dégradation ne soit faite.
+      </Alert>
       <p>Pour ton tabagns, choisis ton type de bus. Les places restantes sont affichées pour chaque bus disponible.</p>
       <Row>
         {sorted.map(v => {
