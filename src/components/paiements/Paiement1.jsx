@@ -215,7 +215,7 @@ export default function Paiement1() {
               ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
               Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
               <a
-                href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/formulaire"
+                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/1er-echelon-skz/widget"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary mt-2"
@@ -228,7 +228,7 @@ export default function Paiement1() {
           <iframe
             id="haWidgetPaiement1"
             allowTransparency="true"
-            src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-1-skz/widget"
+            src="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/1er-echelon-skz/widget"
             style={{
               width: '100%',
               minHeight: '700px',
