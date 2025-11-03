@@ -208,7 +208,7 @@ export default function NavBarComponent() {
           onToggle={() => {}}
         >
           <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/paiements">SHOTGUN</NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
           {canSeeCousins && <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>}
           <NavDropdown.Item as={Link} to="/mesinfos">Mon Profil</NavDropdown.Item>
@@ -327,7 +327,7 @@ export default function NavBarComponent() {
                   Mon Profil
                 </Nav.Link>
                 <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
-                  SHOTGUN
+                  Mes Paiements
                 </Nav.Link>
                 <Nav.Link as={Link} to="/qrcode" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mon QR Code
