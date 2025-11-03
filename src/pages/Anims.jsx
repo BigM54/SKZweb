@@ -270,11 +270,20 @@ export default function Animations() {
     }
   ];
 
-  // Adapter le filtrage pour inclure "tout niveau" dans toutes les difficultés cochées
+  // Détermine les types logiques pour le filtrage (Ski-Snow => ski et snowboard)
+  const getAnimLogicalTypes = (anim) => {
+    const label = (anim.typeLabel || '').toLowerCase();
+    const isMixedSkiSnow = label.includes('ski') && (label.includes('snow') || label.includes('snowboard'));
+    if (isMixedSkiSnow) return ['ski', 'snowboard'];
+    return [anim.type];
+  };
+
+  // Filtrage: "tout" passe pour la difficulté; type mixte passe si ski OU snowboard est coché
   const filteredAnimations = animations.filter(anim => {
-    // Si la difficulté de l'anim est "tout", elle passe toujours
-    if (anim.difficulty === "tout") return true;
-    return filters.type[anim.type] && filters.difficulte[anim.difficulty];
+    const passesDifficulty = anim.difficulty === 'tout' || !!filters.difficulte[anim.difficulty];
+    const logicalTypes = getAnimLogicalTypes(anim);
+    const passesType = logicalTypes.some(t => !!filters.type[t]);
+    return passesDifficulty && passesType;
   });
 
   const getCategoryIcon = (category) => {
