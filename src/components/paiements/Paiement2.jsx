@@ -27,6 +27,7 @@ export default function Paiement2() {
   const { getToken } = useAuth();
   const [datePaiement2, setdatePaiement2] = useState(null);
   const [paiementOuvert, setPaiementOuvert] = useState(true);
+  const [emailInput, setEmailInput] = useState("");
 
   const email = user?.primaryEmailAddress?.emailAddress || '';
 
@@ -200,11 +201,33 @@ export default function Paiement2() {
             Copier mon mail
           </Button>
           </div>
+          <div className="mt-3">
+            <label htmlFor="emailConfirm" className="form-label">Entre ton mail pour confirmer</label>
+            <input
+              id="emailConfirm"
+              type="email"
+              className="form-control"
+              placeholder="ton.email@exemple.com"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              autoComplete="email"
+            />
+            {emailInput && email && email.trim().toLowerCase() !== emailInput.trim().toLowerCase() && (
+              <div className="text-danger mt-1" style={{ fontSize: '0.9em' }}>
+                L'adresse saisie ne correspond pas à celle de ton compte.
+              </div>
+            )}
+            {!emailInput && (
+              <div className="text-muted mt-1" style={{ fontSize: '0.9em' }}>
+                Saisis l’adresse e‑mail de ton compte pour débloquer le bouton.
+              </div>
+            )}
+          </div>
           <div>
           <Button
             className="mt-2"
             variant="primary"
-            disabled={!canConfirm}
+            disabled={!(canConfirm && email && email.trim().toLowerCase() === emailInput.trim().toLowerCase())}
             onClick={() => setStep(1)}
           >
             J'ai compris, accéder au paiement
@@ -229,7 +252,7 @@ export default function Paiement2() {
               ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
               Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
               <a
-                href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-2-skz/formulaire"
+                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-2-skz"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary mt-2"
@@ -242,7 +265,7 @@ export default function Paiement2() {
           <iframe
             id="haWidgetPaiement2"
             allowTransparency="true"
-            src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-2-skz/widget"
+            src="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-2-skz/widget"
             style={{
               width: '100%',
               minHeight: '700px',

@@ -27,6 +27,7 @@ export default function Paiement1() {
   const { getToken } = useAuth();
   const [datePaiement1, setDatePaiement1] = useState(null);
   const [paiementOuvert, setPaiementOuvert] = useState(true);
+  const [emailInput, setEmailInput] = useState("");
 
   const getSupabase = async () => {
     const token = await getToken({ template: 'supabase' });
@@ -186,11 +187,33 @@ export default function Paiement1() {
             Copier mon mail
           </Button>
           </div>
+          <div className="mt-3">
+            <label htmlFor="emailConfirm" className="form-label">Entre ton mail pour confirmer</label>
+            <input
+              id="emailConfirm"
+              type="email"
+              className="form-control"
+              placeholder="ton.email@exemple.com"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              autoComplete="email"
+            />
+            {emailInput && email && email.trim().toLowerCase() !== emailInput.trim().toLowerCase() && (
+              <div className="text-danger mt-1" style={{ fontSize: '0.9em' }}>
+                L'adresse saisie ne correspond pas à celle de ton compte.
+              </div>
+            )}
+            {!emailInput && (
+              <div className="text-muted mt-1" style={{ fontSize: '0.9em' }}>
+                Saisis l’adresse e‑mail de ton compte pour débloquer le bouton.
+              </div>
+            )}
+          </div>
           <div>
           <Button
             className="mt-2"
             variant="primary"
-            disabled={!canConfirm}
+            disabled={!(canConfirm && email && email.trim().toLowerCase() === emailInput.trim().toLowerCase())}
             onClick={() => setStep(1)}
           >
             J'ai compris, accéder au paiement

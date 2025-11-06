@@ -26,6 +26,7 @@ export default function Paiement3() {
   const [canConfirm, setCanConfirm] = useState(false);
   const [montant, setMontant] = useState(null); // <-- Ajout pour stocker paiement3Montant
   const [montantSaisi, setMontantSaisi] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const [hasPaid1, setHasPaid1] = useState(null); // Paiement 1 status
   const [hasPaid2, setHasPaid2] = useState(null); // Paiement 2 status
   const { getToken } = useAuth();
@@ -230,6 +231,28 @@ export default function Paiement3() {
             </Button>
           </div>
           <div className="mb-2">
+            <label htmlFor="emailConfirm3" className="form-label">Entre ton mail pour confirmer</label>
+            <input
+              id="emailConfirm3"
+              type="email"
+              className="form-control"
+              placeholder="ton.email@exemple.com"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              autoComplete="email"
+            />
+            {emailInput && email && email.trim().toLowerCase() !== emailInput.trim().toLowerCase() && (
+              <div className="text-danger mt-1" style={{ fontSize: '0.9em' }}>
+                L'adresse saisie ne correspond pas à celle de ton compte.
+              </div>
+            )}
+            {!emailInput && (
+              <div className="text-muted mt-1" style={{ fontSize: '0.9em' }}>
+                Saisis l’adresse e‑mail de ton compte pour débloquer le bouton.
+              </div>
+            )}
+          </div>
+          <div className="mb-2">
             <label htmlFor="montant-confirm" className="form-label">
               Pour confirmer, entre le montant à payer :
             </label>
@@ -246,11 +269,12 @@ export default function Paiement3() {
           </div>
           <Button
             variant="primary"
-            disabled={
-              !canConfirm ||
-              String(montantSaisi).trim() === "" ||
-              Number(montantSaisi) !== montantAffiche
-            }
+            disabled={!(
+              canConfirm &&
+              email && email.trim().toLowerCase() === emailInput.trim().toLowerCase() &&
+              String(montantSaisi).trim() !== "" &&
+              Number(montantSaisi) === Number(montantAffiche)
+            )}
             onClick={() => setStep(1)}
           >
             J'ai compris, accéder au paiement
@@ -260,7 +284,7 @@ export default function Paiement3() {
               Le bouton sera disponible dans 5 secondes…
             </div>
           )}
-          {String(montantSaisi).trim() !== "" && Number(montantSaisi) !== montantAffiche && (
+          {String(montantSaisi).trim() !== "" && Number(montantSaisi) !== Number(montantAffiche) && (
             <div className="mt-2 text-danger" style={{ fontSize: '0.95em' }}>
               Le montant saisi ne correspond pas au montant attendu.
             </div>
@@ -279,7 +303,7 @@ export default function Paiement3() {
               ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
               Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
               <a
-                href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/formulaire"
+                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary mt-2"
@@ -292,7 +316,7 @@ export default function Paiement3() {
           <iframe
             id="haWidgetPaiement3"
             allowTransparency="true"
-            src="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/widget"
+            src="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz/widget"
             style={{
               width: '100%',
               minHeight: '700px',
