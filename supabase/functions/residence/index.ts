@@ -74,20 +74,31 @@ serve(async (req) => {
       return new Response(JSON.stringify({ group }), { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders() } });
     }
 
-    if (action === "create_group") {
+  if (action === "create_group") {
       // Only create if the user is not already in any group (any column)
       const existing = await findUserGroup();
       if (existing) {
         return new Response(JSON.stringify({ error: "Tu appartiens déjà à un groupe de résidence." }), { status: 409, headers: corsHeaders() });
       }
 
-      const residents = ((body as CreateGroupBody)?.residents ?? []).map((r) => (r ? String(r) : null));
-      if (residents.length !== 4) {
-        return new Response(JSON.stringify({ error: "Il faut fournir 4 cases (laisse vide si moins de résidents)." }), { status: 400, headers: corsHeaders() });
+      const residentsRaw = (body as CreateGroupBody)?.residents ?? [];
+      // Must provide exactly 4 non-empty resident IDs
+      if (residentsRaw.length !== 4 || residentsRaw.some(r => !r || String(r).trim() === "")) {
+        return new Response(JSON.stringify({ error: "Tu dois renseigner les 4 résidents (IDs obligatoires)." }), { status: 400, headers: corsHeaders() });
+      }
+      const residents = residentsRaw.map(r => String(r).trim());
+      // None of residents can be the responsable
+      if (residents.includes(userId)) {
+        return new Response(JSON.stringify({ error: "Ton ID ne peut pas apparaître dans la liste des résidents." }), { status: 400, headers: corsHeaders() });
+      }
+      // All distinct
+      const uniqueCount = new Set(residents).size;
+      if (uniqueCount !== residents.length) {
+        return new Response(JSON.stringify({ error: "Chaque résident doit être unique (pas de doublon)." }), { status: 400, headers: corsHeaders() });
       }
 
-      // Build set of non-null members we try to include (including responsable)
-      const members = [userId, ...residents.filter(Boolean) as string[]];
+      // Build members including responsable for conflict check
+      const members = [userId, ...residents];
       // Check none of these members are present in any column in any row
       const orParts = ["responsable", "resident1", "resident2", "resident3", "resident4"].flatMap((col) => members.map((m) => `${col}.eq.${m}`));
       const { data: conflicts, error: confErr } = await supabase

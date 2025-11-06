@@ -112,18 +112,44 @@ export default function ChoixRes() {
         <Card className="mb-4">
           <Card.Body>
             <Card.Title>Créer mon groupe</Card.Title>
-            <p>Tu seras le responsable. Ajoute jusqu’à 4 résidents (IDs des comptes, optionnels).</p>
+            <p>Tu seras le responsable. Renseigne les 4 IDs des comptes de tes colocataires (obligatoire).</p>
+            <div className="mb-2">
+              <small className="text-muted">Ton ID (responsable)&nbsp;:</small>
+              <div className="d-flex align-items-center gap-2 mt-1">
+                <code className="p-1">{userId}</code>
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => { if (userId) navigator.clipboard.writeText(userId); }}
+                >
+                  Copier
+                </Button>
+              </div>
+            </div>
             <Row className="g-2">
               {[0,1,2,3].map(i => (
                 <Col md={6} key={i}>
                   <Form.Group>
                     <Form.Label>Résident {i+1} (ID)</Form.Label>
-                    <Form.Control value={residents[i]} onChange={e => setResidents(prev => { const n=[...prev]; n[i]=e.target.value; return n; })} placeholder="user_id (optionnel)" />
+                    <Form.Control value={residents[i]} onChange={e => setResidents(prev => { const n=[...prev]; n[i]=e.target.value; return n; })} placeholder="user_id (obligatoire)" />
                   </Form.Group>
                 </Col>
               ))}
             </Row>
-            <Button disabled={submitting} className="mt-3" onClick={createGroup}>Créer le groupe</Button>
+            {(() => {
+              const anyEmpty = residents.some(r => !r || r.trim() === '');
+              const hasSelf = residents.some(r => r.trim() === (userId || ''));
+              const unique = new Set(residents.map(r => r.trim())).size === residents.length;
+              const canCreateLocal = !anyEmpty && !hasSelf && unique;
+              return (
+                <>
+                  {anyEmpty && <div className="text-danger mt-2">Tous les résidents doivent être renseignés.</div>}
+                  {hasSelf && <div className="text-danger mt-2">Ton ID ne doit pas apparaître dans la liste des résidents.</div>}
+                  {!unique && <div className="text-danger mt-2">Chaque résident doit être unique (pas de doublon).</div>}
+                  <Button disabled={submitting || !canCreateLocal} className="mt-3" onClick={createGroup}>Créer le groupe</Button>
+                </>
+              );
+            })()}
           </Card.Body>
         </Card>
       )}
