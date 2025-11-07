@@ -120,6 +120,8 @@ export default function MesInformations() {
       const cousinData = {
         numero: form.numero,
         bucque: form.bucque,
+        proms: form.peks ? null : form.proms,
+        tabagns: form.peks ? null : form.tabagns
       };
       for (let i = 0; i < 6; i++) {
         cousinData[`nums${i+1}`] = numsArr[i] || '';
