@@ -19,7 +19,6 @@ export default function NavBarComponent() {
   const { signOut } = useClerk();
   const { isAdmin } = useIsAdmin();
   const [profil, setProfil] = useState(null);
-  const [canSeeCousins, setCanSeeCousins] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,30 +28,6 @@ export default function NavBarComponent() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    function checkCousinAccess() {
-      (async () => {
-        if (!user?.primaryEmailAddress?.emailAddress) return setCanSeeCousins(false);
-        const token = await getToken({ template: 'supabase' });
-        const supabase = createClient(
-          'https://vwwnyxyglihmsabvbmgs.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw',
-          {
-            global: { headers: { Authorization: `Bearer ${token}` } }
-          }
-        );
-        const { data } = await supabase
-          .from('cousin')
-          .select('email')
-          .eq('email', user.primaryEmailAddress.emailAddress)
-          .single();
-        setCanSeeCousins(!!data);
-      })();
-    }
-    if (isSignedIn) checkCousinAccess();
-    else setCanSeeCousins(false);
-  }, [isSignedIn, user, getToken]);
 
   const handleLogout = async () => {
     await signOut();
@@ -210,7 +185,7 @@ export default function NavBarComponent() {
           <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
-          {canSeeCousins && <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>}
+          <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/mesinfos">Mon Profil</NavDropdown.Item>
           {isAdmin && (
             <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
@@ -332,11 +307,9 @@ export default function NavBarComponent() {
                 <Nav.Link as={Link} to="/qrcode" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mon QR Code
                 </Nav.Link>
-                {canSeeCousins && (
-                  <Nav.Link as={Link} to="/mescousins" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
-                    Mes Cousins
-                  </Nav.Link>
-                )}
+                <Nav.Link as={Link} to="/mescousins" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                  Mes Cousins
+                </Nav.Link>
                 {isAdmin && (
                   <Nav.Link as={Link} to="/admin" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                     Admin Panel
