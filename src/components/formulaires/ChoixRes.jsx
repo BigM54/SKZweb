@@ -10,6 +10,7 @@ export default function ChoixRes() {
   const [newMemberId, setNewMemberId] = useState("");
   const [ambiance, setAmbiance] = useState('');
   const [tabagns, setTabagns] = useState('');
+  const [customTabagns, setCustomTabagns] = useState('');
   const [rooms, setRooms] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -92,7 +93,8 @@ export default function ChoixRes() {
     setSubmitting(true);
     setError(null);
     try {
-      await apiCall({ action: 'update_prefs', ambiance, tabagns });
+      const effectiveTabagns = tabagns === 'autre' ? customTabagns.trim() : tabagns;
+      await apiCall({ action: 'update_prefs', ambiance, tabagns: effectiveTabagns });
       await load();
     } catch (e) {
       setError(e.message);
@@ -213,12 +215,24 @@ export default function ChoixRes() {
                 </Col>
                 <Col md={6}>
                   <Form.Group>
-                    <Form.Label>Tabagns</Form.Label>
-                    <Form.Control value={tabagns} disabled={!isResponsable} onChange={e => setTabagns(e.target.value)} placeholder="ex: sibers, kin…" />
+                    <Form.Label>Tabagn's</Form.Label>
+                    <Form.Select value={tabagns} disabled={!isResponsable} onChange={e => { setTabagns(e.target.value); if (e.target.value !== 'autre') setCustomTabagns(''); }}>
+                      <option value="">— Choisir —</option>
+                      <option value="sibers">Sibers</option>
+                      <option value="kin">Kin</option>
+                      <option value="archis">Archis</option>
+                      <option value="peks">Peks</option>
+                      <option value="gadz">Gadz</option>
+                      <option value="autre">Autre…</option>
+                    </Form.Select>
+                    {tabagns === 'autre' && (
+                      <Form.Control className="mt-2" value={customTabagns} disabled={!isResponsable} onChange={e => setCustomTabagns(e.target.value)} placeholder="Ton tabagn's" />
+                    )}
                   </Form.Group>
                 </Col>
               </Row>
-              <Button className="mt-3" disabled={!isResponsable || submitting || !ambiance || !tabagns} onClick={savePrefs}>Enregistrer</Button>
+              <Button className="mt-3" disabled={!isResponsable || submitting || !ambiance || !tabagns || (tabagns==='autre' && !customTabagns.trim()) || !isComplete} onClick={savePrefs}>Enregistrer</Button>
+              {!isComplete && <div className="text-muted mt-2">Le choix de chambre n'est pas encore dispo.</div>}
             </Card.Body>
           </Card>
 
@@ -226,7 +240,7 @@ export default function ChoixRes() {
             <Card.Body>
               <Card.Title>Chambres disponibles</Card.Title>
               <div className="mb-2">Affichées selon ambiance/tabagns et uniquement celles non prises.</div>
-              {!isComplete && <Alert variant="warning" className="mt-2">Le groupe doit être complet (4 résidents) pour voir et choisir une chambre.</Alert>}
+              {!isComplete && <Alert variant="warning" className="mt-2">Le choix de chambre n'est pas encore dispo (groupe incomplet).</Alert>}
               <Button variant="outline-primary" size="sm" disabled={submitting || !ambiance || !tabagns || !isComplete} onClick={refreshRooms}>Rafraîchir</Button>
               <Row className="mt-3 g-2">
                 {rooms.map((r) => (
@@ -246,6 +260,16 @@ export default function ChoixRes() {
               </Row>
             </Card.Body>
           </Card>
+
+          {isResponsable && (
+            <Card className="mb-4">
+              <Card.Body>
+                <Card.Title>Danger</Card.Title>
+                <p className="mb-2">Supprimer totalement le groupe pour recommencer ou rejoindre un autre groupe.</p>
+                <Button variant="outline-danger" disabled={submitting} onClick={async ()=>{ setSubmitting(true); setError(null); try { await apiCall({ action: 'delete_group' }); await load(); } catch(e){ setError(e.message);} finally { setSubmitting(false);} }}>Supprimer le groupe</Button>
+              </Card.Body>
+            </Card>
+          )}
         </>
       )}
     </Container>

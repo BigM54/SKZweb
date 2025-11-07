@@ -170,6 +170,9 @@ serve(async (req)=>{
         status: 403,
         headers: corsHeaders()
       });
+      // Require full group before saving preferences
+      const slotsCheckPrefs = [group.resident1, group.resident2, group.resident3, group.resident4];
+      if (!slotsCheckPrefs.every(Boolean)) return new Response(JSON.stringify({ error: "Le groupe doit être complet avant d'enregistrer les préférences." }), { status: 403, headers: corsHeaders() });
   const ambiance = body?.ambiance;
   const tabagns = body?.tabagns;
   const update: any = {};
@@ -259,6 +262,14 @@ serve(async (req)=>{
         status: 200,
         headers: corsHeaders()
       });
+    }
+    if (action === "delete_group") {
+      const group = await findUserGroup();
+      if (!group) return new Response(JSON.stringify({ error: "Aucun groupe trouvé." }), { status: 404, headers: corsHeaders() });
+      if (group.responsable !== userId) return new Response(JSON.stringify({ error: "Seul le responsable peut supprimer le groupe." }), { status: 403, headers: corsHeaders() });
+      const { error: delErr } = await supabase.from('residence').delete().eq('responsable', group.responsable);
+      if (delErr) throw delErr;
+      return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders() });
     }
     return new Response(JSON.stringify({
       error: "Action inconnue"
