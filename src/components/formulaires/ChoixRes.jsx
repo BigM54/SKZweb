@@ -190,7 +190,7 @@ export default function ChoixRes() {
                     <Form.Control value={newMemberId} onChange={e => setNewMemberId(e.target.value)} placeholder="user_id" />
                     <Button disabled={submitting || !newMemberId.trim()} onClick={addMember}>Ajouter</Button>
                   </div>
-                  <div className="text-muted mt-2" style={{fontSize:'0.9em'}}>Tu dois avoir 4 résidents au total. Le groupe est {isComplete ? 'complet' : 'incomplet'}.</div>
+                  <div className="text-muted mt-2" style={{fontSize:'0.9em'}}>Tu dois avoir 5 résidents au total. Le groupe est {isComplete ? 'complet' : 'incomplet'}.</div>
                   <Button variant="outline-danger" className="mt-3" disabled={submitting} onClick={async ()=>{ setSubmitting(true); setError(null); try { await apiCall({ action: 'delete_group' }); await load(); } catch(e){ setError(e.message);} finally { setSubmitting(false);} }}>Supprimer le groupe</Button>
                   <div className="text-muted mt-1" style={{fontSize:'0.75em'}}>Suppression totale pour recommencer ou rejoindre un autre groupe.</div>
                 </div>
