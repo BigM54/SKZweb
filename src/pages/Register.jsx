@@ -176,6 +176,8 @@ export default function RegisterAndVerify() {
           email: mail?.toLowerCase(),
           numero,
           bucque,
+          tabagns,
+          proms,
         };
         numsArr.forEach((n, i) => {
           cousinData[`nums${i+1}`] = n;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Table, Spinner, Alert } from 'react-bootstrap';
+import { Card, Table, Spinner, Alert, Button } from 'react-bootstrap';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -10,6 +10,7 @@ export default function MesCousins() {
   const [cousins, setCousins] = useState([]);
   const [error, setError] = useState(null);
   const [nums, setNums] = useState([]);
+  const [hasCousin, setHasCousin] = useState(true);
 
   useEffect(() => {
     const fetchCousins = async () => {
@@ -27,10 +28,14 @@ export default function MesCousins() {
         .eq('email', user.primaryEmailAddress.emailAddress)
         .single();
       if (myError || !myCousin) {
-        setError("Impossible de récupérer vos num's.");
+        // Pas d'entrée cousin: autoriser l'accès à la page avec un bouton pour s'ajouter
+        setHasCousin(false);
+        setCousins([]);
+        setNums([]);
         setLoading(false);
         return;
       }
+      setHasCousin(true);
       const userNums = [myCousin.nums1, myCousin.nums2, myCousin.nums3, myCousin.nums4, myCousin.nums5, myCousin.nums6].filter(Boolean);
       setNums(userNums);
       if (userNums.length === 0) {
@@ -65,6 +70,85 @@ export default function MesCousins() {
     if (isLoaded) fetchCousins();
   }, [isLoaded, user, getToken]);
 
+  const addSelfToCousin = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const token = await getToken({ template: 'supabase' });
+      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: { headers: { Authorization: `Bearer ${token}` } }
+      });
+      // Récupère les infos depuis profils
+      const { data: profilsRows, error: profilsErr } = await supabase
+        .from('profils')
+        .select('numero, nums, bucque, proms, tabagns')
+        .limit(1);
+      if (profilsErr || !profilsRows || profilsRows.length === 0) {
+        setError("Impossible de récupérer vos informations de profil.");
+        setLoading(false);
+        return;
+      }
+      const prof = profilsRows[0];
+      const numsArr = (prof?.nums || '')
+        .toString()
+        .split('-')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .slice(0, 6);
+      const cousinData = {
+        email: user?.primaryEmailAddress?.emailAddress?.toLowerCase() || '',
+        numero: prof?.numero || null,
+        bucque: prof?.bucque || null,
+        proms: prof?.proms ?? null,
+        tabagns: prof?.tabagns || null,
+      };
+      numsArr.forEach((n, i) => { cousinData[`nums${i+1}`] = n; });
+      const { error: insertErr } = await supabase.from('cousin').insert([cousinData]);
+      if (insertErr) {
+        setError("Erreur lors de l'autorisation: " + insertErr.message);
+        setLoading(false);
+        return;
+      }
+      // Recharger la page
+      setHasCousin(true);
+      // Relancer la récupération complète
+      const { data: me } = await supabase
+        .from('cousin')
+        .select('*')
+        .eq('email', user.primaryEmailAddress.emailAddress)
+        .single();
+      const myNums = [me?.nums1, me?.nums2, me?.nums3, me?.nums4, me?.nums5, me?.nums6].filter(Boolean);
+      setNums(myNums);
+      if (myNums.length === 0) {
+        setCousins([]);
+        setLoading(false);
+        return;
+      }
+      const orConditions = [];
+      for (let n of myNums) {
+        for (let col of ['nums1','nums2','nums3','nums4','nums5','nums6']) {
+          orConditions.push(`${col}.eq.${n}`);
+        }
+      }
+      const { data: allCousins, error: err2 } = await supabase
+        .from('cousin')
+        .select('*')
+        .or(orConditions.join(','));
+      if (err2) {
+        setError("Erreur Supabase : " + err2.message);
+        setLoading(false);
+        return;
+      }
+      const unique = {};
+      (allCousins || []).forEach(c => { unique[c.email] = c; });
+      setCousins(Object.values(unique));
+      setLoading(false);
+    } catch (e) {
+      setError(e.message || 'Erreur inconnue');
+      setLoading(false);
+    }
+  };
+
   if (!isLoaded) return null;
   if (loading) return <Spinner animation="border" className="mt-4" />;
   if (error) return <Alert variant="danger" className="mt-4">{error}</Alert>;
@@ -73,6 +157,12 @@ export default function MesCousins() {
     <Card className="mt-4">
       <Card.Body>
         <Card.Title>👨‍👩‍👧‍👦 Mes cousins</Card.Title>
+        {!hasCousin && (
+          <div className="mb-3">
+            <Alert variant="info" className="mb-2">Tu n'as pas encore autorisé le partage de tes infos à tes cousins.</Alert>
+            <Button onClick={addSelfToCousin} disabled={loading}>Autoriser le partage à mes cousins</Button>
+          </div>
+        )}
         {cousins.length === 0 ? (
           <div className="text-muted">Aucun cousin trouvé avec un num's en commun.</div>
         ) : (
