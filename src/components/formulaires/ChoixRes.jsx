@@ -218,14 +218,15 @@ export default function ChoixRes() {
                 <Col md={6}>
                   <Form.Group>
                     <Form.Label>Tabagn's</Form.Label>
-                    <Form.Select value={tabagns} disabled={!isResponsable} onChange={e => { setTabagns(e.target.value); if (e.target.value !== 'autre') setCustomTabagns(''); }}>
+                    <Form.Select value={tabagns} disabled={!isResponsable} onChange={e => { setTabagns(e.target.value)}}>
                       <option value="">— Choisir —</option>
                       <option value="sibers">Sibers</option>
                       <option value="kin">Kin</option>
-                      <option value="archis">Archis</option>
-                      <option value="peks">Peks</option>
-                      <option value="gadz">Gadz</option>
-                      <option value="autre">Autre…</option>
+                      <option value="birse">Birse</option>
+                      <option value="chalons">Chalon's</option>
+                      <option value="bordels">Bordel's</option>
+                      <option value="boquette">Boquette</option>
+                      <option value="p3">P3</option>
                     </Form.Select>
                     {tabagns === 'autre' && (
                       <Form.Control className="mt-2" value={customTabagns} disabled={!isResponsable} onChange={e => setCustomTabagns(e.target.value)} placeholder="Ton tabagn's" />
