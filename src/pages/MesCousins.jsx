@@ -78,17 +78,26 @@ export default function MesCousins() {
       const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
         global: { headers: { Authorization: `Bearer ${token}` } }
       });
-      // Récupère les infos depuis profils
-      const { data: profilsRows, error: profilsErr } = await supabase
+      // Récupère les infos depuis profils pour l'utilisateur courant
+      let prof = null;
+      const { data: profRow, error: profErr } = await supabase
         .from('profils')
         .select('numero, nums, bucque, proms, tabagns')
-        .limit(1);
-      if (profilsErr || !profilsRows || profilsRows.length === 0) {
-        setError("Impossible de récupérer vos informations de profil.");
-        setLoading(false);
-        return;
+        .eq('id', user?.id || '')
+        .maybeSingle();
+      if (!profErr && profRow) {
+        prof = profRow;
+      } else {
+        // Fallback: utiliser les métadonnées Clerk si disponibles
+        const md = user?.unsafeMetadata || {};
+        prof = {
+          numero: md.numero || null,
+          nums: md.num || null,
+          bucque: md.bucque || null,
+          proms: md.proms ?? null,
+          tabagns: md.tabagns || null,
+        };
       }
-      const prof = profilsRows[0];
       const numsArr = (prof?.nums || '')
         .toString()
         .split('-')
