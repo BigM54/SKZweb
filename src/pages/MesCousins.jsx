@@ -181,7 +181,6 @@ export default function MesCousins() {
                 <th>Bucque</th>
                 <th>Proms</th>
                 <th>Tabagns</th>
-                <th>Email</th>
                 <th>Numéro</th>
                 <th>Num's commun(s)</th>
               </tr>
@@ -192,7 +191,6 @@ export default function MesCousins() {
                   <td>{c.bucque || '-'}</td>
                   <td>{c.proms ?? '-'}</td>
                   <td>{c.tabagns || '-'}</td>
-                  <td>{c.email}</td>
                   <td>{c.numero || '-'}</td>
                   <td>{[c.nums1, c.nums2, c.nums3, c.nums4, c.nums5, c.nums6].filter(n => n && nums.includes(n)).join(' - ')}</td>
                 </tr>
