@@ -116,15 +116,17 @@ export default function MesInformations() {
       console.log('Update profils:', res1);
 
       // Ajout/MAJ des nums dans cousin (format nums1, nums2, ...), num facultatif
-      const numsArr = (form.num || '').split('-').filter(Boolean);
+      const numsArr = (form.num || '').split('-').map(s => s.trim()).filter(Boolean);
+      // Eviter d'envoyer des strings vides "" sur des colonnes possiblement numériques (bigint)
+      const promsInt = form.peks ? null : (String(form.proms ?? '').trim() === '' ? null : parseInt(String(form.proms), 10));
       const cousinData = {
-        numero: form.numero,
-        bucque: form.bucque,
-        proms: form.peks ? null : form.proms,
-        tabagns: form.peks ? null : form.tabagns
+        numero: form.numero || null,
+        bucque: form.peks ? null : (form.bucque || null),
+        proms: promsInt,
+        tabagns: form.peks ? null : (form.tabagns || null)
       };
       for (let i = 0; i < 6; i++) {
-        cousinData[`nums${i+1}`] = numsArr[i] || '';
+        cousinData[`nums${i+1}`] = numsArr[i] ?? null;
       }
       // On update explicitement la bucque aussi
       const { error: cousinError } = await supabase.from('cousin').update(cousinData).eq('email', email);
