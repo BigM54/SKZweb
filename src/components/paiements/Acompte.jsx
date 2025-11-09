@@ -257,7 +257,7 @@ export default function Acompte() {
               ❌ Le formulaire de paiement n’a pas pu être chargé. Vérifie ta connexion ou réessaie plus tard.<br />
               Certains navigateurs peuvent empêcher l'affichage du formulaire.<br />
               <a
-                href="https://www.helloasso-sandbox.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/acompte-skz/formulaire"
+                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-skz/widget"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary mt-2"
