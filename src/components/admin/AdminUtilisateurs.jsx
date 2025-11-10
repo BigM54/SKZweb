@@ -109,6 +109,13 @@ export default function AdminUtilisateurs() {
             {results.map((u) => {
               const opt = optionsMap[u.id];
               const paiement = paiementsMap[u.email] || {};
+              const acomptePaid = paiement.acompteStatut ? 25 : 0;
+              const p1Paid = paiement.paiement1Statut ? 200 : 0;
+              const p2Paid = paiement.paiement2Statut ? 200 : 0;
+              const p3Paid = Number(paiement.paiement3Recu) || 0;
+              const totalToPay = (Number(paiement.paiement3Montant) || 0) + 425;
+              const totalPaid = acomptePaid + p1Paid + p2Paid + p3Paid;
+              const remaining = Math.max(0, totalToPay - totalPaid);
               return (
                 <tr key={u.id}>
                   <td colSpan={5}>
@@ -123,7 +130,8 @@ export default function AdminUtilisateurs() {
                         <div><strong>🎒 Packs spéciaux :</strong> Fumeur: {opt.pack_fumeur}, Grand Froid: {opt.pack_grand_froid}, Soirée: {opt.pack_soiree}, Masque: {opt.masque}</div>
                         <div><strong>🎽 Pull :</strong> {opt.taille_pull || '—'}</div>
                         <div><strong>🥗 Régime alimentaire :</strong> {opt.regime || '—'}</div>
-                        <div><strong>💵 Paiements :</strong>Acompte : {paiement.acompteStatut ? `✅` : '❌'}, 1 : {paiement.paiement1Statut ? `✅` : '❌'}, 2 : {paiement.paiement2Statut ? `✅` : '❌'},3 : {paiement.paiement3Recu ? `✅` : '❌'} {paiement.Fraude ? `FRAUDE ATTENTION` : ''}</div>
+                        <div><strong>💵 Paiements :</strong> Acompte : {paiement.acompteStatut ? `✅` : '❌'}, 1 : {paiement.paiement1Statut ? `✅` : '❌'}, 2 : {paiement.paiement2Statut ? `✅` : '❌'}, 3 : {paiement.paiement3Recu ? `✅` : '❌'} {paiement.Fraude ? `FRAUDE ATTENTION` : ''}</div>
+                        <div><strong>🧾 Total à payer:</strong> {totalToPay}€ — <strong>Déjà payé:</strong> {totalPaid}€ — <strong>Reste:</strong> {remaining}€</div>
                       </div>
                     ) : (
                       <div className="text-muted">Pas d'options enregistrées</div>
