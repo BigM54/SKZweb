@@ -4,6 +4,7 @@ import AdminPoles from '../components/admin/AdminPoles';
 import QrScanner from '../components/admin/QrScanner';
 import AdminPaiements from '../components/admin/AdminPaiements';
 import AdminGestionWeb from '../components/admin/AdminGestionWeb';
+import AdminBusLists from '../components/admin/AdminBusLists';
 
 export default function AdminPanel() {
   return (
@@ -25,6 +26,9 @@ export default function AdminPanel() {
           <Tab eventKey="gestion" title="💻 Gestion Web">
             <AdminGestionWeb />
         </Tab>
+          <Tab eventKey="buslistes" title="🚌 Bus (Listes)">
+            <AdminBusLists />
+          </Tab>
       </Tabs>
     </div>
   );
