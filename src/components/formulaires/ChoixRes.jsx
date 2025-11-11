@@ -214,8 +214,8 @@ export default function ChoixRes() {
                     <Form.Select value={ambiance} disabled={!isResponsable} onChange={e => setAmbiance(e.target.value)}>
                       <option value="">— Choisir —</option>
                       <option value="calme">Calme</option>
-                      <option value="Anims">Anim's</option>
-                      <option value="Anims++">Anim's+</option>
+                      <option value="Anim's">Anim's</option>
+                      <option value="Anim's++">Anim's+</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
