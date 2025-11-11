@@ -9,7 +9,8 @@ export default function ChoixRes() {
   const [group, setGroup] = useState(null);
   const [newMemberId, setNewMemberId] = useState("");
   const [ambiance, setAmbiance] = useState('');
-  const [tabagns, setTabagns] = useState(''); // utilisé uniquement si groupe 100% P3
+  const [tabagns, setTabagns] = useState(''); // utilisé uniquement si groupe 100% P3 (non stocké, juste pour filtrer)
+  const [computedGroupe, setComputedGroupe] = useState('');
   const [rooms, setRooms] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -32,8 +33,7 @@ export default function ChoixRes() {
       const data = await apiCall({ action: 'get_state' });
       setGroup(data.group);
       if (data.group) {
-        setAmbiance(data.group.ambiance || '');
-        setTabagns(data.group.tabagns || '');
+        setComputedGroupe(data.group.computedGroupe || '');
       }
     } catch (e) {
       setError(e.message);
@@ -92,9 +92,13 @@ export default function ChoixRes() {
     setSubmitting(true);
     setError(null);
     try {
-  const payload = group?.allP3 ? { action: 'update_prefs', ambiance, tabagns } : { action: 'update_prefs', ambiance };
-  await apiCall(payload);
-      await load();
+      const payload = group?.allP3 ? { action: 'update_prefs', ambiance, tabagns } : { action: 'update_prefs', ambiance };
+      const res = await apiCall(payload);
+      if (res.computedGroupe) setComputedGroupe(res.computedGroupe);
+      // Charger directement les chambres après sauvegarde
+      const roomsRes = await apiCall(group?.allP3 ? { action: 'list_rooms', ambiance, tabagns } : { action: 'list_rooms', ambiance });
+      setRooms(roomsRes.available || []);
+      if (roomsRes.computedGroupe) setComputedGroupe(roomsRes.computedGroupe);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -106,8 +110,9 @@ export default function ChoixRes() {
     setSubmitting(true);
     setError(null);
     try {
-      const data = await apiCall({ action: 'list_rooms' });
+      const data = await apiCall(group?.allP3 ? { action: 'list_rooms', ambiance, tabagns } : { action: 'list_rooms', ambiance });
       setRooms(data.available || []);
+      if (data.computedGroupe) setComputedGroupe(data.computedGroupe);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -200,7 +205,7 @@ export default function ChoixRes() {
 
           <Card className="mb-4">
             <Card.Body>
-              <Card.Title>Préférences</Card.Title>
+              <Card.Title>Préférences & Groupe</Card.Title>
               {!isResponsable && <Alert variant="info">Seul le responsable peut modifier ces options.</Alert>}
               <Row className="g-3">
                 <Col md={6}>
@@ -235,6 +240,10 @@ export default function ChoixRes() {
                   </Col>
                 )}
               </Row>
+              <div className="mt-3">
+                <strong>Groupe attribué:&nbsp;</strong>
+                {computedGroupe ? <Badge bg="secondary">{computedGroupe}</Badge> : <span className="text-muted">—</span>}
+              </div>
               <Button className="mt-3" disabled={!isResponsable || submitting || !ambiance || !isComplete} onClick={savePrefs}>Enregistrer</Button>
               {!isComplete && <div className="text-muted mt-2">Le choix de chambre n'est pas encore dispo.</div>}
             </Card.Body>
@@ -243,7 +252,7 @@ export default function ChoixRes() {
           <Card className="mb-4">
             <Card.Body>
               <Card.Title>Chambres disponibles</Card.Title>
-              <div className="mb-2">Affichées selon ambiance et groupe automatique, uniquement celles non prises.</div>
+              <div className="mb-2">Affichées selon l'ambiance choisie et le groupe attribué (même si le choix est automatique), uniquement les kgibs libres.</div>
               {!isComplete && <Alert variant="warning" className="mt-2">Le choix de chambre n'est pas encore dispo (groupe incomplet).</Alert>}
               <Button variant="outline-primary" size="sm" disabled={submitting || !ambiance || !isComplete} onClick={refreshRooms}>Rafraîchir</Button>
               <Row className="mt-3 g-2">
@@ -253,7 +262,7 @@ export default function ChoixRes() {
                       <Card.Body className="d-flex align-items-center justify-content-between">
                         <div>
                           <div><b>{r.kgibs}</b></div>
-                          <div className="text-muted" style={{fontSize:'0.9em'}}>Ambiance: {r.ambiance} • Tabagns: {r.tabagns}</div>
+                          <div className="text-muted" style={{fontSize:'0.9em'}}>Ambiance: {r.ambiance} • Groupe: {r.groupe}</div>
                         </div>
                         <Button disabled={!isResponsable || submitting || !isComplete} onClick={() => chooseRoom(r.kgibs)}>Choisir</Button>
                       </Card.Body>

@@ -76,14 +76,47 @@ serve(async (req)=>{
       const ids = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
       let map = {} as Record<string, { prenom?: string; nom?: string; tabagns?: string | null }>;
       let allP3 = false;
+      let computedGroupe: string | null = null;
       if (ids.length) {
-        const { data: profs } = await supabase.from('profils').select('id, prenom, nom, tabagns').in('id', ids);
+        const { data: profs } = await supabase.from('profils').select('id, prenom, nom, tabagns, peks, proms').in('id', ids);
         const tabs: string[] = [];
         (profs || []).forEach((p: any) => {
           map[p.id] = { prenom: p.prenom, nom: p.nom, tabagns: p.tabagns };
           if (p.tabagns) tabs.push(String(p.tabagns).toLowerCase());
         });
         allP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
+        // Calculer le groupe attribué (même logique que list_rooms)
+        const normalize = (t: string | null | undefined) => {
+          const v = (t || '').toString().toLowerCase();
+          const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+          if (allowed.includes(v)) return v;
+          if (v === 'p3') return null;
+          return 'intertbk';
+        };
+        const tabsAll = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
+        const nonP3Tabs = tabsAll.filter(t => t && t !== 'p3');
+        const uniqNonP3 = Array.from(new Set(nonP3Tabs));
+        const peksCount = ((profs || []) as any[]).filter(p => p.peks === true).length;
+        let promsConscrits: number | null = null;
+        const { data: ds } = await supabase.from('dateShotgun').select('promsConscrits').maybeSingle();
+        if (ds && typeof ds.promsConscrits === 'number') promsConscrits = ds.promsConscrits;
+        const olderCount = ((profs || []) as any[]).filter(p => typeof p.proms === 'number' && promsConscrits !== null && (p.proms + 2 < (promsConscrits as number))).length;
+        if (!allP3) {
+          if (peksCount > 2) {
+            computedGroupe = 'peks';
+          } else if (olderCount > 2) {
+            computedGroupe = 'archis';
+          } else if (uniqNonP3.length === 1) {
+            computedGroupe = normalize(uniqNonP3[0]) || 'intertbk';
+          } else if (uniqNonP3.length > 1) {
+            computedGroupe = 'intertbk';
+          } else {
+            computedGroupe = 'intertbk';
+          }
+        } else {
+          // Tous P3, groupe affiché par défaut si aucun choix enregistré: intertbk
+          computedGroupe = 'intertbk';
+        }
       }
       const members = [
         { role: 'responsable', id: group.responsable, ...map[group.responsable] },
@@ -92,7 +125,7 @@ serve(async (req)=>{
         ...(group.resident3 ? [{ role: 'resident', id: group.resident3, ...map[group.resident3] }] : []),
         ...(group.resident4 ? [{ role: 'resident', id: group.resident4, ...map[group.resident4] }] : []),
       ];
-      return new Response(JSON.stringify({ group: { ...group, members, allP3 } }), {
+      return new Response(JSON.stringify({ group: { ...group, members, allP3, computedGroupe } }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders() }
       });
@@ -181,34 +214,46 @@ serve(async (req)=>{
       if (!slotsCheckPrefs.every(Boolean)) return new Response(JSON.stringify({ error: "Le groupe doit être complet avant d'enregistrer les préférences." }), { status: 403, headers: corsHeaders() });
       const ambiance = body?.ambiance;
       const incomingTab = body?.tabagns as string | undefined;
-      const update: any = {};
-      if (ambiance) update.ambiance = ambiance;
-      // Only allow choosing tabagns if all members are P3
+      // Validation: Only allow choosing tabagns if all members are P3 (but we don't persist it here)
       const idsForCheck = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
       let isAllP3 = false;
+      let effectiveGroupe: string | null = null;
       if (idsForCheck.length) {
-        const { data: profsAll } = await supabase.from('profils').select('id, tabagns').in('id', idsForCheck);
+        const { data: profsAll } = await supabase.from('profils').select('id, tabagns, peks, proms').in('id', idsForCheck);
         const tabs = ((profsAll || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase()).filter(Boolean);
         isAllP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
+        const normalize = (t: string | null | undefined) => {
+          const v = (t || '').toString().toLowerCase();
+          const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+          if (allowed.includes(v)) return v;
+          if (v === 'p3') return null;
+          return 'intertbk';
+        };
+        const tabsAll = ((profsAll || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
+        const nonP3Tabs = tabsAll.filter(t => t && t !== 'p3');
+        const uniqNonP3 = Array.from(new Set(nonP3Tabs));
+        const peksCount = ((profsAll || []) as any[]).filter(p => p.peks === true).length;
+        let promsConscrits: number | null = null;
+        const { data: ds } = await supabase.from('dateShotgun').select('promsConscrits').maybeSingle();
+        if (ds && typeof ds.promsConscrits === 'number') promsConscrits = ds.promsConscrits;
+        const olderCount = ((profsAll || []) as any[]).filter(p => typeof p.proms === 'number' && promsConscrits !== null && (p.proms + 2 < (promsConscrits as number))).length;
+        if (!isAllP3) {
+          if (peksCount > 2) {
+            effectiveGroupe = 'peks';
+          } else if (olderCount > 2) {
+            effectiveGroupe = 'archis';
+          } else if (uniqNonP3.length === 1) {
+            effectiveGroupe = normalize(uniqNonP3[0]) || 'intertbk';
+          } else if (uniqNonP3.length > 1) {
+            effectiveGroupe = 'intertbk';
+          } else {
+            effectiveGroupe = 'intertbk';
+          }
+        } else {
+          effectiveGroupe = normalize(incomingTab) || 'intertbk';
+        }
       }
-      const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
-      if (isAllP3 && incomingTab && allowed.includes(String(incomingTab).toLowerCase())) {
-        update.tabagns = String(incomingTab).toLowerCase();
-      }
-      if (Object.keys(update).length === 0) return new Response(JSON.stringify({
-        error: "Aucun changement."
-      }), {
-        status: 400,
-        headers: corsHeaders()
-      });
-      const { error: upErr } = await supabase.from("residence").update(update).eq("responsable", group.responsable);
-      if (upErr) throw upErr;
-      return new Response(JSON.stringify({
-        success: true
-      }), {
-        status: 200,
-        headers: corsHeaders()
-      });
+      return new Response(JSON.stringify({ success: true, allP3: isAllP3, computedGroupe: effectiveGroupe, ambiance: ambiance || null }), { status: 200, headers: corsHeaders() });
     }
     if (action === "list_rooms") {
       const group = await findUserGroup();
@@ -220,7 +265,8 @@ serve(async (req)=>{
       });
       const slotsCheck = [group.resident1, group.resident2, group.resident3, group.resident4];
       if (!slotsCheck.every(Boolean)) return new Response(JSON.stringify({ error: "Le groupe doit être complet pour voir les chambres." }), { status: 403, headers: corsHeaders() });
-      const ambiance = group.ambiance;
+      const ambiance = body?.ambiance as string | undefined;
+      if (!ambiance) return new Response(JSON.stringify({ error: "Ambiance requise" }), { status: 400, headers: corsHeaders() });
       const memberIds = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
       const { data: profs } = await supabase.from('profils').select('id, tabagns, peks, proms').in('id', memberIds as any);
       const tabs = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
@@ -253,8 +299,9 @@ serve(async (req)=>{
           targetGroupe = 'intertbk';
         }
       } else {
-        // All P3: allow chosen tabagns, else default to intertbk
-        targetGroupe = normalize(group.tabagns) || 'intertbk';
+        // Tous P3: autoriser le tabagns envoyé, sinon intertbk
+        const incomingTab = body?.tabagns as string | undefined;
+        targetGroupe = normalize(incomingTab) || 'intertbk';
       }
 
       // Fetch already taken kgibs
@@ -265,7 +312,9 @@ serve(async (req)=>{
       if (roomErr) throw roomErr;
       const available = ((rooms ?? []) as any[]).filter((r: any)=>!takenSet.has(r.kgibs));
       return new Response(JSON.stringify({
-        available
+        available,
+        computedGroupe: targetGroupe,
+        ambiance
       }), {
         status: 200,
         headers: corsHeaders()
