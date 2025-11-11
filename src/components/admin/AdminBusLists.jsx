@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Alert, Spinner, Card, Row, Col, Badge, Button } from 'react-bootstrap';
+import { createClient } from '@supabase/supabase-js';
 
 // This admin component lists, for each tabagns, the participants grouped by bus variant
 // It assumes tables:
@@ -22,29 +23,27 @@ export default function AdminBusLists() {
     setLoading(true); setError(null);
     try {
       const token = await getToken({ template: 'supabase' });
-      const res = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/rest/v1/options?select=id,bus,type_bus,numero,prenom,nom', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'apikey': token
-        }
-      });
-      if (!res.ok) throw new Error('Erreur chargement options');
-      const rows = await res.json();
-      // Fetch capacities
-      const capRes = await fetch('https://vwwnyxyglihmsabvbmgs.supabase.co/rest/v1/busPlace?select=tabagns,calme,anims,"anims+","anims++"', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'apikey': token
-        }
-      });
-      if (!capRes.ok) throw new Error('Erreur chargement capacités');
-      const caps = await capRes.json();
+      const supabase = createClient(
+        'https://vwwnyxyglihmsabvbmgs.supabase.co',
+        // public anon key (already used elsewhere). Auth via bearer adds RLS context.
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw',
+        { global: { headers: { Authorization: `Bearer ${token}` } } }
+      );
+
+      const { data: optionRows, error: optErr } = await supabase
+        .from('options')
+        .select('id,bus,type_bus,numero,prenom,nom');
+      if (optErr) throw optErr;
+
+      const { data: capRows, error: capErr } = await supabase
+        .from('busPlace')
+        .select('tabagns,calme,anims,"anims+","anims++"');
+      if (capErr) throw capErr;
+
       const capMap = {};
-      caps.forEach(c => { capMap[c.tabagns] = c; });
+      (capRows || []).forEach(c => { capMap[c.tabagns] = c; });
       setCapacities(capMap);
-      setData(rows);
+      setData(optionRows || []);
     } catch (e) {
       setError(e.message);
     } finally {
