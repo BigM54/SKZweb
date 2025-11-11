@@ -233,9 +233,7 @@ export default function ChoixRes() {
                         <option value="boquette">Boquette</option>
                         <option value="bordels">Bordel's</option>
                         <option value="archis">Archis</option>
-                        <option value="peks">Peks</option>
                       </Form.Select>
-                      <div className="form-text">Choix visible uniquement si votre groupe est 100% P3.</div>
                     </Form.Group>
                   </Col>
                 )}
