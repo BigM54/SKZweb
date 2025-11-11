@@ -129,6 +129,14 @@ export default function ChoixRes() {
       await refreshRooms();
     } catch (e) {
       setError(e.message);
+      // Si la chambre a été prise entre-temps, on rafraîchit la liste pour la faire disparaître
+      try {
+        const data = await apiCall(group?.allP3 ? { action: 'list_rooms', ambiance, tabagns } : { action: 'list_rooms', ambiance });
+        setRooms(data.available || []);
+        if (data.computedGroupe) setComputedGroupe(data.computedGroupe);
+      } catch (_) {
+        // ignore secondary refresh errors
+      }
     } finally {
       setSubmitting(false);
     }
