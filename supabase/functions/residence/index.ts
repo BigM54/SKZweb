@@ -74,10 +74,16 @@ serve(async (req)=>{
       }
       // Enrichir avec prenom/nom depuis profils si disponible
       const ids = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
-      let map = {} as Record<string, { prenom?: string; nom?: string }>;
+      let map = {} as Record<string, { prenom?: string; nom?: string; tabagns?: string | null }>;
+      let allP3 = false;
       if (ids.length) {
-        const { data: profs } = await supabase.from('profils').select('id, prenom, nom').in('id', ids);
-        (profs || []).forEach((p: any) => { map[p.id] = { prenom: p.prenom, nom: p.nom }; });
+        const { data: profs } = await supabase.from('profils').select('id, prenom, nom, tabagns').in('id', ids);
+        const tabs: string[] = [];
+        (profs || []).forEach((p: any) => {
+          map[p.id] = { prenom: p.prenom, nom: p.nom, tabagns: p.tabagns };
+          if (p.tabagns) tabs.push(String(p.tabagns).toLowerCase());
+        });
+        allP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
       }
       const members = [
         { role: 'responsable', id: group.responsable, ...map[group.responsable] },
@@ -86,7 +92,7 @@ serve(async (req)=>{
         ...(group.resident3 ? [{ role: 'resident', id: group.resident3, ...map[group.resident3] }] : []),
         ...(group.resident4 ? [{ role: 'resident', id: group.resident4, ...map[group.resident4] }] : []),
       ];
-      return new Response(JSON.stringify({ group: { ...group, members } }), {
+      return new Response(JSON.stringify({ group: { ...group, members, allP3 } }), {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders() }
       });
@@ -173,11 +179,22 @@ serve(async (req)=>{
       // Require full group before saving preferences
       const slotsCheckPrefs = [group.resident1, group.resident2, group.resident3, group.resident4];
       if (!slotsCheckPrefs.every(Boolean)) return new Response(JSON.stringify({ error: "Le groupe doit être complet avant d'enregistrer les préférences." }), { status: 403, headers: corsHeaders() });
-  const ambiance = body?.ambiance;
-  const tabagns = body?.tabagns;
-  const update: any = {};
+      const ambiance = body?.ambiance;
+      const incomingTab = body?.tabagns as string | undefined;
+      const update: any = {};
       if (ambiance) update.ambiance = ambiance;
-      if (tabagns) update.tabagns = tabagns;
+      // Only allow choosing tabagns if all members are P3
+      const idsForCheck = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
+      let isAllP3 = false;
+      if (idsForCheck.length) {
+        const { data: profsAll } = await supabase.from('profils').select('id, tabagns').in('id', idsForCheck);
+        const tabs = ((profsAll || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase()).filter(Boolean);
+        isAllP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
+      }
+      const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+      if (isAllP3 && incomingTab && allowed.includes(String(incomingTab).toLowerCase())) {
+        update.tabagns = String(incomingTab).toLowerCase();
+      }
       if (Object.keys(update).length === 0) return new Response(JSON.stringify({
         error: "Aucun changement."
       }), {
@@ -204,39 +221,47 @@ serve(async (req)=>{
       const slotsCheck = [group.resident1, group.resident2, group.resident3, group.resident4];
       if (!slotsCheck.every(Boolean)) return new Response(JSON.stringify({ error: "Le groupe doit être complet pour voir les chambres." }), { status: 403, headers: corsHeaders() });
       const ambiance = group.ambiance;
-
-      // Determine target groupe based on members' tabagns (profils.tabagns)
       const memberIds = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
-      const { data: profs } = await supabase.from('profils').select('id, tabagns').in('id', memberIds as any);
-      const tabs = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase()).filter(Boolean);
+      const { data: profs } = await supabase.from('profils').select('id, tabagns, peks, proms').in('id', memberIds as any);
+      const tabs = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
+      const nonP3Tabs = tabs.filter(t => t && t !== 'p3');
+      const uniqNonP3 = Array.from(new Set(nonP3Tabs));
       const allP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
-      const nonP3 = tabs.filter(t => t !== 'p3');
-      const uniq = Array.from(new Set(nonP3));
+      const peksCount = ((profs || []) as any[]).filter(p => p.peks === true).length;
+      let promsConscrits: number | null = null;
+      const { data: ds } = await supabase.from('dateShotgun').select('promsConscrits').maybeSingle();
+      if (ds && typeof ds.promsConscrits === 'number') promsConscrits = ds.promsConscrits;
+      const olderCount = ((profs || []) as any[]).filter(p => typeof p.proms === 'number' && promsConscrits !== null && (p.proms + 2 < (promsConscrits as number))).length;
       const normalize = (t: string | null | undefined) => {
         const v = (t || '').toString().toLowerCase();
-        if (['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'].includes(v)) return v;
+        const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+        if (allowed.includes(v)) return v;
         if (v === 'p3') return null;
-        // map unknowns to intertbk by default (e.g., birse)
         return 'intertbk';
       };
       let targetGroupe: string | null = null;
-      if (allP3) {
-        // Let them choose via saved preference; fallback to intertbk if invalid/missing
-        targetGroupe = normalize(group.tabagns) || 'intertbk';
-      } else if (uniq.length === 1) {
-        targetGroupe = normalize(uniq[0]) || 'intertbk';
-      } else if (uniq.length > 1) {
-        targetGroupe = 'intertbk';
+      if (!allP3) {
+        if (peksCount > 2) {
+          targetGroupe = 'peks';
+        } else if (olderCount > 2) {
+          targetGroupe = 'archis';
+        } else if (uniqNonP3.length === 1) {
+          targetGroupe = normalize(uniqNonP3[0]) || 'intertbk';
+        } else if (uniqNonP3.length > 1) {
+          targetGroupe = 'intertbk';
+        } else {
+          targetGroupe = 'intertbk';
+        }
       } else {
-        // No usable tabagns found -> fallback
-        targetGroupe = 'intertbk';
+        // All P3: allow chosen tabagns, else default to intertbk
+        targetGroupe = normalize(group.tabagns) || 'intertbk';
       }
 
       // Fetch already taken kgibs
       const { data: taken } = await supabase.from("residence").select("kgibs").not("kgibs", "is", null);
       const takenSet = new Set(((taken ?? []) as any[]).map((r: any)=>r.kgibs));
       // Fetch candidate rooms from 'chambres' filtered by prefs (ambiance + groupe)
-      const { data: rooms, error: roomErr } = await supabase.from("chambres").select("kgibs, ambiance, groupe, etage, cote").eq("ambiance", ambiance).eq("groupe", targetGroupe);
+  const { data: rooms, error: roomErr } = await supabase.from("chambres").select("kgibs, ambiance, groupe, etage, cote").eq("ambiance", ambiance).eq("groupe", targetGroupe);
       if (roomErr) throw roomErr;
       const available = ((rooms ?? []) as any[]).filter((r: any)=>!takenSet.has(r.kgibs));
       return new Response(JSON.stringify({

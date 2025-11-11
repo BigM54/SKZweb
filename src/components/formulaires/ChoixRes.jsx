@@ -9,8 +9,7 @@ export default function ChoixRes() {
   const [group, setGroup] = useState(null);
   const [newMemberId, setNewMemberId] = useState("");
   const [ambiance, setAmbiance] = useState('');
-  const [tabagns, setTabagns] = useState('');
-  const [customTabagns, setCustomTabagns] = useState('');
+  const [tabagns, setTabagns] = useState(''); // utilisé uniquement si groupe 100% P3
   const [rooms, setRooms] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -93,8 +92,8 @@ export default function ChoixRes() {
     setSubmitting(true);
     setError(null);
     try {
-      const effectiveTabagns = tabagns === 'autre' ? customTabagns.trim() : tabagns;
-      await apiCall({ action: 'update_prefs', ambiance, tabagns: effectiveTabagns });
+  const payload = group?.allP3 ? { action: 'update_prefs', ambiance, tabagns } : { action: 'update_prefs', ambiance };
+  await apiCall(payload);
       await load();
     } catch (e) {
       setError(e.message);
@@ -215,26 +214,28 @@ export default function ChoixRes() {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label>Tabagn's</Form.Label>
-                    <Form.Select value={tabagns} disabled={!isResponsable} onChange={e => { setTabagns(e.target.value)}}>
-                      <option value="">— Choisir —</option>
-                      <option value="sibers">Sibers</option>
-                      <option value="kin">Kin</option>
-                      <option value="birse">Birse</option>
-                      <option value="chalons">Chalon's</option>
-                      <option value="bordels">Bordel's</option>
-                      <option value="boquette">Boquette</option>
-                      <option value="p3">P3</option>
-                    </Form.Select>
-                    {tabagns === 'autre' && (
-                      <Form.Control className="mt-2" value={customTabagns} disabled={!isResponsable} onChange={e => setCustomTabagns(e.target.value)} placeholder="Ton tabagn's" />
-                    )}
-                  </Form.Group>
-                </Col>
+                {group?.allP3 && (
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Tabagn's (groupe)</Form.Label>
+                      <Form.Select value={tabagns || ''} disabled={!isResponsable} onChange={e => setTabagns(e.target.value)}>
+                        <option value="">— Choisir —</option>
+                        <option value="sibers">Sibers</option>
+                        <option value="chalons">Chalon's</option>
+                        <option value="cluns">Clun's</option>
+                        <option value="intertbk">InterTBK</option>
+                        <option value="kin">Kin</option>
+                        <option value="boquette">Boquette</option>
+                        <option value="bordels">Bordel's</option>
+                        <option value="archis">Archis</option>
+                        <option value="peks">Peks</option>
+                      </Form.Select>
+                      <div className="form-text">Choix visible uniquement si votre groupe est 100% P3.</div>
+                    </Form.Group>
+                  </Col>
+                )}
               </Row>
-              <Button className="mt-3" disabled={!isResponsable || submitting || !ambiance || !tabagns || (tabagns==='autre' && !customTabagns.trim()) || !isComplete} onClick={savePrefs}>Enregistrer</Button>
+              <Button className="mt-3" disabled={!isResponsable || submitting || !ambiance || !isComplete} onClick={savePrefs}>Enregistrer</Button>
               {!isComplete && <div className="text-muted mt-2">Le choix de chambre n'est pas encore dispo.</div>}
             </Card.Body>
           </Card>
@@ -242,9 +243,9 @@ export default function ChoixRes() {
           <Card className="mb-4">
             <Card.Body>
               <Card.Title>Chambres disponibles</Card.Title>
-              <div className="mb-2">Affichées selon ambiance/tabagns et uniquement celles non prises.</div>
+              <div className="mb-2">Affichées selon ambiance et groupe automatique, uniquement celles non prises.</div>
               {!isComplete && <Alert variant="warning" className="mt-2">Le choix de chambre n'est pas encore dispo (groupe incomplet).</Alert>}
-              <Button variant="outline-primary" size="sm" disabled={submitting || !ambiance || !tabagns || !isComplete} onClick={refreshRooms}>Rafraîchir</Button>
+              <Button variant="outline-primary" size="sm" disabled={submitting || !ambiance || !isComplete} onClick={refreshRooms}>Rafraîchir</Button>
               <Row className="mt-3 g-2">
                 {rooms.map((r) => (
                   <Col xs={12} md={6} lg={4} key={r.kgibs}>
