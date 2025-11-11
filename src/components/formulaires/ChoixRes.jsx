@@ -256,13 +256,15 @@ export default function ChoixRes() {
               <Row className="mt-3 g-2">
                 {rooms.map((r) => (
                   <Col xs={12} md={6} lg={4} key={r.kgibs}>
-                    <Card>
-                      <Card.Body className="d-flex align-items-center justify-content-between">
+                    <Card className="h-100">
+                      <Card.Body className="d-flex flex-column justify-content-between">
                         <div>
-                          <div><b>{r.kgibs}</b></div>
-                          <div className="text-muted" style={{fontSize:'0.9em'}}>Ambiance: {r.ambiance} • Groupe: {r.groupe}</div>
+                          <div><b>Kgibs {r.kgibs}</b></div>
+                          <div className="text-muted" style={{fontSize:'0.85em'}}>Ambiance: {r.ambiance}</div>
+                          <div className="text-muted" style={{fontSize:'0.85em'}}>Groupe: {r.groupe}</div>
+                          <div className="text-muted" style={{fontSize:'0.85em'}}>Côté: {r.cote || '—'}</div>
                         </div>
-                        <Button disabled={!isResponsable || submitting || !isComplete} onClick={() => chooseRoom(r.kgibs)}>Choisir</Button>
+                        <Button className="mt-3 w-100" disabled={!isResponsable || submitting || !isComplete} onClick={() => chooseRoom(r.kgibs)}>Choisir</Button>
                       </Card.Body>
                     </Card>
                   </Col>
