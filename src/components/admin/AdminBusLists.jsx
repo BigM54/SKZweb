@@ -23,12 +23,9 @@ export default function AdminBusLists() {
     setLoading(true); setError(null);
     try {
       const token = await getToken({ template: 'supabase' });
-      const supabase = createClient(
-        'https://vwwnyxyglihmsabvbmgs.supabase.co',
-        // public anon key (already used elsewhere). Auth via bearer adds RLS context.
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw',
-        { global: { headers: { Authorization: `Bearer ${token}` } } }
-      );
+    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+        global: { headers: { Authorization: `Bearer ${token}` } }
+        });
 
       // 1) Options: source of bus and type_bus
       const { data: optionRows, error: optErr } = await supabase
