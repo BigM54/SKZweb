@@ -145,7 +145,7 @@ export default function ChoixRes() {
   if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}><Spinner animation="border" /></div>;
 
   return (
-    <Container fluid className="py-4" style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}>
+    <Container fluid className="py-4" style={{ ppaddingRight: '1.5rem' }}>
       <h3 className="mb-3">Résidence (kgibs)</h3>
       {error && <Alert variant="danger">{error}</Alert>}
 
