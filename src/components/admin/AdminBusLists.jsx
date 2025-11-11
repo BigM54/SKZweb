@@ -30,10 +30,23 @@ export default function AdminBusLists() {
         { global: { headers: { Authorization: `Bearer ${token}` } } }
       );
 
+      // 1) Options: source of bus and type_bus
       const { data: optionRows, error: optErr } = await supabase
         .from('options')
-        .select('id,bus,type_bus,numero,prenom,nom');
+        .select('id,bus,type_bus');
       if (optErr) throw optErr;
+
+      // 2) Profils: enrich with identity (prenom, nom, numero)
+      const ids = (optionRows || []).map(r => r.id).filter(Boolean);
+      let profileMap = {};
+      if (ids.length) {
+        const { data: profilsRows, error: profErr } = await supabase
+          .from('profils')
+          .select('id, prenom, nom, numero')
+          .in('id', ids);
+        if (profErr) throw profErr;
+        (profilsRows || []).forEach(p => { profileMap[p.id] = { prenom: p.prenom, nom: p.nom, numero: p.numero }; });
+      }
 
       const { data: capRows, error: capErr } = await supabase
         .from('busPlace')
@@ -43,7 +56,8 @@ export default function AdminBusLists() {
       const capMap = {};
       (capRows || []).forEach(c => { capMap[c.tabagns] = c; });
       setCapacities(capMap);
-      setData(optionRows || []);
+  const enriched = (optionRows || []).map(r => ({ ...r, ...(profileMap[r.id] || {}) }));
+  setData(enriched);
     } catch (e) {
       setError(e.message);
     } finally {
