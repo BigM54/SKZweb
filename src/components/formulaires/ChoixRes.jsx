@@ -145,7 +145,7 @@ export default function ChoixRes() {
   if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}><Spinner animation="border" /></div>;
 
   return (
-    <Container className="py-4">
+    <Container fluid className="py-4">
       <h3 className="mb-3">Résidence (kgibs)</h3>
       {error && <Alert variant="danger">{error}</Alert>}
 
@@ -261,10 +261,10 @@ export default function ChoixRes() {
               <div className="mb-2">Affichées selon l'ambiance choisie et le groupe attribué (même si le choix est automatique), uniquement les kgibs libres.</div>
               {!isComplete && <Alert variant="warning" className="mt-2">Le choix de chambre n'est pas encore dispo (groupe incomplet).</Alert>}
               <Button variant="outline-primary" size="sm" disabled={submitting || !ambiance || !isComplete} onClick={refreshRooms}>Rafraîchir</Button>
-              <Row className="mt-3 g-2">
+              <Row className="mt-3 justify-content-center g-1 w-100">
                 {rooms.map((r) => (
-                  <Col xs={12} md={6} lg={4} key={r.kgibs}>
-                    <Card className="h-100">
+                  <Col key={r.kgibs} xs={12} md={8} lg={8} xl={5} className="d-flex justify-content-center" style={{ minWidth: 520, maxWidth: 1000, margin: '0 1vw 2.5rem 1vw' }}>
+                    <Card className="h-100 w-100">
                       <Card.Body className="d-flex flex-column justify-content-between">
                         <div>
                           <div><b>Kgibs {r.kgibs}</b></div>

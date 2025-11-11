@@ -304,13 +304,13 @@ serve(async (req)=>{
         targetGroupe = normalize(incomingTab) || 'intertbk';
       }
 
-      // Fetch already taken kgibs
-      const { data: taken } = await supabase.from("residence").select("kgibs").not("kgibs", "is", null);
-      const takenSet = new Set(((taken ?? []) as any[]).map((r: any)=>r.kgibs));
+  // Fetch already taken kgibs and normalize to string for robust comparison
+  const { data: taken } = await supabase.from("residence").select("kgibs").not("kgibs", "is", null);
+  const takenSet = new Set(((taken ?? []) as any[]).map((r: any)=> String(r.kgibs)));
       // Fetch candidate rooms from 'chambres' filtered by prefs (ambiance + groupe)
   const { data: rooms, error: roomErr } = await supabase.from("chambres").select("kgibs, ambiance, groupe, etage, cote").eq("ambiance", ambiance).eq("groupe", targetGroupe);
       if (roomErr) throw roomErr;
-      const available = ((rooms ?? []) as any[]).filter((r: any)=>!takenSet.has(r.kgibs));
+    const available = ((rooms ?? []) as any[]).filter((r: any)=> !takenSet.has(String(r.kgibs)));
       return new Response(JSON.stringify({
         available,
         computedGroupe: targetGroupe,
