@@ -204,14 +204,41 @@ serve(async (req)=>{
       const slotsCheck = [group.resident1, group.resident2, group.resident3, group.resident4];
       if (!slotsCheck.every(Boolean)) return new Response(JSON.stringify({ error: "Le groupe doit être complet pour voir les chambres." }), { status: 403, headers: corsHeaders() });
       const ambiance = group.ambiance;
-      const tabagns = group.tabagns;
+
+      // Determine target groupe based on members' tabagns (profils.tabagns)
+      const memberIds = [group.responsable, group.resident1, group.resident2, group.resident3, group.resident4].filter(Boolean);
+      const { data: profs } = await supabase.from('profils').select('id, tabagns').in('id', memberIds as any);
+      const tabs = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase()).filter(Boolean);
+      const allP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
+      const nonP3 = tabs.filter(t => t !== 'p3');
+      const uniq = Array.from(new Set(nonP3));
+      const normalize = (t: string | null | undefined) => {
+        const v = (t || '').toString().toLowerCase();
+        if (['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'].includes(v)) return v;
+        if (v === 'p3') return null;
+        // map unknowns to intertbk by default (e.g., birse)
+        return 'intertbk';
+      };
+      let targetGroupe: string | null = null;
+      if (allP3) {
+        // Let them choose via saved preference; fallback to intertbk if invalid/missing
+        targetGroupe = normalize(group.tabagns) || 'intertbk';
+      } else if (uniq.length === 1) {
+        targetGroupe = normalize(uniq[0]) || 'intertbk';
+      } else if (uniq.length > 1) {
+        targetGroupe = 'intertbk';
+      } else {
+        // No usable tabagns found -> fallback
+        targetGroupe = 'intertbk';
+      }
+
       // Fetch already taken kgibs
       const { data: taken } = await supabase.from("residence").select("kgibs").not("kgibs", "is", null);
-  const takenSet = new Set(((taken ?? []) as any[]).map((r: any)=>r.kgibs));
-      // Fetch candidate rooms from 'chambres' filtered by prefs
-      const { data: rooms, error: roomErr } = await supabase.from("chambres").select("kgibs, ambiance, tabagns").eq("ambiance", ambiance).eq("tabagns", tabagns);
+      const takenSet = new Set(((taken ?? []) as any[]).map((r: any)=>r.kgibs));
+      // Fetch candidate rooms from 'chambres' filtered by prefs (ambiance + groupe)
+      const { data: rooms, error: roomErr } = await supabase.from("chambres").select("kgibs, ambiance, groupe, etage, cote").eq("ambiance", ambiance).eq("groupe", targetGroupe);
       if (roomErr) throw roomErr;
-  const available = ((rooms ?? []) as any[]).filter((r: any)=>!takenSet.has(r.kgibs));
+      const available = ((rooms ?? []) as any[]).filter((r: any)=>!takenSet.has(r.kgibs));
       return new Response(JSON.stringify({
         available
       }), {
