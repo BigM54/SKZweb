@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { Alert, Spinner, Card, Row, Col, Badge, Button } from 'react-bootstrap';
+import { Alert, Spinner, Card, Row, Col, Badge, Button, Form } from 'react-bootstrap';
 import { createClient } from '@supabase/supabase-js';
 
 // This admin component lists, for each tabagns, the participants grouped by bus variant
@@ -18,6 +18,7 @@ export default function AdminBusLists() {
   const [data, setData] = useState([]); // raw options rows
   const [capacities, setCapacities] = useState({}); // tabagns -> capacity object
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('');
 
   const fetchAll = async () => {
     setLoading(true); setError(null);
@@ -72,6 +73,13 @@ export default function AdminBusLists() {
 
   useEffect(() => { fetchAll(); }, []);
 
+  // Reset selection if the selected tabagns disappears after refresh
+  useEffect(() => {
+    if (selectedTab && !(selectedTab in grouped)) {
+      setSelectedTab('');
+    }
+  }, [grouped, selectedTab]);
+
   const grouped = useMemo(() => {
     const map = {};
     data.forEach(r => {
@@ -92,16 +100,25 @@ export default function AdminBusLists() {
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   const tabagnsList = Object.keys(grouped).sort();
+  const filteredTabs = selectedTab ? tabagnsList.filter(t => t === selectedTab) : tabagnsList;
 
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h4 className="mb-0">Listes des bus par Tabagn's</h4>
-        <Button variant="outline-primary" size="sm" disabled={refreshing} onClick={refresh}>{refreshing ? '...' : 'Rafraîchir'}</Button>
+        <div className="d-flex align-items-center gap-2">
+          <Form.Select size="sm" value={selectedTab} onChange={e => setSelectedTab(e.target.value)} style={{ minWidth: 200, textTransform: 'capitalize' }}>
+            <option value="">Tous les tabagn's</option>
+            {tabagnsList.map(t => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </Form.Select>
+          <Button variant="outline-primary" size="sm" disabled={refreshing} onClick={refresh}>{refreshing ? '...' : 'Rafraîchir'}</Button>
+        </div>
       </div>
       {tabagnsList.length === 0 && <Alert>Aucune donnée de bus.</Alert>}
       <Row className="g-3">
-        {tabagnsList.map(tab => {
+        {filteredTabs.map(tab => {
           const g = grouped[tab];
           const cap = capacities[tab];
           return (
