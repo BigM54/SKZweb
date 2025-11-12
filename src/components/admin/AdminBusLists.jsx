@@ -18,7 +18,7 @@ export default function AdminBusLists() {
   const [data, setData] = useState([]); // raw options rows
   const [capacities, setCapacities] = useState({}); // tabagns -> capacity object
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('');
+  const [selectedTab, setSelectedTab] = useState(''); // filtre tabagns
 
   const fetchAll = async () => {
     setLoading(true); setError(null);
@@ -73,13 +73,6 @@ export default function AdminBusLists() {
 
   useEffect(() => { fetchAll(); }, []);
 
-  // Reset selection if the selected tabagns disappears after refresh
-  useEffect(() => {
-    if (selectedTab && !(selectedTab in grouped)) {
-      setSelectedTab('');
-    }
-  }, [grouped, selectedTab]);
-
   const grouped = useMemo(() => {
     const map = {};
     data.forEach(r => {
@@ -100,25 +93,28 @@ export default function AdminBusLists() {
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   const tabagnsList = Object.keys(grouped).sort();
-  const filteredTabs = selectedTab ? tabagnsList.filter(t => t === selectedTab) : tabagnsList;
+  const visibleTabs = selectedTab ? [selectedTab] : [];
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
         <h4 className="mb-0">Listes des bus par Tabagn's</h4>
         <div className="d-flex align-items-center gap-2">
-          <Form.Select size="sm" value={selectedTab} onChange={e => setSelectedTab(e.target.value)} style={{ minWidth: 200, textTransform: 'capitalize' }}>
-            <option value="">Tous les tabagn's</option>
-            {tabagnsList.map(t => (
-              <option key={t} value={t}>{t}</option>
+          <Form.Select size="sm" value={selectedTab} onChange={(e) => setSelectedTab(e.target.value)} style={{ minWidth: 200 }}>
+            <option value="">— Choisir un tabagn's —</option>
+            {tabagnsList.map(tab => (
+              <option key={tab} value={tab} style={{ textTransform: 'capitalize' }}>{tab}</option>
             ))}
           </Form.Select>
           <Button variant="outline-primary" size="sm" disabled={refreshing} onClick={refresh}>{refreshing ? '...' : 'Rafraîchir'}</Button>
         </div>
       </div>
       {tabagnsList.length === 0 && <Alert>Aucune donnée de bus.</Alert>}
+      {!selectedTab && tabagnsList.length > 0 && (
+        <Alert variant="info">Sélectionne un tabagn's ci-dessus pour afficher sa liste.</Alert>
+      )}
       <Row className="g-3">
-        {filteredTabs.map(tab => {
+        {visibleTabs.map(tab => {
           const g = grouped[tab];
           const cap = capacities[tab];
           return (
