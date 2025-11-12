@@ -34,15 +34,23 @@ export default function AdminBusLists() {
       if (optErr) throw optErr;
 
       // 2) Profils: enrich with identity (prenom, nom, numero)
+      // Avoid very long URL with large IN lists by chunking ids
       const ids = (optionRows || []).map(r => r.id).filter(Boolean);
       let profileMap = {};
       if (ids.length) {
-        const { data: profilsRows, error: profErr } = await supabase
-          .from('profils')
-          .select('id, prenom, nom, numero')
-          .in('id', ids);
-        if (profErr) throw profErr;
-        (profilsRows || []).forEach(p => { profileMap[p.id] = { prenom: p.prenom, nom: p.nom, numero: p.numero }; });
+        const chunkSize = 200; // safe chunk size to avoid URL length limits
+        const chunks = [];
+        for (let i = 0; i < ids.length; i += chunkSize) chunks.push(ids.slice(i, i + chunkSize));
+        let allProfils = [];
+        for (const ch of chunks) {
+          const { data: profilsRows, error: profErr } = await supabase
+            .from('profils')
+            .select('id, prenom, nom, numero')
+            .in('id', ch);
+          if (profErr) throw profErr;
+          allProfils = allProfils.concat(profilsRows || []);
+        }
+        (allProfils || []).forEach(p => { profileMap[p.id] = { prenom: p.prenom, nom: p.nom, numero: p.numero }; });
       }
 
       const { data: capRows, error: capErr } = await supabase
