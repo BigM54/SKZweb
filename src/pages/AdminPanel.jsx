@@ -1,10 +1,11 @@
 import { Tabs, Tab, Container } from 'react-bootstrap';
+import React, { Suspense, lazy } from 'react';
 import AdminUtilisateurs from '../components/admin/AdminUtilisateurs';
 import AdminPoles from '../components/admin/AdminPoles';
 import QrScanner from '../components/admin/QrScanner';
 import AdminPaiements from '../components/admin/AdminPaiements';
 import AdminGestionWeb from '../components/admin/AdminGestionWeb';
-import AdminBusLists from '../components/admin/AdminBusLists';
+const AdminBusLists = lazy(() => import('../components/admin/AdminBusLists'));
 
 export default function AdminPanel() {
   return (
@@ -27,7 +28,9 @@ export default function AdminPanel() {
             <AdminGestionWeb />
         </Tab>
           <Tab eventKey="buslistes" title="🚌 Bus (Listes)">
-            <AdminBusLists />
+            <Suspense fallback={<div>Chargement…</div>}>
+              <AdminBusLists />
+            </Suspense>
           </Tab>
       </Tabs>
     </div>
