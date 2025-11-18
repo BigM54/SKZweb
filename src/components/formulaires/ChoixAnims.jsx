@@ -440,7 +440,10 @@ export default function ChoixAnims() {
           <Col sm={12} lg={10} xl={8}>
             <div className="d-flex align-items-center justify-content-between mb-4">
               <h2 className="display-5 fw-bold text-success mb-0">🎉 Tes choix d'animations</h2>
-              <Button variant="outline-primary" size="sm" onClick={() => navigate('/')}>Accueil</Button>
+              <div className="d-flex gap-2">
+                <Button variant="outline-secondary" size="sm" onClick={() => { setModeAffichage(false); setCurrentAnimIndex(0); setChoices({}); setOrderedFavorites([]); }}>🔄 Recommencer</Button>
+                <Button variant="outline-primary" size="sm" onClick={() => navigate('/')}>Accueil</Button>
+              </div>
             </div>
             <div className="text-center mb-3">
               <ul className="list-group list-group-flush">
