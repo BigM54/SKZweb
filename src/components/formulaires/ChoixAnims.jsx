@@ -409,7 +409,7 @@ export default function ChoixAnims() {
       // Insère ou met à jour la ligne pour cet utilisateur
       const { error } = await supabase
         .from('anims')
-        .insert([insertData], { onConflict: ['id'] });
+        .upsert([insertData], { onConflict: ['id'] });
       if (error) {
         setErrorMsg("Erreur lors de l'enregistrement : " + error.message);
       } else {
@@ -641,6 +641,8 @@ export default function ChoixAnims() {
                 <Button 
                   variant="outline-primary"
                   onClick={() => {
+                    // Return to selection mode and clear choices/order so the user restarts from zero
+                    setModeAffichage(false);
                     setCurrentAnimIndex(0);
                     setChoices({});
                     setOrderedFavorites([]);
