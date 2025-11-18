@@ -358,15 +358,26 @@ export default function ChoixAnims() {
           .eq('id', user.id)
           .single();
         if (data) {
+          // Collect all numeric keys from the saved row (handles more than 10 fields)
+          const numericKeys = Object.keys(data).filter(k => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
           const favorites = [];
-          for (let i = 1; i <= 10; i++) {
-            if (data[i]) {
-              const animObj = animations.find(a => a.title === data[i]);
-              if (animObj) favorites.push(animObj);
+          const favoriteIds = [];
+          for (const key of numericKeys) {
+            const title = data[key];
+            if (!title) continue;
+            const animObj = animations.find(a => a.title === title);
+            if (animObj) {
+              favorites.push(animObj);
+              favoriteIds.push(animObj.id);
             }
           }
           if (favorites.length > 0) {
             setRecapFavorites(favorites);
+            setOrderedFavorites(favoriteIds);
+            // initialize choices so non-chosen anims appear in "Anims non choisies"
+            const initChoices = {};
+            animations.forEach(a => { initChoices[a.id] = favoriteIds.includes(a.id) ? 'yes' : 'no'; });
+            setChoices(initChoices);
             setModeAffichage(true);
           }
         }
@@ -635,7 +646,7 @@ export default function ChoixAnims() {
                 </Button>
                 <Button 
                   variant="outline-secondary"
-                  onClick={() => setCurrentAnimIndex(animations.length - 1)}
+                  onClick={() => { setModeAffichage(false); setCurrentAnimIndex(0); }}
                 >
                   ← Modifier mes choix
                 </Button>
