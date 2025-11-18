@@ -438,8 +438,11 @@ export default function ChoixAnims() {
       <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
         <Row className="justify-content-center w-100">
           <Col sm={12} lg={10} xl={8}>
-            <div className="text-center mb-5">
-              <h2 className="display-5 fw-bold text-success mb-3">🎉 Tes choix d'animations</h2>
+            <div className="d-flex align-items-center justify-content-between mb-4">
+              <h2 className="display-5 fw-bold text-success mb-0">🎉 Tes choix d'animations</h2>
+              <Button variant="outline-primary" size="sm" onClick={() => navigate('/')}>Accueil</Button>
+            </div>
+            <div className="text-center mb-3">
               <ul className="list-group list-group-flush">
                 {recapFavorites.map((anim, idx) => (
                   <li key={anim.id} className="list-group-item">
@@ -640,6 +643,7 @@ export default function ChoixAnims() {
                   onClick={() => {
                     setCurrentAnimIndex(0);
                     setChoices({});
+                    setOrderedFavorites([]);
                   }}
                 >
                   🔄 Recommencer
