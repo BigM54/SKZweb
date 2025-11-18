@@ -406,6 +406,11 @@ export default function ChoixAnims() {
         const anim = animations.find(a => a.id === animId);
         insertData[(idx + 1).toString()] = anim.title;
       });
+      // Ensure remaining slots up to the maximum (21) are cleared when user reduces choices
+      const MAX_SLOTS = 21;
+      for (let i = orderedFavorites.length + 1; i <= MAX_SLOTS; i++) {
+        insertData[i.toString()] = null;
+      }
       // Insère ou met à jour la ligne pour cet utilisateur
       const { error } = await supabase
         .from('anims')
