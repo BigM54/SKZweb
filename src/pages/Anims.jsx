@@ -49,7 +49,7 @@ export default function Animations() {
     },
     {
       id: 4,
-      title: "Olympiades ESF x Biathlon",
+      title: "Olympiades ESF x Skz",
       description: "Course mêlant plusieurs disciplines (ski, luge, raquette…) avec du tir à la carabine",
       niveau: "Tout niveau",
       type: "autres",
@@ -266,6 +266,18 @@ export default function Animations() {
       difficulty: "tout",
       category: "defi",
       image: "/defi_monthey_valley.webp",
+      color: "warning"
+    },
+    {
+      id: 22,
+      title: "Slalom pralèlle en relais",
+      description: "2 équipes de 4 s’affrontent en slalom parallèle en relais",
+      niveau: "Intermédiaire",
+      type: "ski",
+      typeIcon: "⛷️",
+      difficulty: "intermediaire",
+      category: "competition",
+      image: "/slalom_parallele_relais.webp",
       color: "warning"
     }
   ];

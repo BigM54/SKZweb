@@ -16,267 +16,27 @@ export default function ChoixAnims() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [loadingRedirect, setLoadingRedirect] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0); // milliseconds until open
 
   const animations = [
-    // Updated animations list copied from src/pages/Anims.jsx
-    {
-      id: 1,
-      title: "Slalom",
-      description: "Slalom-géant chronométré organisé par l’ESF",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      category: "competition",
-      image: "/slalom.png",
-      color: "primary"
-    },
-    {
-      id: 2,
-      title: "Derby",
-      description: "Dévale une piste fermée le plus rapidement possible",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      typeLabel: "Ski-Snow",
-      category: "competition",
-      image: "/derby.jpeg",
-      color: "info"
-    },
-    {
-      id: 3,
-      title: "Boarder Cross",
-      description: "Course sur une piste avec des bosses, virages et sauts",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      category: "competition",
-      image: "/boarder_cross.png",
-      color: "danger"
-    },
-    {
-      id: 4,
-      title: "Olympiades ESF x Biathlon",
-      description: "Course mêlant plusieurs disciplines (ski, luge, raquette…) avec du tir à la carabine",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🏔️",
-      difficulty: "tout",
-      category: "competition",
-      image: "/olympiadeESF_Biathlon.jpg",
-      color: "warning"
-    },
-    {
-      id: 5,
-      title: "Compétition Freestyle (Big Air)",
-      description: "Réalise ton plus beau tricks sur une bosse avec un Big Air",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      typeLabel: "Ski-Snow",
-      category: "competition",
-      image: "/competition_freestyle(bigair).webp",
-      color: "primary"
-    },
-    {
-      id: 6,
-      title: "First Track",
-      description: "Réalise l’ouverture des pistes avec les pisteurs",
-      niveau: "Tout niveau",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "tout",
-      typeLabel: "Ski-Snow",
-      category: "decouverte",
-      image: "/first_track.jpg",
-      color: "info"
-    },
-    {
-      id: 7,
-      title: "Last Track",
-      description: "Réalise la fermeture des pistes avec les pisteurs",
-      niveau: "Tout niveau",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "tout",
-      typeLabel: "Ski-Snow",
-      category: "decouverte",
-      image: "/last_track.jpg",
-      color: "info"
-    },
-    {
-      id: 8,
-      title: "ARVA Gourmand",
-      description: "Formation au DVA avec des dégustations",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🧭",
-      difficulty: "tout",
-      category: "decouverte",
-      image: "/arva_gourmand.jpg",
-      color: "warning"
-    },
-    {
-      id: 9,
-      title: "Descente aux flambeaux",
-      description: "Descend une piste de nuit avec un flambeau",
-      niveau: "Tout niveau",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "tout",
-      category: "event",
-      image: "/descente_aux_flambeaux.jpg",
-      color: "info"
-    },
-    {
-      id: 10,
-      title: "Visite remontée mécanique",
-      description: "Visite de la mécanique derrière les remontées mécaniques",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🚡",
-      difficulty: "tout",
-      category: "decouverte",
-      image: "/visite_remontee_mecanique.jpg",
-      color: "info"
-    },
-    {
-      id: 11,
-      title: "Visite usine à neige",
-      description: "Visite de la mécanique derrière la fabrication de neige",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "❄️",
-      difficulty: "tout",
-      category: "decouverte",
-      image: "/visite_usine_a_neige.webp",
-      color: "info"
-    },
-    {
-      id: 12,
-      title: "Visite fromagerie",
-      description: "Visite d’une fromagerie",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🧀",
-      difficulty: "tout",
-      category: "decouverte",
-      image: "/visite_fromagerie.avif",
-      color: "info"
-    },
-    {
-      id: 13,
-      title: "Découverte de la station",
-      description: "Visite et tuysses sur la station",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "�️",
-      difficulty: "tout",
-      category: "decouverte",
-      image: "/decouverte_station.jpg",
-      color: "info"
-    },
-    {
-      id: 14,
-      title: "Cours de Ski Débutant-Intermédiaire",
-      description: "Leçons de ski encadrées par l’ESF pour les débutants et les intermédiaires",
-      niveau: "Débutant-Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "debutant",
-      category: "cours",
-      image: "/cours_ski.jpg",
-      color: "success"
-    },
-    {
-      id: 15,
-      title: "Cours de Snow",
-      description: "Leçons de snow encadrées par l’ESF pour les débutants",
-      niveau: "Débutant",
-      type: "snowboard",
-      typeIcon: "�",
-      difficulty: "debutant",
-      category: "cours",
-      image: "/cours_snow.png",
-      color: "success"
-    },
-    {
-      id: 16,
-      title: "Initiation Freeride",
-      description: "Sorties en hors-piste encadrées par l’ESF",
-      niveau: "Avancé",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "avance",
-      typeLabel: "Ski-Snow",
-      category: "cours",
-      image: "/initiation_freeride.webp",
-      color: "danger"
-    },
-    {
-      id: 17,
-      title: "Initiation Freestyle",
-      description: "Initiations aux modules du snowpark encadrées par l’ESF",
-      niveau: "Intermédiaire",
-      type: "ski",
-      typeIcon: "⛷️",
-      difficulty: "intermediaire",
-      typeLabel: "Ski-Snow",
-      category: "cours",
-      image: "/initiation_freestyle.webp",
-      color: "warning"
-    },
-    {
-      id: 18,
-      title: "Rando Raquette",
-      description: "Sorties en raquettes encadrées par l’ESF",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🥾",
-      difficulty: "tout",
-      category: "cours",
-      image: "/rando_raquette.jpg",
-      color: "success"
-    },
-    {
-      id: 19,
-      title: "BBQ",
-      description: "Barbecue entre les différents tabagn’sss",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🍖",
-      difficulty: "tout",
-      category: "event",
-      image: "/bbq.jpg",
-      color: "info"
-    },
-    {
-      id: 20,
-      title: "Caisson à savon",
-      description: "Compétition de caisse à savon entre les tabagn’sss",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🛷",
-      difficulty: "tout",
-      category: "competition",
-      image: "/caisse_a_savon.jpg",
-      color: "info"
-    },
-    {
-      id: 21,
-      title: "Défis Monthey Valley",
-      description: "Réalise de nombreux défis afin de gagner des produits DC",
-      niveau: "Tout niveau",
-      type: "autres",
-      typeIcon: "🎯",
-      difficulty: "tout",
-      category: "defi",
-      image: "/defi_monthey_valley.webp",
-      color: "warning"
-    }
+    { id: 1, title: "Slalom", description: "Slalom-géant chronométré organisé par l’ESF", niveau: "Intermédiaire", type: "ski", typeIcon: "⛷️", difficulty: "intermediaire", category: "competition", image: "/slalom.png", color: "primary" },
+    { id: 2, title: "Derby", description: "Dévale une piste fermée le plus rapidement possible", niveau: "Intermédiaire", type: "ski", typeIcon: "⛷️", difficulty: "intermediaire", typeLabel: "Ski-Snow", category: "competition", image: "/derby.jpeg", color: "info" },
+    { id: 3, title: "Boarder Cross", description: "Course sur une piste avec des bosses, virages et sauts", niveau: "Intermédiaire", type: "ski", typeIcon: "⛷️", difficulty: "intermediaire", category: "competition", image: "/boarder_cross.png", color: "danger" },
+    { id: 4, title: "Compétition Freestyle (Big Air)", description: "Réalise ton plus beau tricks sur une bosse avec un Big Air", niveau: "Intermédiaire", type: "ski", typeIcon: "⛷️", difficulty: "intermediaire", typeLabel: "Ski-Snow", category: "competition", image: "/competition_freestyle(bigair).webp", color: "primary" },
+    { id: 5, title: "First Track", description: "Réalise l’ouverture des pistes avec les pisteurs", niveau: "Tout niveau", type: "ski", typeIcon: "⛷️", difficulty: "tout", typeLabel: "Ski-Snow", category: "decouverte", image: "/first_track.jpg", color: "info" },
+    { id: 6, title: "Last Track", description: "Réalise la fermeture des pistes avec les pisteurs", niveau: "Tout niveau", type: "ski", typeIcon: "⛷️", difficulty: "tout", typeLabel: "Ski-Snow", category: "decouverte", image: "/last_track.jpg", color: "info" },
+    { id: 7, title: "ARVA Gourmand", description: "Formation au DVA avec des dégustations", niveau: "Tout niveau", type: "autres", typeIcon: "🧭", difficulty: "tout", category: "decouverte", image: "/arva_gourmand.jpg", color: "warning" },
+    { id: 8, title: "Descente aux flambeaux", description: "Descend une piste de nuit avec un flambeau", niveau: "Tout niveau", type: "ski", typeIcon: "⛷️", difficulty: "tout", category: "event", image: "/descente_aux_flambeaux.jpg", color: "info" },
+    { id: 9, title: "Visite remontée mécanique", description: "Visite de la mécanique derrière les remontées mécaniques", niveau: "Tout niveau", type: "autres", typeIcon: "🚡", difficulty: "tout", category: "decouverte", image: "/visite_remontee_mecanique.jpg", color: "info" },
+    { id: 10, title: "Visite usine à neige", description: "Visite de la mécanique derrière la fabrication de neige", niveau: "Tout niveau", type: "autres", typeIcon: "❄️", difficulty: "tout", category: "decouverte", image: "/visite_usine_a_neige.webp", color: "info" },
+    { id: 11, title: "Visite fromagerie", description: "Visite d’une fromagerie", niveau: "Tout niveau", type: "autres", typeIcon: "🧀", difficulty: "tout", category: "decouverte", image: "/visite_fromagerie.avif", color: "info" },
+    { id: 12, title: "Découverte de la station", description: "Visite et tuysses sur la station", niveau: "Tout niveau", type: "autres", typeIcon: "🏔️", difficulty: "tout", category: "decouverte", image: "/decouverte_station.jpg", color: "info" },
+    { id: 13, title: "Initiation Freeride", description: "Sorties en hors-piste encadrées par l’ESF", niveau: "Avancé", type: "ski", typeIcon: "⛷️", difficulty: "avance", typeLabel: "Ski-Snow", category: "cours", image: "/initiation_freeride.webp", color: "danger" },
+    { id: 14, title: "Initiation Freestyle", description: "Initiations aux modules du snowpark encadrées par l’ESF", niveau: "Intermédiaire", type: "ski", typeIcon: "⛷️", difficulty: "intermediaire", typeLabel: "Ski-Snow", category: "cours", image: "/initiation_freestyle.webp", color: "warning" },
+    { id: 15, title: "Rando Raquette", description: "Sorties en raquettes encadrées par l’ESF", niveau: "Tout niveau", type: "autres", typeIcon: "🥾", difficulty: "tout", category: "cours", image: "/rando_raquette.jpg", color: "success" },
+    { id: 16, title: "Cours de Ski Débutant-Intermédiaire", description: "Leçons de ski encadrées par l’ESF pour les débutants et les intermédiaires", niveau: "Débutant-Intermédiaire", type: "ski", typeIcon: "⛷️", difficulty: "debutant", category: "cours", image: "/cours_ski.jpg", color: "success" },
+    { id: 17, title: "Cours de Snow", description: "Leçons de snow encadrées par l’ESF pour les débutants", niveau: "Débutant", type: "snowboard", typeIcon: "🏂", difficulty: "debutant", category: "cours", image: "/cours_snow.png", color: "success" }
   ];
 
   const handleChoice = (animId, choice) => {
@@ -292,6 +52,60 @@ export default function ChoixAnims() {
       }, 500); // Petit délai pour voir le choix
     }
   };
+
+  // Countdown gating: page opens on 2025-11-20 09:30 (local time)
+  useEffect(() => {
+    const target = new Date('2025-11-20T09:30:00');
+    const tick = () => {
+      const now = new Date();
+      const diff = target.getTime() - now.getTime();
+      if (diff <= 0) {
+        setIsOpen(true);
+        setTimeLeft(0);
+        return true;
+      }
+      setTimeLeft(diff);
+      return false;
+    };
+
+    // initial check
+    if (tick()) return;
+
+    const id = setInterval(() => {
+      if (tick()) {
+        clearInterval(id);
+      }
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const formatCountdown = (ms) => {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const days = Math.floor(total / 86400);
+    const hours = Math.floor((total % 86400) / 3600);
+    const mins = Math.floor((total % 3600) / 60);
+    const secs = total % 60;
+    return { days, hours, mins, secs };
+  };
+
+  // If not open yet, show countdown UI only
+  if (!isOpen) {
+    const { days, hours, mins, secs } = formatCountdown(timeLeft);
+    return (
+      <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
+        <Card className="text-center p-4" style={{ maxWidth: 700 }}>
+          <Card.Body>
+            <Card.Title className="mb-3">Accès aux Animations</Card.Title>
+            <Card.Text className="mb-3">La page sera disponible le 20/11/2025 à 09:30.</Card.Text>
+            <div style={{ fontSize: '1.6rem', fontWeight: 600 }}>
+              {days}j {String(hours).padStart(2, '0')}h {String(mins).padStart(2, '0')}m {String(secs).padStart(2, '0')}s
+            </div>
+            <div className="text-muted mt-3">Patientez jusqu'à l'ouverture.</div>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
+  }
 
   const goToNext = () => {
     if (currentAnimIndex < animations.length - 1) {
@@ -406,8 +220,8 @@ export default function ChoixAnims() {
         const anim = animations.find(a => a.id === animId);
         insertData[(idx + 1).toString()] = anim.title;
       });
-      // Ensure remaining slots up to the maximum (21) are cleared when user reduces choices
-      const MAX_SLOTS = 21;
+      // Ensure remaining slots up to the maximum are cleared when user reduces choices
+      const MAX_SLOTS = animations.length;
       for (let i = orderedFavorites.length + 1; i <= MAX_SLOTS; i++) {
         insertData[i.toString()] = null;
       }
