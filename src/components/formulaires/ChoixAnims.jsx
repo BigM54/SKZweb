@@ -55,7 +55,7 @@ export default function ChoixAnims() {
 
   // Countdown gating: page opens on 2025-11-20 09:30 (local time)
   useEffect(() => {
-    const target = new Date('2025-11-19T09:34:00');
+    const target = new Date('2025-11-19T09:41:00');
     const tick = () => {
       const now = new Date();
       const diff = target.getTime() - now.getTime();
@@ -88,40 +88,12 @@ export default function ChoixAnims() {
     return { days, hours, mins, secs };
   };
 
-  // If not open yet, show countdown UI only
-  if (!isOpen) {
-    const { days, hours, mins, secs } = formatCountdown(timeLeft);
-    return (
-      <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
-        <Card className="text-center p-4" style={{ maxWidth: 700 }}>
-          <Card.Body>
-            <Card.Title className="mb-3">Accès aux Animations</Card.Title>
-            <Card.Text className="mb-3">La page sera disponible le 20/11/2025 à 09:30.</Card.Text>
-            <div style={{ fontSize: '1.6rem', fontWeight: 600 }}>
-              {days}j {String(hours).padStart(2, '0')}h {String(mins).padStart(2, '0')}m {String(secs).padStart(2, '0')}s
-            </div>
-            <div className="text-muted mt-3">Patientez jusqu'à l'ouverture.</div>
-          </Card.Body>
-        </Card>
-      </Container>
-    );
-  }
-
-  const goToNext = () => {
-    if (currentAnimIndex < animations.length - 1) {
-      setCurrentAnimIndex(prev => prev + 1);
-    }
-  };
-
-  const goToPrevious = () => {
-    if (currentAnimIndex > 0) {
-      setCurrentAnimIndex(prev => prev - 1);
-    }
-  };
-
+  // Hooks that must run on every render — keep them before any early returns
   const isCompleted = currentAnimIndex >= animations.length;
   const currentAnim = animations[currentAnimIndex];
   const progress = ((currentAnimIndex + 1) / animations.length) * 100;
+
+  const navigate = useNavigate();
 
   // Met à jour l'ordre des favoris à la fin de la sélection
   useEffect(() => {
@@ -132,29 +104,6 @@ export default function ChoixAnims() {
       setOrderedFavorites(favorites);
     }
   }, [isCompleted]);
-
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-    const arr = Array.from(orderedFavorites);
-    const [removed] = arr.splice(result.source.index, 1);
-    arr.splice(result.destination.index, 0, removed);
-    setOrderedFavorites(arr);
-  };
-
-  const getCategoryIcon = (category) => {
-    return category === 'cours' ? '🎓' : '🏆';
-  };
-
-  const getDifficultyIcon = (difficulty) => {
-    const icons = {
-      debutant: '🟢',
-      intermediaire: '🟡', 
-      avance: '🔴',
-      expert: '🟣',
-      initiation: '🔵'
-    };
-    return icons[difficulty] || '⚪';
-  };
 
   // Effet pour charger le récapitulatif si une ligne existe
   useEffect(() => {
@@ -204,7 +153,61 @@ export default function ChoixAnims() {
     fetchRecap();
   }, [isLoaded, user]);
 
-  const navigate = useNavigate();
+  // If not open yet, show countdown UI only
+  if (!isOpen) {
+    const { days, hours, mins, secs } = formatCountdown(timeLeft);
+    return (
+      <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
+        <Card className="text-center p-4" style={{ maxWidth: 700 }}>
+          <Card.Body>
+            <Card.Title className="mb-3">Accès aux Animations</Card.Title>
+            <Card.Text className="mb-3">La page sera disponible le 20/11/2025 à 09:30.</Card.Text>
+            <div style={{ fontSize: '1.6rem', fontWeight: 600 }}>
+              {days}j {String(hours).padStart(2, '0')}h {String(mins).padStart(2, '0')}m {String(secs).padStart(2, '0')}s
+            </div>
+            <div className="text-muted mt-3">Patientez jusqu'à l'ouverture.</div>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
+  }
+
+  const goToNext = () => {
+    if (currentAnimIndex < animations.length - 1) {
+      setCurrentAnimIndex(prev => prev + 1);
+    }
+  };
+
+  const goToPrevious = () => {
+    if (currentAnimIndex > 0) {
+      setCurrentAnimIndex(prev => prev - 1);
+    }
+  };
+
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const arr = Array.from(orderedFavorites);
+    const [removed] = arr.splice(result.source.index, 1);
+    arr.splice(result.destination.index, 0, removed);
+    setOrderedFavorites(arr);
+  };
+
+  const getCategoryIcon = (category) => {
+    return category === 'cours' ? '🎓' : '🏆';
+  };
+
+  const getDifficultyIcon = (difficulty) => {
+    const icons = {
+      debutant: '🟢',
+      intermediaire: '🟡', 
+      avance: '🔴',
+      expert: '🟣',
+      initiation: '🔵'
+    };
+    return icons[difficulty] || '⚪';
+  };
+
 
   // Handler de validation avec redirection
   const handleValidate = async () => {
