@@ -55,7 +55,7 @@ export default function ChoixAnims() {
 
   // Countdown gating: page opens on 2025-11-20 09:30 (local time)
   useEffect(() => {
-    const target = new Date('2025-11-19T09:41:00');
+    const target = new Date('2025-11-19T09:42:00');
     const tick = () => {
       const now = new Date();
       const diff = target.getTime() - now.getTime();
