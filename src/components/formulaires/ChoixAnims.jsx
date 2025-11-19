@@ -161,7 +161,7 @@ export default function ChoixAnims() {
         <Card className="text-center p-4" style={{ maxWidth: 700 }}>
           <Card.Body>
             <Card.Title className="mb-3">Accès au shotgun anim's</Card.Title>
-            <Card.Text className="mb-3">Le shotgun sera disponible le 20/11/2025 à 12:30.</Card.Text>
+            <Card.Text className="mb-3">Le shotgun sera disponible le 19/11/2025 à 12:30.</Card.Text>
             <div style={{ fontSize: '1.6rem', fontWeight: 600 }}>
               {days}j {String(hours).padStart(2, '0')}h {String(mins).padStart(2, '0')}m {String(secs).padStart(2, '0')}s
             </div>
