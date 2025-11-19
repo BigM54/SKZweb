@@ -160,12 +160,12 @@ export default function ChoixAnims() {
       <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
         <Card className="text-center p-4" style={{ maxWidth: 700 }}>
           <Card.Body>
-            <Card.Title className="mb-3">Accès aux Animations</Card.Title>
-            <Card.Text className="mb-3">La page sera disponible le 20/11/2025 à 09:30.</Card.Text>
+            <Card.Title className="mb-3">Accès au shotgun anim's</Card.Title>
+            <Card.Text className="mb-3">Le shotgun sera disponible le 20/11/2025 à 12:30.</Card.Text>
             <div style={{ fontSize: '1.6rem', fontWeight: 600 }}>
               {days}j {String(hours).padStart(2, '0')}h {String(mins).padStart(2, '0')}m {String(secs).padStart(2, '0')}s
             </div>
-            <div className="text-muted mt-3">Patientez jusqu'à l'ouverture.</div>
+            <div className="text-muted mt-3">Patiente jusqu'à l'ouverture.</div>
           </Card.Body>
         </Card>
       </Container>
