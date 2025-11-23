@@ -159,6 +159,28 @@ export default function ChoixAnims() {
     fetchRecap();
   }, [isLoaded, user]);
 
+  // Once the page is open (voting closed), ensure users without a saved row cannot interact.
+  useEffect(() => {
+    if (!isOpen || !isLoaded || !user) return;
+    if (readOnlyRecap || closedNoChoice) return;
+    (async () => {
+      try {
+        const token = await getToken({ template: 'supabase' });
+        const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywmyBbx0J1udw', {
+          global: { headers: { Authorization: `Bearer ${token}` } }
+        });
+        // Check if a row exists for this user
+        const { data } = await supabase.from('anims').select('id').eq('id', user.id).maybeSingle();
+        if (!data) {
+          // No row recorded -> too late and no choices
+          setClosedNoChoice(true);
+        }
+      } catch (e) {
+        // ignore
+      }
+    })();
+  }, [isOpen, isLoaded, user, readOnlyRecap, closedNoChoice, getToken]);
+
   // If not open yet, show countdown UI only
   if (!isOpen) {
     const { days, hours, mins, secs } = formatCountdown(timeLeft);
@@ -261,47 +283,49 @@ export default function ChoixAnims() {
     );
   }
 
-  if (modeAffichage) {
-    // Read-only recap when choices are closed
-    return (
-      <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
-        <Row className="justify-content-center w-100">
-          <Col sm={12} lg={10} xl={8}>
-            <div className="d-flex align-items-center justify-content-between mb-4">
-              <h2 className="display-5 fw-bold text-success mb-0">🎉 Récapitulatif de tes choix</h2>
-              <div className="d-flex gap-2">
-                <Button variant="outline-primary" size="sm" onClick={() => navigate('/')}>Accueil</Button>
+  // Simplified behaviour: show only saved recap if present, otherwise show "trop tard"
+  if (!loadingRedirect) {
+    if (recapFavorites && recapFavorites.length > 0) {
+      return (
+        <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
+          <Row className="justify-content-center w-100">
+            <Col sm={12} lg={10} xl={8}>
+              <div className="d-flex align-items-center justify-content-between mb-4">
+                <h2 className="display-5 fw-bold text-success mb-0">🎉 Récapitulatif de tes choix</h2>
+                <div className="d-flex gap-2">
+                  <Button variant="outline-primary" size="sm" onClick={() => navigate('/')}>Accueil</Button>
+                </div>
               </div>
-            </div>
-            <div className="text-center mb-3">
-              <ul className="list-group list-group-flush">
-                {recapFavorites.map((anim, idx) => (
-                  <li key={anim.id} className="list-group-item">
-                    <strong>{idx + 1}.</strong> {anim.title}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <Alert variant="info">Le choix des animations est désormais fermé. Tu ne peux plus modifier tes choix.</Alert>
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
+              <div className="text-center mb-3">
+                <ul className="list-group list-group-flush">
+                  {recapFavorites.map((anim, idx) => (
+                    <li key={anim.id} className="list-group-item">
+                      <strong>{idx + 1}.</strong> {anim.title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Alert variant="info">Le choix des animations est désormais fermé. Tu ne peux plus modifier tes choix.</Alert>
+            </Col>
+          </Row>
+        </Container>
+      );
+    }
 
-  // If the page is open but the user never saved choices, inform that it's too late
-  if (isOpen && closedNoChoice) {
-    return (
-      <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
-        <Card className="text-center p-4" style={{ maxWidth: 700 }}>
-          <Card.Body>
-            <Card.Title className="mb-3">Choix des animations</Card.Title>
-            <Card.Text className="mb-3">Le choix des animations est fermé et tu n'as pas participé au shotgun. Il est trop tard pour sélectionner des animations.</Card.Text>
-            <Button variant="primary" onClick={() => navigate('/')}>Retour à l'accueil</Button>
-          </Card.Body>
-        </Card>
-      </Container>
-    );
+    // No saved choices -> too late
+    if (!recapFavorites || recapFavorites.length === 0) {
+      return (
+        <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
+          <Card className="text-center p-4" style={{ maxWidth: 700 }}>
+            <Card.Body>
+              <Card.Title className="mb-3">Choix des animations</Card.Title>
+              <Card.Text className="mb-3">Le choix des animations est fermé et tu n'as pas participé au shotgun. Il est trop tard pour sélectionner des animations.</Card.Text>
+              <Button variant="primary" onClick={() => navigate('/')}>Retour à l'accueil</Button>
+            </Card.Body>
+          </Card>
+        </Container>
+      );
+    }
   }
 
   return (
