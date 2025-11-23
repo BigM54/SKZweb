@@ -1,4 +1,4 @@
-import { Card, Alert, Spinner, Button } from 'react-bootstrap';
+import { Card, Alert, Spinner, Button, Form, Row, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
@@ -28,6 +28,17 @@ export default function Paiement2() {
   const [datePaiement2, setdatePaiement2] = useState(null);
   const [paiementOuvert, setPaiementOuvert] = useState(true);
   const [emailInput, setEmailInput] = useState("");
+
+  // Profile form states
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(false);
+  const [taille, setTaille] = useState('');
+  const [taillePied, setTaillePied] = useState('');
+  const [domicile, setDomicile] = useState('');
+  const [dateNaissance, setDateNaissance] = useState('');
+  const [civilite, setCivilite] = useState('');
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [saveProfileError, setSaveProfileError] = useState(null);
 
   const email = user?.primaryEmailAddress?.emailAddress || '';
 
@@ -74,6 +85,31 @@ export default function Paiement2() {
 
     };
 
+    const fetchProfile = async () => {
+      if (!isLoaded || !user?.id) return;
+      try {
+        const supabase = await getSupabase();
+        const { data, error } = await supabase
+          .from('profils')
+          .select('taille, taille_pied, domicile, date_naissance, civilite')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (!error && data) {
+          setTaille(data.taille ?? '');
+          setTaillePied(data.taille_pied ?? '');
+          setDomicile(data.domicile ?? '');
+          setDateNaissance(data.date_naissance ?? '');
+          setCivilite(data.civilite ?? '');
+          const complete = Boolean(data.taille && data.taille_pied && data.domicile && data.date_naissance && data.civilite);
+          setProfileComplete(complete);
+        }
+      } catch (e) {
+        console.error('Erreur fetchProfile', e);
+      } finally {
+        setProfileLoaded(true);
+      }
+    };
+
     const fetchdatePaiement2 = async () => {
       const supabase = await getSupabase();
       const { data, error } = await supabase
@@ -89,6 +125,7 @@ export default function Paiement2() {
     
     fetchdatePaiement2();
     checkPayment();
+    fetchProfile();
   }, [isLoaded, user]);
 
 
@@ -178,6 +215,97 @@ export default function Paiement2() {
   }
 
   if (step === 0) {
+    // If profile not loaded yet, show spinner in place of form/disclaimer
+    if (!profileLoaded) {
+      return (
+        <Card className="mb-4"><Card.Body><Spinner /></Card.Body></Card>
+      );
+    }
+
+    // If profile incomplete, show the mini-form before the disclaimer
+    if (!profileComplete) {
+      const canSave = taille.trim() && taillePied.trim() && domicile.trim() && dateNaissance.trim() && (civilite === 'H' || civilite === 'F');
+      const handleSaveProfile = async () => {
+        setSaveProfileError(null);
+        setSavingProfile(true);
+        try {
+          const supabase = await getSupabase();
+          const payload = {
+            id: user.id,
+            taille: taille.trim(),
+            taille_pied: taillePied.trim(),
+            domicile: domicile.trim(),
+            date_naissance: dateNaissance.trim(),
+            civilite: civilite
+          };
+          const { error } = await supabase.from('profils').upsert([payload], { onConflict: ['id'] });
+          if (error) {
+            setSaveProfileError(error.message || 'Erreur enregistrement');
+          } else {
+            setProfileComplete(true);
+          }
+        } catch (e) {
+          setSaveProfileError(e.message || String(e));
+        } finally {
+          setSavingProfile(false);
+        }
+      };
+
+      return (
+        <Card className="mb-4">
+          <Card.Body>
+            <Card.Title>Informations personnelles requises</Card.Title>
+            <p className="text-muted">Avant de continuer, complète ces informations (elles seront enregistrées dans ton profil).</p>
+            {saveProfileError && <Alert variant="danger">{saveProfileError}</Alert>}
+            <Form>
+              <Row className="g-2">
+                <Col md={4}>
+                  <Form.Group>
+                    <Form.Label>Taille (cm)</Form.Label>
+                    <Form.Control value={taille} onChange={e => setTaille(e.target.value)} />
+                  </Form.Group>
+                </Col>
+                <Col md={4}>
+                  <Form.Group>
+                    <Form.Label>Taille de pied (EU)</Form.Label>
+                    <Form.Control value={taillePied} onChange={e => setTaillePied(e.target.value)} />
+                  </Form.Group>
+                </Col>
+                <Col md={4}>
+                  <Form.Group>
+                    <Form.Label>Civilité</Form.Label>
+                    <Form.Select value={civilite} onChange={e => setCivilite(e.target.value)}>
+                      <option value="">—</option>
+                      <option value="H">H</option>
+                      <option value="F">F</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className="g-2 mt-2">
+                <Col md={8}>
+                  <Form.Group>
+                    <Form.Label>Domicile</Form.Label>
+                    <Form.Control value={domicile} onChange={e => setDomicile(e.target.value)} />
+                  </Form.Group>
+                </Col>
+                <Col md={4}>
+                  <Form.Group>
+                    <Form.Label>Date de naissance</Form.Label>
+                    <Form.Control type="date" value={dateNaissance} onChange={e => setDateNaissance(e.target.value)} />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <div className="mt-3 d-flex gap-2 align-items-center">
+                <Button disabled={!canSave || savingProfile} onClick={handleSaveProfile}>{savingProfile ? 'Enregistrement...' : 'Enregistrer et continuer'}</Button>
+              </div>
+            </Form>
+          </Card.Body>
+        </Card>
+      );
+    }
+
+    // Profile complete: show original disclaimer UI
     return (
       <Card className="mb-4">
         <Card.Body>
