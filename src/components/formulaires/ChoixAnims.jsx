@@ -13,6 +13,8 @@ export default function ChoixAnims() {
   const [orderedFavorites, setOrderedFavorites] = useState([]);
   const [modeAffichage, setModeAffichage] = useState(false);
   const [recapFavorites, setRecapFavorites] = useState([]);
+  const [readOnlyRecap, setReadOnlyRecap] = useState(false);
+  const [closedNoChoice, setClosedNoChoice] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [loadingRedirect, setLoadingRedirect] = useState(false);
@@ -135,13 +137,17 @@ export default function ChoixAnims() {
             }
           }
           if (favorites.length > 0) {
+            // User had previously saved choices — show recap but read-only (choix fermés)
             setRecapFavorites(favorites);
             setOrderedFavorites(favoriteIds);
-            // initialize choices so non-chosen anims appear in "Anims non choisies"
             const initChoices = {};
             animations.forEach(a => { initChoices[a.id] = favoriteIds.includes(a.id) ? 'yes' : 'no'; });
             setChoices(initChoices);
+            setReadOnlyRecap(true);
             setModeAffichage(true);
+          } else {
+            // No saved choices: mark that choices are closed and user did not participate
+            setClosedNoChoice(true);
           }
         }
       } catch (e) {
@@ -256,14 +262,14 @@ export default function ChoixAnims() {
   }
 
   if (modeAffichage) {
+    // Read-only recap when choices are closed
     return (
       <Container className="full-width d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
         <Row className="justify-content-center w-100">
           <Col sm={12} lg={10} xl={8}>
             <div className="d-flex align-items-center justify-content-between mb-4">
-              <h2 className="display-5 fw-bold text-success mb-0">🎉 Tes choix d'animations</h2>
+              <h2 className="display-5 fw-bold text-success mb-0">🎉 Récapitulatif de tes choix</h2>
               <div className="d-flex gap-2">
-                <Button variant="outline-secondary" size="sm" onClick={() => { setModeAffichage(false); setCurrentAnimIndex(0); setChoices({}); setOrderedFavorites([]); }}>🔄 Recommencer</Button>
                 <Button variant="outline-primary" size="sm" onClick={() => navigate('/')}>Accueil</Button>
               </div>
             </div>
@@ -276,8 +282,24 @@ export default function ChoixAnims() {
                 ))}
               </ul>
             </div>
+            <Alert variant="info">Le choix des animations est désormais fermé. Tu ne peux plus modifier tes choix.</Alert>
           </Col>
         </Row>
+      </Container>
+    );
+  }
+
+  // If the page is open but the user never saved choices, inform that it's too late
+  if (isOpen && closedNoChoice) {
+    return (
+      <Container className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '70vh' }}>
+        <Card className="text-center p-4" style={{ maxWidth: 700 }}>
+          <Card.Body>
+            <Card.Title className="mb-3">Choix des animations</Card.Title>
+            <Card.Text className="mb-3">Le choix des animations est fermé et tu n'as pas participé au shotgun. Il est trop tard pour sélectionner des animations.</Card.Text>
+            <Button variant="primary" onClick={() => navigate('/')}>Retour à l'accueil</Button>
+          </Card.Body>
+        </Card>
       </Container>
     );
   }
