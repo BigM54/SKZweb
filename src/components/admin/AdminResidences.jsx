@@ -133,7 +133,7 @@ export default function AdminResidences() {
               </Form.Group>
             </Col>
             <Col md={4} className="d-flex gap-2">
-              <Button onClick={loadRooms} disabled={loading}>
+              <Button onClick={() => loadRooms()} disabled={loading}>
                 {loading ? <><Spinner animation="border" size="sm" /> Charger...</> : 'Charger'}
               </Button>
               <Button variant="outline-secondary" onClick={() => { setAmbiance(''); setGroup(''); loadRooms(); }} disabled={loading}>Réinitialiser</Button>
