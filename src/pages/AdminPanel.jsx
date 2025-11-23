@@ -5,12 +5,16 @@ import QrScanner from '../components/admin/QrScanner';
 import AdminPaiements from '../components/admin/AdminPaiements';
 import AdminGestionWeb from '../components/admin/AdminGestionWeb';
 import AdminBusLists from '../components/admin/AdminBusLists';
+import AdminResidences from '../components/admin/AdminResidences';
 
 export default function AdminPanel() {
   return (
     <div className="full-width mt-4">
       <h2 className="mb-4">🛠️ Panel Administrateur</h2>
       <Tabs defaultActiveKey="utilisateur" id="admin-tabs" className="mb-3 d-flex justify-content-center">
+        <Tab eventKey="residence" title="res'">
+          <AdminResidences />
+        </Tab>
         <Tab eventKey="utilisateur" title="📋 Infos Utilisateur">
           <AdminUtilisateurs />
         </Tab>

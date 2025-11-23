@@ -88,7 +88,7 @@ serve(async (req)=>{
         // Calculer le groupe attribué (même logique que list_rooms)
         const normalize = (t: string | null | undefined) => {
           const v = (t || '').toString().toLowerCase();
-          const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+          const allowed = ['sibers','birse','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
           if (allowed.includes(v)) return v;
           if (v === 'p3') return null;
           return 'intertbk';
@@ -230,7 +230,7 @@ serve(async (req)=>{
         isAllP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
         const normalize = (t: string | null | undefined) => {
           const v = (t || '').toString().toLowerCase();
-          const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+          const allowed = ['sibers','birse','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
           if (allowed.includes(v)) return v;
           if (v === 'p3') return null;
           return 'intertbk';
@@ -294,7 +294,7 @@ serve(async (req)=>{
       const olderCount = ((profs || []) as any[]).filter(p => typeof p.proms === 'number' && promsConscrits !== null && (p.proms + 2 < (promsConscrits as number))).length;
       const normalize = (t: string | null | undefined) => {
         const v = (t || '').toString().toLowerCase();
-        const allowed = ['sibers','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
+        const allowed = ['sibers','birse','chalons','cluns','intertbk','kin','boquette','bordels','archis','peks'];
         if (allowed.includes(v)) return v;
         if (v === 'p3') return null;
         return 'intertbk';
