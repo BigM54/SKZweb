@@ -34,7 +34,10 @@ export default function Paiement2() {
   const [profileComplete, setProfileComplete] = useState(false);
   const [taille, setTaille] = useState('');
   const [taillePied, setTaillePied] = useState('');
-  const [domicile, setDomicile] = useState('');
+  const [rue, setRue] = useState('');
+  const [rueNumero, setRueNumero] = useState('');
+  const [codePostal, setCodePostal] = useState('');
+  const [ville, setVille] = useState('');
   const [dateNaissance, setDateNaissance] = useState('');
   const [civilite, setCivilite] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
@@ -91,16 +94,21 @@ export default function Paiement2() {
         const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('profils')
-          .select('taille, taille_pied, domicile, date_naissance, civilite')
+          .select('taille, taille_pied, rue, rue_numero, code_postal, ville, date_naissance, civilite')
           .eq('id', user.id)
           .maybeSingle();
         if (!error && data) {
           setTaille(data.taille ?? '');
           setTaillePied(data.taille_pied ?? '');
-          setDomicile(data.domicile ?? '');
+          setRue(data.rue ?? '');
+          setRueNumero(data.rue_numero ?? '');
+          setCodePostal(data.code_postal ?? '');
+          setVille(data.ville ?? '');
           setDateNaissance(data.date_naissance ?? '');
           setCivilite(data.civilite ?? '');
-          const complete = Boolean(data.taille && data.taille_pied && data.domicile && data.date_naissance && data.civilite);
+          const complete = Boolean(
+            data.taille && data.taille_pied && data.rue && data.rue_numero && data.code_postal && data.ville && data.date_naissance && data.civilite
+          );
           setProfileComplete(complete);
         }
       } catch (e) {
@@ -224,7 +232,7 @@ export default function Paiement2() {
 
     // If profile incomplete, show the mini-form before the disclaimer
     if (!profileComplete) {
-      const canSave = taille.trim() && taillePied.trim() && domicile.trim() && dateNaissance.trim() && (civilite === 'H' || civilite === 'F');
+      const canSave = taille.trim() && taillePied.trim() && rue.trim() && rueNumero.trim() && codePostal.trim() && ville.trim() && dateNaissance.trim() && (civilite === 'H' || civilite === 'F');
       const handleSaveProfile = async () => {
         setSaveProfileError(null);
         setSavingProfile(true);
@@ -234,7 +242,10 @@ export default function Paiement2() {
             id: user.id,
             taille: taille.trim(),
             taille_pied: taillePied.trim(),
-            domicile: domicile.trim(),
+            rue: rue.trim(),
+            rue_numero: rueNumero.trim(),
+            code_postal: codePostal.trim(),
+            ville: ville.trim(),
             date_naissance: dateNaissance.trim(),
             civilite: civilite
           };
@@ -283,10 +294,28 @@ export default function Paiement2() {
                 </Col>
               </Row>
               <Row className="g-2 mt-2">
-                <Col md={8}>
+                <Col md={6}>
                   <Form.Group>
-                    <Form.Label>Domicile</Form.Label>
-                    <Form.Control value={domicile} onChange={e => setDomicile(e.target.value)} />
+                    <Form.Label>Rue</Form.Label>
+                    <Form.Control value={rue} onChange={e => setRue(e.target.value)} />
+                  </Form.Group>
+                </Col>
+                <Col md={2}>
+                  <Form.Group>
+                    <Form.Label>Nº</Form.Label>
+                    <Form.Control value={rueNumero} onChange={e => setRueNumero(e.target.value)} />
+                  </Form.Group>
+                </Col>
+                <Col md={2}>
+                  <Form.Group>
+                    <Form.Label>Code postal</Form.Label>
+                    <Form.Control value={codePostal} onChange={e => setCodePostal(e.target.value)} />
+                  </Form.Group>
+                </Col>
+                <Col md={2}>
+                  <Form.Group>
+                    <Form.Label>Ville</Form.Label>
+                    <Form.Control value={ville} onChange={e => setVille(e.target.value)} />
                   </Form.Group>
                 </Col>
                 <Col md={4}>
