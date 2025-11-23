@@ -12,7 +12,7 @@ export default function AdminPanel() {
     <div className="full-width mt-4">
       <h2 className="mb-4">🛠️ Panel Administrateur</h2>
       <Tabs defaultActiveKey="utilisateur" id="admin-tabs" className="mb-3 d-flex justify-content-center">
-        <Tab eventKey="residence" title="res'">
+        <Tab eventKey="residence" title="Résidences">
           <AdminResidences />
         </Tab>
         <Tab eventKey="utilisateur" title="📋 Infos Utilisateur">

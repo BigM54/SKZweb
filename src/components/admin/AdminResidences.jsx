@@ -58,9 +58,16 @@ export default function AdminResidences() {
       const allIds = Array.from(new Set(Object.values(kgibsToIds).flat()));
       let profils = [];
       if (allIds.length) {
-        const { data: p, error: perr } = await client.from('profils').select('id, prenom, nom').in('id', allIds);
-        if (perr) throw perr;
-        profils = p || [];
+        const chunkSize = 200;
+        const chunks = [];
+        for (let i = 0; i < allIds.length; i += chunkSize) chunks.push(allIds.slice(i, i + chunkSize));
+        let allProfils = [];
+        for (const ch of chunks) {
+          const { data: p, error: perr } = await client.from('profils').select('id, prenom, nom').in('id', ch);
+          if (perr) throw perr;
+          allProfils = allProfils.concat(p || []);
+        }
+        profils = allProfils;
       }
       const profMap = {};
       profils.forEach(p => { profMap[p.id] = p; });
