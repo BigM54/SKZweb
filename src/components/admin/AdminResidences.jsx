@@ -155,7 +155,7 @@ export default function AdminResidences() {
                 <tr>
                   <th>Kgibs</th>
                   <th>Étage</th>
-                  <th>Côté</th>
+                  <th>Ambiance</th>
                   <th>Groupe</th>
                   <th>Occupants</th>
                 </tr>
@@ -165,7 +165,7 @@ export default function AdminResidences() {
                   <tr key={r.kgibs}>
                     <td><strong>{r.kgibs}</strong></td>
                     <td>{r.etage ?? '—'}</td>
-                    <td>{r.cote ?? '—'}</td>
+                    <td>{r.ambiance || '—'}</td>
                     <td><Badge bg="secondary">{r.groupe || '—'}</Badge></td>
                     <td>
                       {r.occupants && r.occupants.length > 0 ? (
