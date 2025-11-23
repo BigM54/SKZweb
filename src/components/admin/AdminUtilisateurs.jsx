@@ -120,14 +120,17 @@ export default function AdminUtilisateurs() {
                 <tr key={u.id}>
                   <td colSpan={5}>
                     <div className="fw-bold mb-2">
-                      👤 {u.prenom} {u.nom} — {u.bucque} — {u.email} — {u.numero}
+                      👤 {u.prenom} {u.nom} — <code>ID: {u.id}</code>
                     </div>
+                    <div className="text-muted mb-2">{u.bucque} — {u.email} — {u.numero}</div>
                     {opt ? (
                       <div className="ms-3 text-sm">
                         <div><strong>🥖 Boulangerie :</strong> Pain: {opt.pain}, Croissants: {opt.croissant}, Pains Choco: {opt.pain_choco}</div>
                         <div><strong>🧀 Apéro :</strong> Fromage: {opt.fromage}, Saucisson: {opt.saucisson}, Bières: {opt.biere}</div>
                         <div><strong>🎿 Location :</strong> Pack: {opt.pack_location}, Matériel: {opt.materiel_location}, Casque: {opt.casque}, Assurance: {opt.assurance}</div>
                         <div><strong>🎒 Packs spéciaux :</strong> Fumeur: {opt.pack_fumeur}, Grand Froid: {opt.pack_grand_froid}, Soirée: {opt.pack_soiree}, Masque: {opt.masque}</div>
+                        <div><strong>🚌 Bus :</strong> {opt.bus ? opt.bus : '—'} {opt.type_bus ? `(${opt.type_bus})` : ''}</div>
+                        <div><strong>🎟️ Forfait :</strong> {opt.forfait ? opt.forfait : '—'}</div>
                         <div><strong>🎽 Pull :</strong> {opt.taille_pull || '—'}</div>
                         <div><strong>🥗 Régime alimentaire :</strong> {opt.regime || '—'}</div>
                         <div><strong>💵 Paiements :</strong> Acompte : {paiement.acompteStatut ? `✅` : '❌'}, 1 : {paiement.paiement1Statut ? `✅` : '❌'}, 2 : {paiement.paiement2Statut ? `✅` : '❌'}, 3 : {paiement.paiement3Recu ? `✅` : '❌'} {paiement.Fraude ? `FRAUDE ATTENTION` : ''}</div>

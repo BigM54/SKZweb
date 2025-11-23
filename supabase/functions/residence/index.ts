@@ -96,6 +96,10 @@ serve(async (req)=>{
         const tabsAll = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
         const nonP3Tabs = tabsAll.filter(t => t && t !== 'p3');
         const uniqNonP3 = Array.from(new Set(nonP3Tabs));
+        // If any non-P3 tab has at least 3 members, prefer that tab (handles cases like 3 vs 2 different tabs)
+        const tabCounts: Record<string, number> = {};
+        nonP3Tabs.forEach(t => { tabCounts[t] = (tabCounts[t] || 0) + 1; });
+        const tabWithThreeOrMore = Object.entries(tabCounts).sort((a,b)=>b[1]-a[1])[0];
         const peksCount = ((profs || []) as any[]).filter(p => p.peks === true).length;
         let promsConscrits: number | null = null;
         const { data: ds } = await supabase.from('dateShotgun').select('promsConscrits').maybeSingle();
@@ -106,6 +110,8 @@ serve(async (req)=>{
             computedGroupe = 'peks';
           } else if (olderCount > 2) {
             computedGroupe = 'archis';
+          } else if (tabWithThreeOrMore && tabWithThreeOrMore[1] >= 3) {
+            computedGroupe = normalize(tabWithThreeOrMore[0]) || 'intertbk';
           } else if (uniqNonP3.length === 1) {
             computedGroupe = normalize(uniqNonP3[0]) || 'intertbk';
           } else if (uniqNonP3.length > 1) {
@@ -232,6 +238,9 @@ serve(async (req)=>{
         const tabsAll = ((profsAll || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
         const nonP3Tabs = tabsAll.filter(t => t && t !== 'p3');
         const uniqNonP3 = Array.from(new Set(nonP3Tabs));
+        const tabCountsAll: Record<string, number> = {};
+        nonP3Tabs.forEach(t => { tabCountsAll[t] = (tabCountsAll[t] || 0) + 1; });
+        const tabWithThreeOrMoreAll = Object.entries(tabCountsAll).sort((a,b)=>b[1]-a[1])[0];
         const peksCount = ((profsAll || []) as any[]).filter(p => p.peks === true).length;
         let promsConscrits: number | null = null;
         const { data: ds } = await supabase.from('dateShotgun').select('promsConscrits').maybeSingle();
@@ -242,6 +251,8 @@ serve(async (req)=>{
             effectiveGroupe = 'peks';
           } else if (olderCount > 2) {
             effectiveGroupe = 'archis';
+          } else if (tabWithThreeOrMoreAll && tabWithThreeOrMoreAll[1] >= 3) {
+            effectiveGroupe = normalize(tabWithThreeOrMoreAll[0]) || 'intertbk';
           } else if (uniqNonP3.length === 1) {
             effectiveGroupe = normalize(uniqNonP3[0]) || 'intertbk';
           } else if (uniqNonP3.length > 1) {
@@ -272,6 +283,9 @@ serve(async (req)=>{
       const tabs = ((profs || []) as any[]).map(p => (p.tabagns || '').toString().toLowerCase());
       const nonP3Tabs = tabs.filter(t => t && t !== 'p3');
       const uniqNonP3 = Array.from(new Set(nonP3Tabs));
+      const tabCountsRooms: Record<string, number> = {};
+      nonP3Tabs.forEach(t => { tabCountsRooms[t] = (tabCountsRooms[t] || 0) + 1; });
+      const tabWithThreeOrMoreRooms = Object.entries(tabCountsRooms).sort((a,b)=>b[1]-a[1])[0];
       const allP3 = tabs.length > 0 && tabs.every(t => t === 'p3');
       const peksCount = ((profs || []) as any[]).filter(p => p.peks === true).length;
       let promsConscrits: number | null = null;
@@ -291,6 +305,8 @@ serve(async (req)=>{
           targetGroupe = 'peks';
         } else if (olderCount > 2) {
           targetGroupe = 'archis';
+        } else if (tabWithThreeOrMoreRooms && tabWithThreeOrMoreRooms[1] >= 3) {
+          targetGroupe = normalize(tabWithThreeOrMoreRooms[0]) || 'intertbk';
         } else if (uniqNonP3.length === 1) {
           targetGroupe = normalize(uniqNonP3[0]) || 'intertbk';
         } else if (uniqNonP3.length > 1) {
