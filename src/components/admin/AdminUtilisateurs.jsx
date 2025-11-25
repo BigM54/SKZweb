@@ -122,7 +122,7 @@ export default function AdminUtilisateurs() {
                     <div className="fw-bold mb-2">
                       👤 {u.prenom} {u.nom} — <code>ID: {u.id}</code>
                     </div>
-                    <div className="text-muted mb-2">{u.bucque} — {u.email} — {u.numero}</div>
+                    <div className="text-muted mb-2">{u.bucque} — {u.email} — {u.numero ? <a href={`tel:${u.numero}`}>{u.numero}</a> : '—'}</div>
                     {opt ? (
                       <div className="ms-3 text-sm">
                         <div><strong>🥖 Boulangerie :</strong> Pain: {opt.pain}, Croissants: {opt.croissant}, Pains Choco: {opt.pain_choco}</div>

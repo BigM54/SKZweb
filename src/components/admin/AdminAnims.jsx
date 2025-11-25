@@ -122,8 +122,7 @@ export default function AdminAnims() {
                       <div className="text-muted" style={{fontSize:'0.9em'}}>{p.id}</div>
                     </div>
                     <div className="text-end">
-                      <div className="small">{p.numero || '—'}</div>
-                      <Badge bg="success">{idx + 1}</Badge>
+                      <div className="small">{p.numero ? <a href={`tel:${p.numero}`}>{p.numero}</a> : '—'}</div>
                     </div>
                   </div>
                 ))}
@@ -142,8 +141,7 @@ export default function AdminAnims() {
                       <div className="text-muted" style={{fontSize:'0.9em'}}>{p.id}</div>
                     </div>
                     <div className="text-end">
-                      <div className="small">{p.numero || '—'}</div>
-                      <Badge bg="warning">{idx + 1}</Badge>
+                      <div className="small">{p.numero ? <a href={`tel:${p.numero}`}>{p.numero}</a> : '—'}</div>
                     </div>
                   </div>
                 ))}

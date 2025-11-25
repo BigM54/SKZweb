@@ -140,9 +140,9 @@ export default function AdminBusLists() {
                           {list.map(p => (
                             <div key={p.id} className="border rounded px-2 py-1 d-flex justify-content-between align-items-center" style={{fontSize:'0.85rem'}}>
                               <div>
-                                <strong>{p.prenom || '—'} {p.nom || ''}</strong>
-                                <span className="text-muted ms-2">{p.numero || '—'}</span>
-                              </div>
+                                    <strong>{p.prenom || '—'} {p.nom || ''}</strong>
+                                    <span className="text-muted ms-2">{p.numero ? <a href={`tel:${p.numero}`}>{p.numero}</a> : '—'}</span>
+                                  </div>
                               <code style={{opacity:0.6}}>{p.id}</code>
                             </div>
                           ))}

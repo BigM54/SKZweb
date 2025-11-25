@@ -142,7 +142,7 @@ export default function AdminResidences() {
         </Card.Body>
       </Card>
 
-      <Card>
+                      <div className="small">{p.numero ? <a href={`tel:${p.numero}`}>{p.numero}</a> : '—'}</div>
         <Card.Body>
           <Card.Title>Chambres</Card.Title>
           <div className="mb-3 text-muted">Liste des chambres correspondant aux filtres choisis. Les occupants affichent le prénom et nom s'ils existent, sinon "Vide".</div>

@@ -76,7 +76,7 @@ export default function AdminPaiements() {
                   <td>{profil.nom || '-'}</td>
                   <td>{profil.prenom || '-'}</td>
                   <td>{profil.bucque || '-'}</td>
-                  <td>{profil.numero || '-'}</td>
+                  <td>{profil.numero ? <a href={`tel:${profil.numero}`}>{profil.numero}</a> : '-'}</td>
                 </tr>
               );
             })}
