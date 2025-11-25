@@ -6,6 +6,7 @@ import AdminPaiements from '../components/admin/AdminPaiements';
 import AdminGestionWeb from '../components/admin/AdminGestionWeb';
 import AdminBusLists from '../components/admin/AdminBusLists';
 import AdminResidences from '../components/admin/AdminResidences';
+import AdminAnims from '../components/admin/AdminAnims';
 
 export default function AdminPanel() {
   return (
@@ -14,6 +15,9 @@ export default function AdminPanel() {
       <Tabs defaultActiveKey="utilisateur" id="admin-tabs" className="mb-3 d-flex justify-content-center">
         <Tab eventKey="residence" title="🏢 Résidences">
           <AdminResidences />
+        </Tab>
+        <Tab eventKey="anims" title="🎭 Anim's">
+          <AdminAnims />
         </Tab>
         <Tab eventKey="utilisateur" title="📋 Infos Utilisateur">
           <AdminUtilisateurs />
