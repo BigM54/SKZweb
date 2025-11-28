@@ -7,6 +7,8 @@ export default function AdminResidences() {
   const [ambiance, setAmbiance] = useState('');
   const [group, setGroup] = useState('');
   const [rooms, setRooms] = useState([]);
+  const [optionsWithoutResidence, setOptionsWithoutResidence] = useState([]);
+  const [optionsInResidenceNoKgibs, setOptionsInResidenceNoKgibs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -82,6 +84,61 @@ export default function AdminResidences() {
       });
 
       setRooms(roomsWithOccupants);
+
+      // Now fetch options and all residence rows to find users who have options but
+      // are not assigned to any residence, or are assigned to a residence but that
+      // residence has no kgibs value set.
+      const { data: optionsData } = await client.from('options').select('*');
+      const optionsIds = (optionsData || []).map(o => o.id).filter(Boolean);
+
+      // fetch all residences
+      const { data: allRes, error: allResErr } = await client.from('residence').select('kgibs, responsable, resident1, resident2, resident3, resident4');
+      if (allResErr) throw allResErr;
+      const resRowsAll = allRes || [];
+
+      const idToRes = {};
+      resRowsAll.forEach(rr => {
+        ['responsable', 'resident1', 'resident2', 'resident3', 'resident4'].forEach(col => {
+          const val = rr[col];
+          if (val) idToRes[String(val)] = rr;
+        });
+      });
+
+      const without = [];
+      const withResNoKgibs = [];
+      optionsIds.forEach(id => {
+        const rr = idToRes[String(id)];
+        if (!rr) without.push(id);
+        else {
+          if (rr.kgibs === null || rr.kgibs === undefined || String(rr.kgibs).trim() === '') withResNoKgibs.push({ id, rr });
+        }
+      });
+
+      // Fetch profiles for both lists and build display data
+      const allOptIdsToFetch = Array.from(new Set(without.concat(withResNoKgibs.map(r => r.id))));
+      let profilsForOpts = [];
+      if (allOptIdsToFetch.length) {
+        const chunkSize = 200;
+        for (let i = 0; i < allOptIdsToFetch.length; i += chunkSize) {
+          const ch = allOptIdsToFetch.slice(i, i + chunkSize);
+          const { data: p, error: pErr } = await client.from('profils').select('id, prenom, nom, email, proms').in('id', ch);
+          if (pErr) throw pErr;
+          profilsForOpts = profilsForOpts.concat(p || []);
+        }
+      }
+      const profilById = {};
+      profilsForOpts.forEach(p => { profilById[p.id] = p; });
+
+      const withoutRows = without.map(id => {
+        const p = profilById[id];
+        return { id, prenom: p?.prenom, nom: p?.nom, email: p?.email, proms: p?.proms };
+      });
+      const withNoKgRows = withResNoKgibs.map(({ id, rr }) => {
+        const p = profilById[id];
+        return { id, prenom: p?.prenom, nom: p?.nom, email: p?.email, proms: p?.proms, residence: rr };
+      });
+      setOptionsWithoutResidence(withoutRows);
+      setOptionsInResidenceNoKgibs(withNoKgRows);
     } catch (e) {
       console.error('AdminResidences load error', e);
       setError(e.message || String(e));
@@ -141,6 +198,68 @@ export default function AdminResidences() {
           </Row>
         </Card.Body>
       </Card>
+
+        <Card className="mb-4">
+          <Card.Body>
+            <Card.Title>Options — profils sans chambre / chambre sans kgibs</Card.Title>
+            <div className="mb-3 text-muted">Liste des personnes ayant des options mais qui ne sont assignées à aucune résidence, ou qui sont assignées à une résidence mais sans kgibs défini.</div>
+            {loading && <div className="d-flex justify-content-center my-4"><Spinner animation="border" /></div>}
+            {!loading && optionsWithoutResidence.length === 0 && optionsInResidenceNoKgibs.length === 0 && <div className="text-muted">Aucun profil trouvé.</div>}
+
+            {!loading && optionsWithoutResidence.length > 0 && (
+              <>
+                <h6>📭 Profil(s) avec options mais sans chambre assignée</h6>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>ID</th>
+                      <th>Email</th>
+                      <th>Prom</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {optionsWithoutResidence.map(p => (
+                      <tr key={p.id}>
+                        <td>{(p.prenom || '') + ' ' + (p.nom || '')}</td>
+                        <td><code>{p.id}</code></td>
+                        <td>{p.email || '—'}</td>
+                        <td>{p.proms || '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </>
+            )}
+
+            {!loading && optionsInResidenceNoKgibs.length > 0 && (
+              <>
+                <h6>🛏️ Profil(s) assignés·es à une résidence mais sans kgibs</h6>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>ID</th>
+                      <th>Email</th>
+                      <th>Responsable (ID)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {optionsInResidenceNoKgibs.map(p => (
+                      <tr key={p.id}>
+                        <td>{(p.prenom || '') + ' ' + (p.nom || '')}</td>
+                        <td><code>{p.id}</code></td>
+                        <td>{p.email || '—'}</td>
+                        <td>{p.residence?.responsable || '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </>
+            )}
+
+          </Card.Body>
+        </Card>
 
       <Card className="mb-4">
         <Card.Body>
