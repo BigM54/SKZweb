@@ -6,8 +6,12 @@ import { createClient } from '@supabase/supabase-js';
 export default function AdminPaiements() {
   const [paiements, setPaiements] = useState([]);
   const [profils, setProfils] = useState([]);
+  const [horsRelance, setHorsRelance] = useState({ archis: new Set(), annulation: new Set(), paiement_special: new Set() });
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState('paiement1');
+  const [excludeArchis, setExcludeArchis] = useState(false);
+  const [excludeAnnulation, setExcludeAnnulation] = useState(false);
+  const [excludePaiementSpecial, setExcludePaiementSpecial] = useState(false);
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -22,16 +26,62 @@ export default function AdminPaiements() {
       // Récupère tous les profils
       const { data: profilsData } = await supabase.from('profils').select('*');
       setProfils(profilsData || []);
+      // Récupère les adresses à exclure depuis la table hors_relance
+      const { data: hrData } = await supabase.from('hors_relance').select('archis, annulation, paiement_special');
+      // hrData may be an array of rows; each field may contain single email, comma separated list, or array
+      const archisSet = new Set();
+      const annulationSet = new Set();
+      const paiementSpecialSet = new Set();
+      if (hrData && Array.isArray(hrData) && hrData.length > 0) {
+        hrData.forEach(row => {
+          ['archis', 'annulation', 'paiement_special'].forEach(col => {
+            const val = row[col];
+            if (!val) return;
+            // Accept string or array
+            if (Array.isArray(val)) {
+              val.forEach(v => { if (v) {
+                const email = String(v).trim().toLowerCase();
+                if (email) {
+                  if (col === 'archis') archisSet.add(email);
+                  if (col === 'annulation') annulationSet.add(email);
+                  if (col === 'paiement_special') paiementSpecialSet.add(email);
+                }
+              }});
+            } else if (typeof val === 'string') {
+              // Split by comma/semicolon/newline/space
+              val.split(/[;,\n\s]+/).forEach(e => {
+                const email = String(e).trim().toLowerCase();
+                if (!email) return;
+                if (col === 'archis') archisSet.add(email);
+                if (col === 'annulation') annulationSet.add(email);
+                if (col === 'paiement_special') paiementSpecialSet.add(email);
+              });
+            }
+          });
+        });
+      }
+      setHorsRelance({ archis: archisSet, annulation: annulationSet, paiement_special: paiementSpecialSet });
       setLoading(false);
     };
     fetchData();
   }, []);
 
-  // Map email -> profil pour accès rapide
+  
+
   const profilsByEmail = {};
   profils.forEach(p => {
     if (p.email) profilsByEmail[p.email.toLowerCase()] = p;
   });
+
+  // Utility to check excluded emails
+  const isExcludedEmail = (email) => {
+    if (!email) return false;
+    const e = String(email).toLowerCase();
+    if (excludeArchis && horsRelance.archis && horsRelance.archis.has(e)) return true;
+    if (excludeAnnulation && horsRelance.annulation && horsRelance.annulation.has(e)) return true;
+    if (excludePaiementSpecial && horsRelance.paiement_special && horsRelance.paiement_special.has(e)) return true;
+    return false;
+  };
 
   // Filtrage selon le paiement sélectionné
   const filtered = paiements.filter(p =>
@@ -40,7 +90,7 @@ export default function AdminPaiements() {
       (selected === 'paiement1' && !p.paiement1Statut) ||
       (selected === 'paiement2' && !p.paiement2Statut) ||
       (selected === 'paiement3' && (!p.paiement3Recu || Number(p.paiement3Recu) === 0))
-    )
+    ) && !isExcludedEmail(p.email)
   );
 
   return (
@@ -54,6 +104,26 @@ export default function AdminPaiements() {
           <option value="paiement3">Paiement 3</option>
         </Form.Select>
       </Form.Group>
+      <div className="mb-3 d-flex gap-3 justify-content-center">
+        <Form.Check
+          type="checkbox"
+          label={`Exclure Archis (${horsRelance.archis ? horsRelance.archis.size : 0})`}
+          checked={excludeArchis}
+          onChange={e => setExcludeArchis(e.target.checked)}
+        />
+        <Form.Check
+          type="checkbox"
+          label={`Exclure Annulation (${horsRelance.annulation ? horsRelance.annulation.size : 0})`}
+          checked={excludeAnnulation}
+          onChange={e => setExcludeAnnulation(e.target.checked)}
+        />
+        <Form.Check
+          type="checkbox"
+          label={`Exclure Paiement spécial (${horsRelance.paiement_special ? horsRelance.paiement_special.size : 0})`}
+          checked={excludePaiementSpecial}
+          onChange={e => setExcludePaiementSpecial(e.target.checked)}
+        />
+      </div>
       {loading ? (
         <p>Chargement...</p>
       ) : (
