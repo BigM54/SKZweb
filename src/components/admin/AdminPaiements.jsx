@@ -134,6 +134,7 @@ export default function AdminPaiements() {
               <th>Nom</th>
               <th>Prénom</th>
               <th>Bucque</th>
+              <th>Tabagns</th>
               <th>Téléphone</th>
             </tr>
           </thead>
@@ -146,6 +147,7 @@ export default function AdminPaiements() {
                   <td>{profil.nom || '-'}</td>
                   <td>{profil.prenom || '-'}</td>
                   <td>{profil.bucque || '-'}</td>
+                  <td>{profil.tabagns || '-'}</td>
                   <td>{profil.numero ? <a href={`tel:${profil.numero}`}>{profil.numero}</a> : '-'}</td>
                 </tr>
               );
