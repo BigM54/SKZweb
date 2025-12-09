@@ -10,6 +10,7 @@ export default function AdminUtilisateurs() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [optionsMap, setOptionsMap] = useState({});
+  const [residenceMap, setResidenceMap] = useState({});
   const { getToken } = useAuth();
   const [acompteMails, setAcompteMails] = useState([]);
   const [paiementsMap, setPaiementsMap] = useState({});
@@ -76,6 +77,17 @@ export default function AdminUtilisateurs() {
       setPaiementsMap(paiementsByEmail);
     }
 
+    // Récupère toutes les résidences et mappe les userId -> kgibs
+    const { data: resData } = await supabase.from('residence').select('kgibs, responsable, resident1, resident2, resident3, resident4');
+    const rmap = {};
+    (resData || []).forEach(rr => {
+      ['responsable', 'resident1', 'resident2', 'resident3', 'resident4'].forEach(col => {
+        const val = rr[col];
+        if (val) rmap[String(val)] = rr.kgibs;
+      });
+    });
+    setResidenceMap(rmap);
+
     const { data: acomptes } = await supabase
       .from('Paiements')
       .select('email');
@@ -123,6 +135,7 @@ export default function AdminUtilisateurs() {
                       👤 {u.prenom} {u.nom} — <code>ID: {u.id}</code>
                     </div>
                     <div className="text-muted mb-2">{u.bucque} — {u.email} — {u.numero ? <a href={`tel:${u.numero}`}>{u.numero}</a> : '—'}</div>
+                    <div className="text-muted mb-2"><strong>Kgibs:</strong> {residenceMap[u.id] ?? '—'}</div>
                     {opt ? (
                       <div className="ms-3 text-sm">
                         <div><strong>🥖 Boulangerie :</strong> Pain: {opt.pain}, Croissants: {opt.croissant}, Pains Choco: {opt.pain_choco}</div>
