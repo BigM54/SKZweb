@@ -61,15 +61,15 @@ export default function Animations() {
     },
     {
       id: 5,
-      title: "Compétition Freestyle (Big Air)",
-      description: "Réalise ton plus beau tricks sur une bosse avec un Big Air",
+      title: "Compétition Freestyle (Slopestyle)",
+      description: "Réalise ton plus beau tricks sur des bosses et des rails",
       niveau: "Intermédiaire",
       type: "ski",
       typeIcon: "⛷️",
       difficulty: "intermediaire",
       typeLabel: "Ski-Snow",
       category: "competition",
-      image: "/competition_freestyle(bigair).webp",
+      image: "/competition_freestyle.jpeg",
       color: "primary"
     },
     {
@@ -270,7 +270,7 @@ export default function Animations() {
     },
     {
       id: 22,
-      title: "Slalom pralèlle en relais",
+      title: "Slalom paralèlle en relais",
       description: "2 équipes de 4 s’affrontent en slalom parallèle en relais",
       niveau: "Intermédiaire",
       type: "ski",
