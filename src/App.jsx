@@ -20,6 +20,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Anims = lazy(() => import('./pages/Anims'));
 const Soirees = lazy(() => import('./pages/Soirees'));
 const Village = lazy(() => import('./pages/Village'));
+const RestoBiproms = lazy(() => import('./pages/RestoBiproms'));
 const QrCodePage = lazy(() => import('./pages/QrCode'));
 const MesCousins = lazy(() => import('./pages/MesCousins'));
 const MesInformations = lazy(() => import('./components/formulaires/MesInformations'));
@@ -79,6 +80,7 @@ function App() {
                 <Route path="/village" element={<Village />} />
                 <Route path="/qrcode" element={<QrCodePage />} />
                 <Route path="/mescousins" element={<MesCousins />} />
+                <Route path="/resto-biproms" element={<RestoBiproms />} />
                 <Route path="/mesinfos" element={<MesInformations />} />
                 <Route path="/tarifs" element={<Tarifs />} />
               </Routes>
