@@ -112,7 +112,7 @@ export default function MonSkz() {
       if (selectedTabagns.toLowerCase() === 'p3') throw new Error('Le tabagns "p3" n\'est pas sélectionnable.');
 
       const supabase = await getSupabase();
-      const payload = { email, tabagns: selectedTabagns, paiement: false };
+      const payload = { email, tabagns: selectedTabagns };
       const { error: upErr } = await supabase.from('resto').upsert(payload, { onConflict: ['email'] });
       if (upErr) throw upErr;
 
