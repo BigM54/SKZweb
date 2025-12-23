@@ -16,6 +16,9 @@ export default function MonSkz() {
   const [saving, setSaving] = useState(false);
   const [restoRow, setRestoRow] = useState(null);
   const [paid, setPaid] = useState(false);
+  const [iframeReady, setIframeReady] = useState(false);
+  const [iframeFailed, setIframeFailed] = useState(false);
+  const iframeTimeoutRef = useRef(null);
 
   const pollRef = useRef(null);
 
@@ -65,15 +68,19 @@ export default function MonSkz() {
           setSelectedTabagns(profTab);
         }
 
-        // fetch existing resto row for this email (if present)
+        // fetch existing resto registration row for this email (if present)
         const email = getUserEmail();
         if (email) {
           const { data: existing } = await supabase.from('resto').select('*').eq('email', email).maybeSingle();
           if (existing) {
             setRestoRow(existing);
             setSelectedTabagns(existing.tabagns || (selectedTabagns || ''));
-            if (existing.paiement) setPaid(true);
-            if (existing.paiement) setStep(3); // show "already paid" state
+          }
+          // fetch paiement status from Paiements.resto
+          const { data: payRow } = await supabase.from('Paiements').select('resto').eq('email', email).maybeSingle();
+          if (payRow && payRow.resto) {
+            setPaid(true);
+            setStep(3);
           }
         }
 
@@ -123,10 +130,9 @@ export default function MonSkz() {
     pollRef.current = setInterval(async () => {
       try {
         const supabase = await getSupabase();
-        const { data } = await supabase.from('resto').select('paiement, tabagns').eq('email', email).maybeSingle();
+        const { data } = await supabase.from('Paiements').select('resto').eq('email', email).maybeSingle();
         if (data) {
-          setRestoRow(prev => ({ ...(prev || {}), ...data }));
-          if (data.paiement) {
+          if (data.resto) {
             setPaid(true);
             stopPolling();
             setStep(3);
@@ -173,6 +179,12 @@ export default function MonSkz() {
         if (!e.origin || !e.data) return;
         const originAllowed = e.origin.includes('helloasso.com');
         if (!originAllowed) return;
+        // mark iframe as communicating
+        setIframeReady(true);
+        if (iframeTimeoutRef.current) {
+          clearTimeout(iframeTimeoutRef.current);
+          iframeTimeoutRef.current = null;
+        }
         const dataHeight = e.data.height;
         if (!dataHeight) return;
         const haWidgetElement = document.getElementById('haWidget');
@@ -182,7 +194,26 @@ export default function MonSkz() {
       }
     };
     window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
+    // start a timeout: if no message received within 5s, show fallback button
+    setIframeReady(false);
+    setIframeFailed(false);
+    if (iframeTimeoutRef.current) {
+      clearTimeout(iframeTimeoutRef.current);
+      iframeTimeoutRef.current = null;
+    }
+    iframeTimeoutRef.current = setTimeout(() => {
+      // if iframe hasn't signaled readiness, mark as failed so we show fallback
+      setIframeFailed(prev => prev || !iframeReady);
+      iframeTimeoutRef.current = null;
+    }, 5000);
+
+    return () => {
+      window.removeEventListener('message', handler);
+      if (iframeTimeoutRef.current) {
+        clearTimeout(iframeTimeoutRef.current);
+        iframeTimeoutRef.current = null;
+      }
+    };
   }, [step]);
 
   if (loading) return <Container className="py-4 text-center"><Spinner animation="border" /> Chargement...</Container>;
@@ -245,12 +276,27 @@ export default function MonSkz() {
               <Button variant="secondary" onClick={() => { stopPolling(); setStep(1); }}>Retour</Button>
             </div>
             <div style={{ minHeight: 400 }}>
+              <div style={{ marginBottom: 8 }}>
+                {iframeFailed && (
+                  <div className="mb-2">
+                    <Alert variant="warning">Impossible de charger l'iframe ? Ouvrez HelloAsso dans un nouvel onglet.</Alert>
+                    <Button variant="outline-primary" onClick={() => window.open(helloAssoEmbedUrl, '_blank')}>Ouvrir dans un nouvel onglet</Button>
+                  </div>
+                )}
+              </div>
               <iframe
                 id="haWidget"
                 title="HelloAsso Embed"
                 src={helloAssoEmbedUrl}
                 style={{ width: '100%', height: 520, border: '1px solid #ddd' }}
                 allowTransparency="true"
+                onLoad={() => {
+                  setIframeReady(true);
+                  if (iframeTimeoutRef.current) {
+                    clearTimeout(iframeTimeoutRef.current);
+                    iframeTimeoutRef.current = null;
+                  }
+                }}
               />
             </div>
             <div className="mt-3 text-muted">Nous détecterons le paiement automatiquement (webhook). Cette page vérifiera périodiquement si le paiement a été enregistré.</div>

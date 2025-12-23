@@ -71,11 +71,11 @@ serve(async (req)=>{
         }
         break;
       case "resto-biprom-s-skz":
-        // For resto payments we simply mark paiement = true in the `resto` table
+        // For resto payments we mark the `resto` flag in the Paiements table
         updateData = {
-          paiement: true
+          resto: true
         };
-        tableTarget = "resto";
+        // keep tableTarget = "Paiements"
         break;
       default:
         console.warn("❌ Formulaire non géré:", formSlug);
