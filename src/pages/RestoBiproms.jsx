@@ -54,7 +54,9 @@ export default function MonSkz() {
         // fetch distinct tabagns from profils to populate dropdown
         const { data: tabsData, error: tabsErr } = await supabase.from('profils').select('tabagns').not('tabagns', 'is', null);
         if (tabsErr) throw tabsErr;
-        const opts = Array.from(new Set((tabsData || []).map(r => (r.tabagns || '').trim()).filter(Boolean)));
+        // build unique tabagns list and exclude 'p3' (not selectable)
+        const opts = Array.from(new Set((tabsData || []).map(r => (r.tabagns || '').trim()).filter(Boolean)))
+          .filter(t => t.toLowerCase() !== 'p3');
         if (mounted) setTabagnsOptions(opts.sort());
 
         // fetch current user's profil to preselect tabagns if applicable
@@ -74,7 +76,10 @@ export default function MonSkz() {
           const { data: existing } = await supabase.from('resto').select('*').eq('email', email).maybeSingle();
           if (existing) {
             setRestoRow(existing);
-            setSelectedTabagns(existing.tabagns || (selectedTabagns || ''));
+            const existingTab = (existing.tabagns || '').trim();
+            if (existingTab && existingTab.toLowerCase() !== 'p3') {
+              setSelectedTabagns(existingTab);
+            }
           }
           // fetch paiement status from Paiements.resto
           const { data: payRow } = await supabase.from('Paiements').select('resto').eq('email', email).maybeSingle();
@@ -104,6 +109,7 @@ export default function MonSkz() {
       const email = getUserEmail();
       if (!email) throw new Error('Email non trouvé (Clerk)');
       if (!selectedTabagns) throw new Error('Choisissez un tabagns');
+      if (selectedTabagns.toLowerCase() === 'p3') throw new Error('Le tabagns "p3" n\'est pas sélectionnable.');
 
       const supabase = await getSupabase();
       const payload = { email, tabagns: selectedTabagns, paiement: false };

@@ -182,13 +182,13 @@ export default function NavBarComponent() {
           onMouseLeave={() => setProfilDropdownOpen(false)}
           onToggle={() => {}}
         >
-          <NavDropdown.Item as={Link} to="/resto-biproms">Resto Biprom's</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/mesinfos">Mon Profil</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/mesinfos">Mon Profil</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/resto-biproms">Resto Biprom's</NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>
           {isAdmin && (
             <NavDropdown.Item as={Link} to="/admin">Admin Panel</NavDropdown.Item>
           )}
@@ -300,12 +300,12 @@ export default function NavBarComponent() {
                 <Nav.Link as={Link} to="/formulaire" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Choix
                 </Nav.Link>
+                  <Nav.Link as={Link} to="/mesinfos" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                    Mon Profil
+                  </Nav.Link>
                   <Nav.Link as={Link} to="/resto-biproms" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                     Resto Biprom's
                   </Nav.Link>
-                <Nav.Link as={Link} to="/mesinfos" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
-                  Mon Profil
-                </Nav.Link>
                 <Nav.Link as={Link} to="/paiements" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Paiements
                 </Nav.Link>
