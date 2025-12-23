@@ -190,22 +190,28 @@ export default function MonSkz() {
 
   return (
     <Container className="py-4">
-      <h3 className="mb-3">Mon SKZ — Resto biprom's</h3>
+      <h3 className="mb-3">Resto biprom's</h3>
       {error && <Alert variant="danger">{error}</Alert>}
 
       <Card className="mb-3">
         <Card.Body>
           <Row className="align-items-center">
             <Col>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>Email de paiement (clerk)</div>
-              <div style={{ fontSize: 16 }}>{userEmail || <em>Non trouvé</em>}</div>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>Email de paiement</div>
+              <div style={{ fontSize: 16, marginBottom: 8 }}>{userEmail || <em>Non trouvé</em>}</div>
+              <Alert variant="danger" className="py-2" style={{ fontSize: 15, fontWeight: 700 }}>
+                <div>ATTENTION — UTILISEZ CET EMAIL LORS DU PAIEMENT SUR HELLOASSO</div>
+                <div style={{ fontSize: 14, fontWeight: 600 }}>{userEmail || '—'}</div>
+              </Alert>
+              <Alert variant="warning" className="py-2" style={{ fontSize: 14 }}>
+                <strong>INSCRIPTION DÉFINITIVE.</strong> Pas d'annulation possible. <strong>Pas de paiement = pas d'inscription.</strong>
+              </Alert>
             </Col>
             <Col xs="auto">
-              <Button variant="outline-secondary" onClick={handleCopyEmail}>Copier l'email</Button>
+              <Button variant="primary" onClick={handleCopyEmail}>Copier l'email</Button>
             </Col>
           </Row>
           <hr />
-          <div className="mb-2"><strong>Attention :</strong> Pas d'annulation possible — le paiement valide l'inscription. Sans paiement vous n'êtes pas inscrit·e.</div>
           <div className="mb-2">Lieu : La Grotte du Yéti (Front de neige). Date proposée : 26 ou 27 décembre.</div>
         </Card.Body>
       </Card>
@@ -213,6 +219,9 @@ export default function MonSkz() {
       {step === 1 && (
         <Card className="mb-3">
           <Card.Body>
+            <Alert variant="danger" className="mb-3" style={{ fontSize: 15, fontWeight: 700 }}>
+              IMPORTANT — Avant de payer : assurez-vous d'utiliser l'EMAIL affiché ci‑dessus sur la page HelloAsso. L'inscription est définitive et n'est validée qu'après paiement.
+            </Alert>
             <Form.Group className="mb-3">
               <Form.Label>Choisir le tabagns pour lequel vous participez</Form.Label>
               <Form.Select value={selectedTabagns} onChange={e => setSelectedTabagns(e.target.value)}>
@@ -220,7 +229,6 @@ export default function MonSkz() {
                 {tabagnsOptions.map(t => <option key={t} value={t}>{t}</option>)}
               </Form.Select>
             </Form.Group>
-            <div className="mb-3 text-muted">Si ton tabagns est <strong>p3</strong> ou non renseigné, laisse la sélection vide et choisis manuellement.</div>
             <Button disabled={saving || !selectedTabagns} onClick={handleProceedToPay}>{saving ? 'Enregistrement...' : 'Payer et s\'inscrire'}</Button>
           </Card.Body>
         </Card>
@@ -229,6 +237,9 @@ export default function MonSkz() {
       {step === 2 && (
         <Card className="mb-3">
           <Card.Body>
+            <Alert variant="danger" className="mb-3" style={{ fontSize: 15, fontWeight: 700 }}>
+              PAYEZ AVEC L'EMAIL INDIQUÉ — Ceci permet d'identifier automatiquement votre paiement. Sans paiement, votre inscription n'est pas validée.
+            </Alert>
             <div className="mb-3">Étape de paiement — l'iframe HelloAsso s'affiche ci‑dessous. Utilisez le même email affiché en haut pour payer.</div>
             <div style={{ marginBottom: 8 }}>
               <Button variant="secondary" onClick={() => { stopPolling(); setStep(1); }}>Retour</Button>
