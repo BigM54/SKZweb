@@ -243,7 +243,7 @@ export default function MonSkz() {
             </Col>
           </Row>
           <hr />
-          <div className="mb-2">Lieu : La Grotte du Yéti (Front de neige). Date proposée : 26 ou 27 décembre.</div>
+          <div className="mb-2">Lieu : La Grotte du Yéti (Front de neige).</div>
         </Card.Body>
       </Card>
 
