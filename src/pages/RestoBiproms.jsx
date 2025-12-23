@@ -113,8 +113,16 @@ export default function MonSkz() {
 
       const supabase = await getSupabase();
       const payload = { email, tabagns: selectedTabagns };
-      const { error: upErr } = await supabase.from('resto').upsert(payload, { onConflict: ['email'] });
-      if (upErr) throw upErr;
+      // Insert or update without relying on ON CONFLICT (email may not be a unique constraint)
+      const { data: existingByEmail, error: selectErr } = await supabase.from('resto').select('id').eq('email', email).maybeSingle();
+      if (selectErr) throw selectErr;
+      if (existingByEmail && existingByEmail.id) {
+        const { error: updErr } = await supabase.from('resto').update(payload).eq('email', email);
+        if (updErr) throw updErr;
+      } else {
+        const { error: insErr } = await supabase.from('resto').insert(payload);
+        if (insErr) throw insErr;
+      }
 
       // fetch saved row
       const { data: saved } = await supabase.from('resto').select('*').eq('email', email).maybeSingle();
