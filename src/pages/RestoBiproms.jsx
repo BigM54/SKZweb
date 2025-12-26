@@ -179,6 +179,15 @@ export default function MonSkz() {
 
   const userEmail = getUserEmail();
 
+  // Resto info (displayed on the form)
+  const restoLocation = 'La Grotte du Yéti (Front de neige)';
+  const restoPrice = '25€';
+  const restoMenu = [
+    'Entrée : Salade de saison',
+    'Plat : Tartiflette traditionnelle (ou option végétarienne)',
+    'Dessert : Tarte aux pommes maison',
+  ];
+
   // HelloAsso widget URL (provided). We append email + tabagns as query params.
   const helloAssoEmbedUrl = `https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/resto-biprom-s-skz/widget?email=${encodeURIComponent(userEmail)}&tabagns=${encodeURIComponent(selectedTabagns)}`;
 
@@ -209,7 +218,15 @@ export default function MonSkz() {
             </Col>
           </Row>
           <hr />
-          <div className="mb-2">Lieu : La Grotte du Yéti (Front de neige).</div>
+          <div className="mb-2">
+            <div><strong>Lieu :</strong> {restoLocation}</div>
+            <div><strong>Prix :</strong> {restoPrice}</div>
+            <div><strong>Menu :</strong>
+              <ul className="mb-0" style={{ paddingLeft: 18 }}>
+                {restoMenu.map((item, idx) => <li key={idx}>{item}</li>)}
+              </ul>
+            </div>
+          </div>
         </Card.Body>
       </Card>
 
@@ -237,7 +254,7 @@ export default function MonSkz() {
             <Alert variant="danger" className="mb-3" style={{ fontSize: 15, fontWeight: 700 }}>
               PAYEZ AVEC L'EMAIL INDIQUÉ — Ceci permet d'identifier automatiquement votre paiement. Sans paiement, votre inscription n'est pas validée.
             </Alert>
-            <div className="mb-3">Étape de paiement — l'iframe HelloAsso s'affiche ci‑dessous. Utilisez le même email affiché en haut pour payer.</div>
+            <div className="mb-3">Étape de paiement — Utilisez le même email affiché en haut pour payer.</div>
             <div style={{ marginBottom: 8 }}>
               <Button variant="secondary" onClick={() => { stopPolling(); setStep(1); }}>Retour</Button>
             </div>
