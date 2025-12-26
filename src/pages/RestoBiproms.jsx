@@ -184,8 +184,8 @@ export default function MonSkz() {
   const restoPrice = '25€';
   const restoMenu = [
     'Entrée : Salade de saison',
-    'Plat : Tartiflette traditionnelle (ou option végétarienne)',
-    'Dessert : Tarte aux pommes maison',
+    'Plat : Tartiflette ou Raclette',
+    'Boisson : Un verre de vin',
   ];
 
   // HelloAsso widget URL (provided). We append email + tabagns as query params.
