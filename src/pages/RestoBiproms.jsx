@@ -55,6 +55,10 @@ export default function MonSkz() {
         // build unique tabagns list and exclude 'p3' (not selectable)
         const opts = Array.from(new Set((tabsData || []).map(r => (r.tabagns || '').trim()).filter(Boolean)))
           .filter(t => t.toLowerCase() !== 'p3');
+        // ensure 'alterns' is available as a choice for resto
+        if (!opts.map(x => x.toLowerCase()).includes('alterns')) {
+          opts.push('alterns');
+        }
         if (mounted) setTabagnsOptions(opts.sort());
 
         // fetch current user's profil to preselect tabagns if applicable

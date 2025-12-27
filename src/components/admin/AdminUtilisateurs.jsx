@@ -11,6 +11,7 @@ export default function AdminUtilisateurs() {
   const [loading, setLoading] = useState(false);
   const [optionsMap, setOptionsMap] = useState({});
   const [residenceMap, setResidenceMap] = useState({});
+  const [restoMap, setRestoMap] = useState({});
   const { getToken } = useAuth();
   const [acompteMails, setAcompteMails] = useState([]);
   const [paiementsMap, setPaiementsMap] = useState({});
@@ -75,6 +76,12 @@ export default function AdminUtilisateurs() {
         paiementsByEmail[p.email] = p;
       });
       setPaiementsMap(paiementsByEmail);
+
+      // Fetch resto rows for these emails
+      const { data: restos } = await supabase.from('resto').select('email, tabagns').in('email', emails);
+      const restosByEmail = {};
+      restos?.forEach(r => { restosByEmail[r.email] = r; });
+      setRestoMap(restosByEmail);
     }
 
     // Récupère toutes les résidences et mappe les userId -> kgibs
@@ -135,7 +142,12 @@ export default function AdminUtilisateurs() {
                       👤 {u.prenom} {u.nom} — <code>ID: {u.id}</code>
                     </div>
                     <div className="text-muted mb-2">{u.bucque} — {u.email} — {u.numero ? <a href={`tel:${u.numero}`}>{u.numero}</a> : '—'}</div>
-                    <div className="text-muted mb-2"><strong>Kgibs:</strong> {residenceMap[u.id] ?? '—'}</div>
+                          <div className="text-muted mb-2"><strong>Kgibs:</strong> {residenceMap[u.id] ?? '—'}</div>
+                          <div className="text-muted mb-2">
+                            <strong>Resto:</strong> {restoMap[u.email]?.tabagns ? (
+                              <>{restoMap[u.email].tabagns} {paiementsMap[u.email]?.resto ? <span>(payé)</span> : <span>(non payé)</span>}</>
+                            ) : '—'}
+                          </div>
                     {opt ? (
                       <div className="ms-3 text-sm">
                         <div><strong>🥖 Boulangerie :</strong> Pain: {opt.pain}, Croissants: {opt.croissant}, Pains Choco: {opt.pain_choco}</div>

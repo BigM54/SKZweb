@@ -7,6 +7,7 @@ import AdminGestionWeb from '../components/admin/AdminGestionWeb';
 import AdminBusLists from '../components/admin/AdminBusLists';
 import AdminResidences from '../components/admin/AdminResidences';
 import AdminAnims from '../components/admin/AdminAnims';
+import AdminResto from '../components/admin/AdminResto';
 
 export default function AdminPanel() {
   return (
@@ -18,6 +19,10 @@ export default function AdminPanel() {
         </Tab>
         <Tab eventKey="anims" title="🎭 Anim's">
           <AdminAnims />
+        </Tab>
+        <Tab eventKey="resto" title="🍽️ Resto">
+          {/* lazy include admin resto */}
+          <AdminResto />
         </Tab>
         <Tab eventKey="utilisateur" title="📋 Infos Utilisateur">
           <AdminUtilisateurs />
