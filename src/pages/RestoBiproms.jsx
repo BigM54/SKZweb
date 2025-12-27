@@ -118,7 +118,7 @@ export default function MonSkz() {
         const { error: updErr } = await supabase.from('resto').update(payload).eq('email', email);
         if (updErr) throw updErr;
       } else {
-        const { error: insErr } = await supabase.from('resto').insert(payload);
+        const { error: insErr } = await supabase.from('resto').upsert(payload);
         if (insErr) throw insErr;
       }
 
@@ -181,11 +181,11 @@ export default function MonSkz() {
 
   // Resto info (displayed on the form)
   const restoLocation = 'La Grotte du Yéti (Front de neige)';
-  const restoPrice = '25€';
+  const restoPrice = '26€';
   const restoMenu = [
     'Entrée : Salade de saison',
-    'Plat : Tartiflette ou Raclette',
-    'Boisson : Un verre de vin',
+    'Plat : Fondue et Raclette',
+    'Boisson : Un verre de vin biere ou soft',
   ];
 
   // HelloAsso widget URL (provided). We append email + tabagns as query params.
