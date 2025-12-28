@@ -88,6 +88,12 @@ export default function MonSkz() {
           if (payRow && payRow.resto) {
             setPaid(true);
             setStep(3);
+          } else if (existing) {
+            // If the user already chose resto but hasn't paid yet,
+            // show the payment step directly and start polling for payment.
+            setStep(2);
+            // start polling to check paiement status (in case webhook triggers)
+            startPollingPayment(email);
           }
         }
 
@@ -209,6 +215,11 @@ export default function MonSkz() {
             <Col>
               <div style={{ fontSize: 18, fontWeight: 700 }}>Email de paiement</div>
               <div style={{ fontSize: 16, marginBottom: 8 }}>{userEmail || <em>Non trouvé</em>}</div>
+              {restoRow?.tabagns && (
+                <div style={{ fontSize: 16, marginTop: 6 }}>
+                  <strong>Tabagns choisi :</strong> {restoRow.tabagns}
+                </div>
+              )}
               <Alert variant="danger" className="py-2" style={{ fontSize: 15, fontWeight: 700 }}>
                 <div>ATTENTION — UTILISEZ CET EMAIL LORS DU PAIEMENT SUR HELLOASSO</div>
                 <div style={{ fontSize: 14, fontWeight: 600 }}>{userEmail || '—'}</div>
