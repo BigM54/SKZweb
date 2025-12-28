@@ -122,7 +122,7 @@ export default function MonSkz() {
         const { error: updErr } = await supabase.from('resto').update(payload).eq('email', email);
         if (updErr) throw updErr;
       } else {
-        const { error: insErr } = await supabase.from('resto').upsert(payload);
+        const { error: insErr } = await supabase.from('resto').insert(payload);
         if (insErr) throw insErr;
       }
 
