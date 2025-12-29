@@ -221,10 +221,11 @@ export default function MonSkz() {
           <Row className="align-items-center">
             <Col>
               <div style={{ fontSize: 18, fontWeight: 700 }}>Email de paiement</div>
-              <div style={{ fontSize: 16, marginBottom: 8 }}>{userEmail || <em>Non trouvé</em>}</div>
+              <div style={{ fontSize: 20, marginBottom: 8, fontWeight: 600 }}>{userEmail || <em>Non trouvé</em>}</div>
               {restoRow?.tabagns && (
-                <div style={{ fontSize: 16, marginTop: 6 }}>
-                  <strong>Tabagns choisi :</strong> {restoRow.tabagns}
+                <div style={{ marginTop: 8 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#333' }}>Tabagns choisi :</div>
+                  <div style={{ fontSize: 20, fontWeight: 700 }}>{restoRow.tabagns}</div>
                 </div>
               )}
               <Alert variant="danger" className="py-2" style={{ fontSize: 15, fontWeight: 700 }}>
@@ -298,10 +299,11 @@ export default function MonSkz() {
       {step === 3 && (
         <Card className="mb-3">
           <Card.Body>
-            {paid ? (
+                {paid ? (
               <>
                 <h5>✅ Inscription confirmée</h5>
-                <div>Vous êtes inscrit·e pour le tabagns : <strong>{restoRow?.tabagns}</strong></div>
+                <div>Vous êtes inscrit·e pour le tabagns :</div>
+                <div style={{ fontSize: 20, fontWeight: 700 }}>{restoRow?.tabagns}</div>
               </>
             ) : (
               <>
