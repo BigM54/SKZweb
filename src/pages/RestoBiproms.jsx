@@ -83,17 +83,24 @@ export default function MonSkz() {
               setSelectedTabagns(existingTab);
             }
           }
+
           // fetch paiement status from Paiements.resto
           const { data: payRow } = await supabase.from('Paiements').select('resto').eq('email', email).maybeSingle();
-          if (payRow && payRow.resto) {
+
+          // Decide which step to show based on existing data:
+          // - If Paiements.resto === true OR resto.paiement === true -> confirmed (step 3)
+          // - Else if resto exists with a tabagns -> payment step (step 2)
+          // - Else -> signup step (step 1)
+          const restoPaid = (payRow && payRow.resto) || (existing && existing.paiement === true);
+          if (restoPaid) {
             setPaid(true);
             setStep(3);
-          } else if (existing) {
-            // If the user already chose resto but hasn't paid yet,
-            // show the payment step directly and start polling for payment.
+          } else if (existing && existing.tabagns) {
             setStep(2);
             // start polling to check paiement status (in case webhook triggers)
             startPollingPayment(email);
+          } else {
+            setStep(1);
           }
         }
 

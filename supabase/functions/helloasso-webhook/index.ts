@@ -71,11 +71,12 @@ serve(async (req)=>{
         }
         break;
       case "resto-biprom-s-skz":
-        // For resto payments we mark the `resto` flag in the Paiements table
+        // For resto payments: only update the `resto` table
+        // and set a simple `paiement` flag for this email.
+        tableTarget = "resto";
         updateData = {
-          resto: true
+          paiement: true
         };
-        // keep tableTarget = "Paiements"
         break;
       default:
         console.warn("❌ Formulaire non géré:", formSlug);
