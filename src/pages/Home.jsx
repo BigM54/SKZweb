@@ -148,18 +148,18 @@ export default function Home() {
           Ils nous soutiennent
         </h2>
 
-        <div style={{ marginTop: 12, display: 'flex', gap: 18, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-          <a href="https://www.dcshoes.fr/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
-            <div style={{ width: 220, height: 220, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
-              <img src="/DC.png" alt="DC Shoes" style={{ maxWidth: '80%', maxHeight: '80%', objectFit: 'contain' }} />
-            </div>
-          </a>
+            <div style={{ marginTop: 12, display: 'flex', gap: 24, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+              <a href="https://www.dcshoes.fr/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
+                <div style={{ width: 160, height: 160, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
+                  <img src="/DC.png" alt="DC Shoes" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
+                </div>
+              </a>
 
-          <a href="https://www.ey.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
-            <div style={{ width: 220, height: 220, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
-              <img src="/EY.png" alt="EY" style={{ maxWidth: '80%', maxHeight: '80%', objectFit: 'contain' }} />
-            </div>
-          </a>
+              <a href="https://www.ey.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
+                <div style={{ width: 160, height: 160, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
+                  <img src="/EY.png" alt="EY" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
+                </div>
+              </a>
         </div>
       </Container>
       {/* Section Nos engagements */}
