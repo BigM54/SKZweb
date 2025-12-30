@@ -1,10 +1,42 @@
 
 import React from 'react';
 
+function PartnerCard({ name, href, description, logoSrc }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <div style={{ background: '#fff', color: '#111', borderRadius: 12, padding: 20, width: 320, boxShadow: '0 6px 18px rgba(0,0,0,0.12)', display: 'flex', gap: 16, alignItems: 'center' }}>
+        <div style={{ flex: '0 0 auto' }}>
+          <img src={logoSrc} alt={`${name} logo`} style={{ width: 72, height: 72, objectFit: 'contain', borderRadius: 8 }} />
+        </div>
+        <div style={{ textAlign: 'left' }}>
+          <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{name}</div>
+          <div style={{ marginTop: 6, fontSize: '0.95rem', color: '#333' }}>{description}</div>
+        </div>
+      </div>
+    </a>
+  );
+}
+
 export default function Partenaires() {
   return (
-    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d1c31', color: '#fff', width: '100vw', textAlign: 'center', fontSize: '1.5rem', fontWeight: 500 }}>
-      Cette page n'est pas encore disponible,<br />reviens plus tard pour voir ce qui s'y trouve !
+    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7fbff', color: '#111', width: '100vw', padding: '4rem 1rem' }}>
+      <div style={{ maxWidth: 1000, width: '100%', display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
+        <h2 style={{ margin: 0, fontSize: '2rem' }}>Nos partenaires</h2>
+        <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <PartnerCard
+            name="DC Shoes"
+            href="https://www.dcshoes.com/"
+            description="Marque de chaussures et vêtements de sports de glisse — partenaire équipement et sponsoring sur nos animations."
+            logoSrc="/DC.png"
+          />
+          <PartnerCard
+            name="EY"
+            href="https://www.ey.com/"
+            description="Cabinet international de conseil et d'audit — soutien logistique et partenariats étudiants."
+            logoSrc="/EY.png"
+          />
+        </div>
+      </div>
     </div>
   );
 }
