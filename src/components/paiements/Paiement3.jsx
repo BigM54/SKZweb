@@ -25,6 +25,7 @@ export default function Paiement3() {
   const [step, setStep] = useState(0); // 0: avertissement, 1: paiement
   const [canConfirm, setCanConfirm] = useState(false);
   const [montant, setMontant] = useState(null); // <-- Ajout pour stocker paiement3Montant
+  const [paiement3Recu, setPaiement3Recu] = useState(null);
   const [montantSaisi, setMontantSaisi] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [hasPaid1, setHasPaid1] = useState(null); // Paiement 1 status
@@ -72,6 +73,7 @@ export default function Paiement3() {
       setHasPaid(Number(data?.paiement3Recu) > 0);
       setFraude(data?.Fraude === true);
       setMontant(data?.paiement3Montant ?? null);
+      setPaiement3Recu(data?.paiement3Recu ?? null);
 
     };
 
@@ -172,7 +174,39 @@ export default function Paiement3() {
         <Card.Body>
           <Card.Title>3ème Paiement ({montantAffiche}€)</Card.Title>
           <Alert variant="danger">
-            ❌ Le montant reçu ne correspond pas au montant demandé. Merci de contacter l'organisation.
+            <div>❌ Le montant reçu ne correspond pas au montant demandé.</div>
+            <div className="mt-2">
+              { /* compute difference */ }
+              {(() => {
+                const recu = Number(paiement3Recu ?? 0);
+                const attendu = Number(montant ?? 0);
+                const diff = (attendu - recu);
+                const formatMoney = (v) => {
+                  return (Number(v).toFixed(2).replace('.', ',')) + ' €';
+                };
+                if (isNaN(diff)) return null;
+                if (diff > 0) {
+                  return <div>Il manque <strong>{formatMoney(diff)}</strong> (attendu {formatMoney(attendu)}, reçu {formatMoney(recu)}).</div>;
+                }
+                if (diff < 0) {
+                  return <div>Montant reçu supérieur de <strong>{formatMoney(Math.abs(diff))}</strong> (attendu {formatMoney(attendu)}, reçu {formatMoney(recu)}).</div>;
+                }
+                return <div>Les montants correspondent (vérifie avec l'organisation si nécessaire).</div>;
+              })()}
+            </div>
+            <div className="mt-3">
+              <a
+                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+              >
+                Ouvrir le paiement HelloAsso
+              </a>
+            </div>
+            <div className="mt-3">
+              Une fois le paiement effectué ou ajusté, merci de contacter l'organisation pour confirmer la situation.
+            </div>
           </Alert>
         </Card.Body>
       </Card>
