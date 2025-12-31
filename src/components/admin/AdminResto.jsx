@@ -10,7 +10,7 @@ export default function AdminResto() {
   const [loading, setLoading] = useState(false);
   const [registeredCounts, setRegisteredCounts] = useState({});
   const [paidCounts, setPaidCounts] = useState({});
-  const [paidNotInResto, setPaidNotInResto] = useState([]);
+  
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -25,8 +25,8 @@ export default function AdminResto() {
       global: { headers: { Authorization: `Bearer ${token}` } }
     });
 
-    // fetch all resto registrations
-    const { data: restos } = await supabase.from('resto').select('email, tabagns');
+    // fetch all resto registrations (use 'paiement' column as source of truth for payments)
+    const { data: restos } = await supabase.from('resto').select('email, tabagns, paiement');
     const regCounts = {};
     const restoByEmail = {};
     (restos || []).forEach(r => {
@@ -35,24 +35,17 @@ export default function AdminResto() {
       restoByEmail[r.email] = r;
     });
 
-    // fetch all Paiements where resto = true
-    const { data: paiements } = await supabase.from('Paiements').select('email').eq('resto', true);
+    // compute paid counts from resto.paiement (source of truth)
     const paidCountsLocal = {};
-    const paidNotIn = [];
-    (paiements || []).forEach(p => {
-      const email = p.email;
-      const r = restoByEmail[email];
-      if (r && r.tabagns) {
-        const t = r.tabagns;
+    (restos || []).forEach(r => {
+      if (r.paiement === true) {
+        const t = (r.tabagns || '—');
         paidCountsLocal[t] = (paidCountsLocal[t] || 0) + 1;
-      } else {
-        paidNotIn.push(email);
       }
     });
 
     setRegisteredCounts(regCounts);
     setPaidCounts(paidCountsLocal);
-    setPaidNotInResto(paidNotIn);
     setLoading(false);
   };
 
@@ -88,19 +81,7 @@ export default function AdminResto() {
             </tbody>
           </Table>
 
-          <h5 className="mt-4">Paiements reçus sans enregistrement dans `resto`</h5>
-          {paidNotInResto.length === 0 ? (
-            <Alert variant="secondary">Aucun paiement trouvé hors table `resto`.</Alert>
-          ) : (
-            <Table striped bordered>
-              <thead>
-                <tr><th>Email</th></tr>
-              </thead>
-              <tbody>
-                {paidNotInResto.map(e => <tr key={e}><td>{e}</td></tr>)}
-              </tbody>
-            </Table>
-          )}
+          {/* Payments are read from `resto.paiement` only; external Paiements table not used here. */}
         </>
       )}
     </Container>
