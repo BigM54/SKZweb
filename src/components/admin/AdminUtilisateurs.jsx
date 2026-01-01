@@ -78,8 +78,8 @@ export default function AdminUtilisateurs() {
       setPaiementsMap(paiementsByEmail);
 
       // Fetch resto rows for these emails
-      const { data: restos } = await supabase.from('resto').select('email, tabagns').in('email', emails);
-      const restosByEmail = {};
+          // Fetch resto rows for these emails (include paiement flag)
+          const { data: restos } = await supabase.from('resto').select('email, tabagns, paiement').in('email', emails);
       restos?.forEach(r => { restosByEmail[r.email] = r; });
       setRestoMap(restosByEmail);
     }
@@ -145,7 +145,7 @@ export default function AdminUtilisateurs() {
                           <div className="text-muted mb-2"><strong>Kgibs:</strong> {residenceMap[u.id] ?? '—'}</div>
                           <div className="text-muted mb-2">
                             <strong>Resto:</strong> {restoMap[u.email]?.tabagns ? (
-                              <>{restoMap[u.email].tabagns} {paiementsMap[u.email]?.resto ? <span>(payé)</span> : <span>(non payé)</span>}</>
+                              <>{restoMap[u.email].tabagns} {restoMap[u.email]?.paiement ? <span>(payé)</span> : <span>(non payé)</span>}</>
                             ) : '—'}
                           </div>
                     {opt ? (
