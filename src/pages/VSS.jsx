@@ -25,7 +25,7 @@ export default function VSS() {
           </ul>
           <ul>
             <li>Antoine CHEDOR : <strong>06 78 77 82 14</strong></li>
-            <li>Margaux PERRET : <strong>06 82 22 22 24</strong></li>
+            <li>Margaux PERRET : <strong>06 82 22 22 14</strong></li>
             <li>Maelys VACHAUD : <strong>07 82 62 35 54</strong></li>
           </ul>
           <p>Tu peux également t’adresser à la ME² : Eloïse Dumet (ME2) - <strong>07.66.49.49.03</strong> - <a href="mailto:me.ue@gadz.org">me.ue@gadz.org</a></p>
