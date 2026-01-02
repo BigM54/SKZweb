@@ -24,9 +24,9 @@ export default function VSS() {
             <li>Soit par leur numéro de téléphone perso :</li>
           </ul>
           <ul>
-            <li>Antoine CHEDOR : <strong>06 78 77 82 14</strong></li>
-            <li>Margaux PERRET : <strong>06 82 22 22 14</strong></li>
-            <li>Maelys VACHAUD : <strong>07 82 62 35 54</strong></li>
+            <li>Antoine CHEDOR : <strong><a href="tel:0678778214" aria-label="Appeler Antoine CHEDOR">06 78 77 82 14</a></strong></li>
+            <li>Margaux PERRET : <strong><a href="tel:0682222214" aria-label="Appeler Margaux PERRET">06 82 22 22 14</a></strong></li>
+            <li>Maelys VACHAUD : <strong><a href="tel:0782623554" aria-label="Appeler Maelys VACHAUD">07 82 62 35 54</a></strong></li>
           </ul>
           <p>Tu peux également t’adresser à la ME² : Eloïse Dumet (ME2) - <strong>07.66.49.49.03</strong> - <a href="mailto:me.ue@gadz.org">me.ue@gadz.org</a></p>
           <p>N’hésitez jamais à les contacter, pour vous ou pour quelqu’un d’autre. Si vous observez une situation qui vous paraît anormale, vous pouvez vous rapprocher d’un membre de la team SKZ présent sur l’événement qui saura vous accompagner.</p>
@@ -37,10 +37,10 @@ export default function VSS() {
       <Card className="mb-3">
         <Card.Body>
           <ul>
-            <li><strong>3919</strong> – Violences Femmes Info (Gratuit, anonyme, 24h/24 – 7j/7)</li>
-            <li><strong>17</strong> – Police / Gendarmerie (urgence)</li>
-            <li><strong>112</strong> – Numéro d'urgence européen</li>
-            <li><strong>0 800 005 696</strong> – Violences LGBTphobes</li>
+            <li><strong><a href="tel:3919">3919</a></strong> – Violences Femmes Info (Gratuit, anonyme, 24h/24 – 7j/7)</li>
+            <li><strong><a href="tel:17">17</a></strong> – Police / Gendarmerie (urgence)</li>
+            <li><strong><a href="tel:112">112</a></strong> – Numéro d'urgence européen</li>
+            <li><strong><a href="tel:0800005696">0 800 005 696</a></strong> – Violences LGBTphobes</li>
           </ul>
           <p>Ensemble, faisons de Skioz'Arts un espace sûr pour toutes et tous. Si vous avez un doute, un malaise ou une question : parlez-en.</p>
         </Card.Body>

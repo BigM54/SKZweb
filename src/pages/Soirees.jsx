@@ -63,7 +63,7 @@ export default function Soirees() {
             <Card className="shadow-sm border-0 animation-card" style={{ background: '#00314f', color: '#fff', borderRadius: 18, boxShadow: '0 2px 18px #0002', maxWidth: 1000 }}>
                   {card.poster && (
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', paddingTop: 12 }}>
-                      <img src={card.poster} alt={`${card.title} poster`} style={{ width: '220px', height: '340px', objectFit: 'cover', borderRadius: 10, boxShadow: '0 2px 10px #0006' }} />
+                      <img src={card.poster} alt={`${card.title} poster`} style={{ width: '350px', height: '510px', objectFit: 'cover', borderRadius: 10, boxShadow: '0 2px 10px #0006' }} />
                     </div>
                   )}
                   <Card.Body className="d-flex flex-column">

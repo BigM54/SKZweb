@@ -8,6 +8,7 @@ import { Routes, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./pages/Home'));
 const Partenaires = lazy(() => import('./pages/Partenaires'))
+const PartnersGallery = lazy(() => import('./pages/PartnersGallery'))
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const PasswordRequest = lazy(() => import('./pages/password-request'));
@@ -74,6 +75,7 @@ function App() {
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/partenaires" element={<Partenaires />} />
+                <Route path="/partenaires/gallery" element={<PartnersGallery />} />
                 <Route path='/infos' element={<Infos />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/anims" element={<Anims />} />

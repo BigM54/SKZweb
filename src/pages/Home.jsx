@@ -160,6 +160,24 @@ export default function Home() {
                   <img src="/EY.png" alt="EY" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
                 </div>
               </a>
+              
+              <a href="https://www.auvieuxcampeur.fr/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
+                <div style={{ width: 160, height: 160, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
+                  <img src="/vieuxcampeur.jpeg" alt="Au Vieux Campeur" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
+                </div>
+              </a>
+
+              <a href="https://www.guidetti-sport.com/fr/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
+                <div style={{ width: 160, height: 160, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
+                  <img src="/guidetti.png" alt="Guidetti Sport" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
+                </div>
+              </a>
+
+              <a href="https://www.loreal.com/fr/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', textDecoration: 'none' }}>
+                <div style={{ width: 160, height: 160, borderRadius: 12, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.06)' }}>
+                  <img src="/loreal.png" alt="L'Oréal" style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }} />
+                </div>
+              </a>
         </div>
       </Container>
       {/* Section Nos engagements */}
