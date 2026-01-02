@@ -17,7 +17,7 @@ export default function Soirees() {
       title: "Soirée Em’ss",
       poster: '/ems.jpeg',
       date: "Lundi 19 janvier",
-      time: "20h30 - 00h30",
+      time: "21h30 - 00h30",
       description: "Premiere soirée au foy’s ou les groupes de musiques de chaque TBK’s vont partager un moment musical en montrant aux autres le savoir faire de leur Tabagn’s.",
       highlights: ["La soirée d’ouverture du foy’s.", "7 groupes de musiques.", "Ambiance rock/jazz"],
       location: "Foy's SKZ"
@@ -27,7 +27,7 @@ export default function Soirees() {
       title: "Soirée Fluo",
       poster: '/fluo_party.jpeg',
       date: "Mardi 20 janvier",
-      time: "20h30 - 00h30",
+      time: "21h30 - 00h30",
       description: "Skioz'Arts ne serait pas complet sans sa mythique Soirée Fluo !.",
       highlights: ["Une soirée haute en couleurs où tout brille sous les lumières UV. Vous êtes invités à venir vêtus de tenues fluorescentes et à profiter du bar à maquillage fluo pour compléter votre look avant de rejoindre la piste de danse."],
       location: "Foy's SKZ"
@@ -47,7 +47,7 @@ export default function Soirees() {
       title: "Soirée Boiler Room",
       poster: '/boiler_room.jpeg',
       date: "Jeudi 22 janvier",
-      time: "20h30 - 00h30",
+      time: "21h30 - 00h30",
       description: "Une des nouveautés de cette année : La Boiler Room, un concept mondialement reconnu qui fait vibrer les clubs les plus emblématiques et qui s’installe exceptionnellement au foy’ss.",
       highlights: ["La disposition du Foy’ss modifiée pour la soirée", "Un DJ booth au centre du public, fidèle à l’esprit Boiler Room", "Ambiance brute et immersive, où la proximité entre artistes et public crée une énergie incroyable"],
       location: "Foy's SKZ"
