@@ -7,8 +7,8 @@ export default function Footer() {
         <a href="https://www.instagram.com/skiozarts/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <i className="bi bi-instagram" /> Instagram
         </a>
-        <a href="mailto:skz@gadz.org" aria-label="Mail">
-          <i className="bi bi-envelope" /> skz@gadz.org
+        <a href="mailto:skz.ue@gadz.org" aria-label="Mail">
+          <i className="bi bi-envelope" /> skz.ue@gadz.org
         </a>
       </div>
       <div>

@@ -25,6 +25,7 @@ const QrCodePage = lazy(() => import('./pages/QrCode'));
 const MesCousins = lazy(() => import('./pages/MesCousins'));
 const MesInformations = lazy(() => import('./components/formulaires/MesInformations'));
 const Tarifs = lazy(() => import('./pages/Tarifs'));
+const VSS = lazy(() => import('./pages/VSS'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -83,6 +84,7 @@ function App() {
                 <Route path="/resto-biproms" element={<RestoBiproms />} />
                 <Route path="/mesinfos" element={<MesInformations />} />
                 <Route path="/tarifs" element={<Tarifs />} />
+                <Route path="/vss" element={<VSS />} />
               </Routes>
             </Container>
           </main>

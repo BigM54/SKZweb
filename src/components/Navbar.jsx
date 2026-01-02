@@ -152,6 +152,7 @@ export default function NavBarComponent() {
         onToggle={() => {}}
       >
         <NavDropdown.Item as={Link} to="/faq">FAQ</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/vss">Prévention VSS</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/contact">Contact</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/infos">Infos</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/tarifs">Tarifs</NavDropdown.Item>
@@ -269,6 +270,9 @@ export default function NavBarComponent() {
               <Nav className="flex-column mobile-nav">
                 <Nav.Link as={Link} to="/faq" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
                   FAQ
+                </Nav.Link>
+                <Nav.Link as={Link} to="/vss" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
+                  Prévention VSS
                 </Nav.Link>
                 <Nav.Link as={Link} to="/contact" onClick={() => setAideCanvasOpen(false)} className="nav-btn">
                   Contact
