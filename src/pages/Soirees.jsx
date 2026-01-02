@@ -34,17 +34,6 @@ export default function Soirees() {
     },
     {
       id: 4,
-      title: "Soirée Boiler Room",
-      poster: '/boiler_room.jpeg',
-      date: "Jeudi 22 janvier",
-      time: "20h30 - 00h30",
-      description: "Une des nouveautés de cette année : La Boiler Room, un concept mondialement reconnu qui fait vibrer les clubs les plus emblématiques et qui s’installe exceptionnellement au foy’ss.",
-      highlights: ["La disposition du Foy’ss modifiée pour la soirée", "Un DJ booth au centre du public, fidèle à l’esprit Boiler Room", "Ambiance brute et immersive, où la proximité entre artistes et public crée une énergie incroyable"],
-      location: "Foy's SKZ"
-    }
-    ,
-    {
-      id: 5,
       title: "Soirée Grotte du Yéti",
       poster: '/grotte.jpeg',
       date: "Mercredi 21 janvier 2026",
@@ -52,6 +41,16 @@ export default function Soirees() {
       description: "Une des nouveautés de cette année : Le partenariat avec la Grotte du Yéti, une chaîne de bar d’afterski d’altitude présente aux 2 Alpes, Risoul, Les Arcs et cette année pour la première fois à La Plagne, avec des offres inédites.",
       highlights: ["DJ contest dans la Grotte du Yéti", "Tarifs préférentiels avec la carte grotte et la beer card (voir Instagram)", "Ambiance brute et immersive, le lieu est fait pour faire la fête"],
       location: "La Grotte du Yéti"
+    },
+    {
+      id: 5,
+      title: "Soirée Boiler Room",
+      poster: '/boiler_room.jpeg',
+      date: "Jeudi 22 janvier",
+      time: "20h30 - 00h30",
+      description: "Une des nouveautés de cette année : La Boiler Room, un concept mondialement reconnu qui fait vibrer les clubs les plus emblématiques et qui s’installe exceptionnellement au foy’ss.",
+      highlights: ["La disposition du Foy’ss modifiée pour la soirée", "Un DJ booth au centre du public, fidèle à l’esprit Boiler Room", "Ambiance brute et immersive, où la proximité entre artistes et public crée une énergie incroyable"],
+      location: "Foy's SKZ"
     }
   ];
 
