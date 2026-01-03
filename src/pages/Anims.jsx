@@ -4,7 +4,8 @@ import { Container, Row, Col, Card, Badge, Form } from 'react-bootstrap';
 export default function Animations() {
   const [filters, setFilters] = useState({
     type: { ski: true, snowboard: true, autres: true },
-    difficulte: { debutant: true, intermediaire: true, avance: true }
+    difficulte: { debutant: true, intermediaire: true, avance: true },
+    selectedDates: []
   });
 
   const animations = [
@@ -20,6 +21,13 @@ export default function Animations() {
       category: "competition",
       image: "/slalom.png",
       color: "primary"
+      ,
+      competition: true,
+      sponso: 'EY',
+      date: 'mardi 20 janvier',
+      time: '9h15',
+      rdv: "Stade de slalom Belle Plagne (stade du dahu) - RDV au sommet du stage du Dahu",
+      duration: '3h'
     },
     {
       id: 2,
@@ -33,6 +41,13 @@ export default function Animations() {
       category: "competition",
       image: "/derby.jpeg",
       color: "info"
+      ,
+      competition: true,
+      sponso: null,
+      date: 'mercredi 21 janvier',
+      time: '13h15',
+      rdv: "Piste bleu : Puy du Fou - RDV en haut du télésiège Colorado (La plagne Centre)",
+      duration: '3h'
     },
     {
       id: 3,
@@ -46,6 +61,13 @@ export default function Animations() {
       category: "competition",
       image: "/boarder_cross.png",
       color: "danger"
+      ,
+      competition: true,
+      sponso: null,
+      date: 'jeudi 22 janvier',
+      time: '13h15',
+      rdv: "RDV Poste de Secours - Le Bijolin (Snowpark : 'Riders Nation')",
+      duration: '3h'
     },
     {
       id: 4,
@@ -58,6 +80,13 @@ export default function Animations() {
       category: "competition",
       image: "/olympiadeESF_Biathlon.jpg",
       color: "warning"
+      ,
+      competition: true,
+      sponso: null,
+      date: 'mardi 20 janvier',
+      time: '16h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 5,
@@ -71,6 +100,13 @@ export default function Animations() {
       category: "competition",
       image: "/competition_freestyle.jpeg",
       color: "primary"
+      ,
+      competition: true,
+      sponso: null,
+      date: 'vendredi 23 janvier',
+      time: '13h15',
+      rdv: "RDV Poste de Secours - Le Bijolin (Snowpark : 'Riders Nation')",
+      duration: '2h30'
     },
     {
       id: 6,
@@ -84,6 +120,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/first_track.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'jeudi 22 janvier',
+      time: '7h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '1h45'
     },
     {
       id: 7,
@@ -97,6 +140,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/last_track.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'jeudi 22 janvier',
+      time: '15h30',
+      rdv: 'RDV : HAUT de la télécabine Roche de Mio',
+      duration: '1h15'
     },
     {
       id: 8,
@@ -109,6 +159,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/arva_gourmand.jpg",
       color: "warning"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'mercredi 21 janvier',
+      time: '16h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 9,
@@ -121,6 +178,13 @@ export default function Animations() {
       category: "event",
       image: "/descente_aux_flambeaux.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'vendredi 23 janvier',
+      time: '16h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 10,
@@ -133,6 +197,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/visite_remontee_mecanique.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'mercredi 21 janvier',
+      time: '16h45',
+      rdv: "RDV : en bas de la télécabine Roche de Mio, (au pied des pistes)",
+      duration: '2h'
     },
     {
       id: 11,
@@ -145,6 +216,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/visite_usine_a_neige.webp",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'lundi 19 janvier',
+      time: '8h45',
+      rdv: "RDV : en bas de la télécabine Roche de Mio, (au pied des pistes)",
+      duration: '2h'
     },
     {
       id: 12,
@@ -157,6 +235,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/visite_fromagerie.avif",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'mardi 20 janvier',
+      time: '9h15',
+      rdv: 'RDV : parking de la rez',
+      duration: '3h'
     },
     {
       id: 13,
@@ -169,6 +254,13 @@ export default function Animations() {
       category: "decouverte",
       image: "/decouverte_station.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'dimanche 18 janvier',
+      time: '9h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 14,
@@ -181,6 +273,13 @@ export default function Animations() {
       category: "cours",
       image: "/cours_ski.jpg",
       color: "success"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'dimanche 18 janvier / lundi 19 janvier / mardi 20 janvier',
+      time: '9h30',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 15,
@@ -193,6 +292,13 @@ export default function Animations() {
       category: "cours",
       image: "/cours_snow.png",
       color: "success"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'dimanche 18 janvier / lundi 19 janvier / mardi 20 janvier',
+      time: '9h30',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 16,
@@ -206,6 +312,13 @@ export default function Animations() {
       category: "cours",
       image: "/initiation_freeride.webp",
       color: "danger"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'jeudi 22 janvier / vendredi 23 janvier',
+      time: '8h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '3h'
     },
     {
       id: 17,
@@ -219,6 +332,13 @@ export default function Animations() {
       category: "cours",
       image: "/initiation_freestyle.webp",
       color: "warning"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'dimanche 18 janvier / lundi 19 janvier / mardi 20 janvier',
+      time: '14h',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 18,
@@ -231,6 +351,13 @@ export default function Animations() {
       category: "cours",
       image: "/rando_raquette.jpg",
       color: "success"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'mercredi 21 janvier / jeudi 22 janvier',
+      time: '8h45',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '3h'
     },
     {
       id: 19,
@@ -243,6 +370,13 @@ export default function Animations() {
       category: "event",
       image: "/bbq.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'lundi 19 janvier',
+      time: '12h',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 20,
@@ -255,6 +389,13 @@ export default function Animations() {
       category: "competition",
       image: "/caisse_a_savon.jpg",
       color: "info"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'jeudi 22 janvier',
+      time: '15h30',
+      rdv: 'RDV Tapis des oursons (La Plagne Bellcote)',
+      duration: '2h'
     },
     {
       id: 21,
@@ -267,6 +408,13 @@ export default function Animations() {
       category: "defi",
       image: "/defi_monthey_valley.webp",
       color: "warning"
+      ,
+      competition: false,
+      sponso: null,
+      date: 'jeudi 22 janvier / vendredi 23 janvier',
+      time: '21h',
+      rdv: 'RDV Village SKZ (La Plagne Bellcote)',
+      duration: '22h'
     },
     {
       id: 22,
@@ -279,8 +427,50 @@ export default function Animations() {
       category: "competition",
       image: "/slalom_parallele_relais.webp",
       color: "warning"
+      ,
+      competition: true,
+      sponso: "L'Oréal",
+      date: 'mercredi 21 janvier',
+      time: '9h15',
+      rdv: "Stade de slalom Belle Plagne (stade du dahu) - RDV au sommet du stage du Dahu",
+      duration: '3h'
     }
   ];
+
+  // build unique dates list for timeline filter and sort chronologically
+  const parseFrenchDate = (txt) => {
+    // expects strings like 'mardi 20 janvier' or '21 janvier'
+    const months = {
+      janvier: 0, fevrier: 1, février: 1, mars: 2, avril: 3, mai: 4, juin: 5,
+      juillet: 6, aout: 7, août: 7, septembre: 8, octobre: 9, novembre: 10, decembre: 11, décembre: 11
+    };
+    const m = txt.toLowerCase();
+    const dayMatch = m.match(/(\d{1,2})/);
+    const monthMatch = Object.keys(months).find(k => m.includes(k));
+    if (!dayMatch || !monthMatch) return null;
+    const day = Number(dayMatch[1]);
+    const month = months[monthMatch];
+    // assume year 2026
+    return new Date(2026, month, day);
+  };
+
+  const rawDates = animations.flatMap(a => (a.date || '').split('/').map(d => d.trim()).filter(Boolean));
+  const uniqDates = Array.from(new Set(rawDates));
+  const allDates = uniqDates.sort((a, b) => {
+    const da = parseFrenchDate(a);
+    const db = parseFrenchDate(b);
+    if (!da || !db) return a.localeCompare(b);
+    return da - db;
+  });
+
+  function toggleDateFilter(d) {
+    setFilters(prev => {
+      const sel = prev.selectedDates || [];
+      const exists = sel.includes(d);
+      const next = exists ? sel.filter(x => x !== d) : [...sel, d];
+      return { ...prev, selectedDates: next };
+    });
+  }
 
   // Détermine les types logiques pour le filtrage (Ski-Snow => ski et snowboard)
   const getAnimLogicalTypes = (anim) => {
@@ -292,10 +482,22 @@ export default function Animations() {
 
   // Filtrage: "tout" passe pour la difficulté; type mixte passe si ski OU snowboard est coché
   const filteredAnimations = animations.filter(anim => {
+    // difficulty and type (existing behaviour)
     const passesDifficulty = anim.difficulty === 'tout' || !!filters.difficulte[anim.difficulty];
     const logicalTypes = getAnimLogicalTypes(anim);
     const passesType = logicalTypes.some(t => !!filters.type[t]);
-    return passesDifficulty && passesType;
+
+    if (!(passesDifficulty && passesType)) return false;
+
+    // date timeline: if any date selected, require animation to match at least one selected date
+    const selected = filters.selectedDates || [];
+    if (selected.length > 0) {
+      const animDates = (anim.date || '').split('/').map(d => d.trim()).filter(Boolean);
+      const matchesDate = animDates.some(d => selected.includes(d));
+      if (!matchesDate) return false;
+    }
+
+    return true;
   });
 
   const getCategoryIcon = (category) => {
@@ -393,6 +595,27 @@ export default function Animations() {
             </div>
           </Col>
         </Row>
+        <Row className="mt-3">
+          <Col md={12}>
+            <h6 style={{ color: 'white' }}>Dates</h6>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {allDates.map(d => (
+                <button
+                  key={d}
+                  onClick={() => toggleDateFilter(d)}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: 6,
+                    border: filters.selectedDates.includes(d) ? '2px solid #fff' : '1px solid #ccc',
+                    background: filters.selectedDates.includes(d) ? '#fff' : 'transparent',
+                    color: filters.selectedDates.includes(d) ? '#00314f' : '#fff',
+                    cursor: 'pointer'
+                  }}
+                >{d}</button>
+              ))}
+            </div>
+          </Col>
+        </Row>
       </div>
 
       <Row className="justify-content-center g-4 w-100">
@@ -431,6 +654,16 @@ export default function Animations() {
                 <Card.Text className="flex-grow-1" style={{ color: 'white' }}>
                   {anim.description}
                 </Card.Text>
+
+                <div className="d-flex justify-content-between align-items-center mt-3" style={{ fontSize: 24 }}>
+                  <div style={{ color: '#eaeaea' }}>
+                    {anim.date && <span style={{ marginRight: 10 }}>📅 {anim.date}</span>}
+                    {anim.time && <span>🕒 {anim.time}</span>}
+                  </div>
+                  <div>
+                    {anim.sponso && <Badge bg="light" text="dark">{anim.sponso}</Badge>}
+                  </div>
+                </div>
               </Card.Body>
             </Card>
           </Col>
