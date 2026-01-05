@@ -15,6 +15,7 @@ export default function AdminUtilisateurs() {
   const { getToken } = useAuth();
   const [acompteMails, setAcompteMails] = useState([]);
   const [paiementsMap, setPaiementsMap] = useState({});
+  const restosByEmail = {};
 
   useEffect(() => {
     if (searchTerm.trim().length === 0) {
