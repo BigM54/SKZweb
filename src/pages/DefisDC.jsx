@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Badge, Button, Spinner } from 'react-bootstrap';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://vwwnyxyglihmsabvbmgs.supabase.co';
@@ -13,6 +13,7 @@ const getSupabase = async (getToken) => {
 
 export default function DefisDC() {
   const { getToken, userId } = useAuth();
+  const { isSignedIn } = useUser();
   const [supabase, setSupabase] = useState(null);
   const [groups, setGroups] = useState([]);
   const [userGroup, setUserGroup] = useState(null);
@@ -35,13 +36,13 @@ export default function DefisDC() {
   async function loadData() {
     setLoading(true);
     try {
-      const { data: gdata, error: gerr } = await supabase.from('mv_groups_status').select('*').order('group_number', { ascending: true });
+      const { data: gdata, error: gerr } = await supabase.from('defis_group_slots').select('*').order('group_number', { ascending: true });
       if (gerr) throw gerr;
       setGroups(gdata || []);
 
       // get user's group if present
       if (userId) {
-        const { data: mdata, error: merr } = await supabase.from('mv_memberships').select('group_number').eq('user_id', userId).maybeSingle();
+        const { data: mdata, error: merr } = await supabase.from('defis_memberships').select('group_number').eq('user_id', userId).maybeSingle();
         if (merr) {
           // not fatal
           console.warn('error fetching membership', merr.message || merr);
@@ -59,7 +60,7 @@ export default function DefisDC() {
     if (!supabase) return;
     setActionRunning(true);
     try {
-      const { data, error } = await supabase.rpc('mv_join_group', { p_group_number: groupNumber });
+      const { data, error } = await supabase.rpc('defis_join_group', { p_group_number: groupNumber });
       if (error) {
         console.error('join error', error);
         alert(error.message || 'Erreur lors de l inscription');
@@ -90,7 +91,7 @@ export default function DefisDC() {
     if (!supabase) return;
     setActionRunning(true);
     try {
-      const { data, error } = await supabase.rpc('mv_leave_group');
+      const { data, error } = await supabase.rpc('defis_leave_group');
       if (error) {
         console.error('leave error', error);
         alert(error.message || 'Erreur lors de la désinscription');
@@ -116,18 +117,20 @@ export default function DefisDC() {
       ) : (
         <div>
           <p>Ton groupe actuel: {userGroup ? <strong>{userGroup}</strong> : 'Aucun'}</p>
+          {!isSignedIn && (
+            <div className="mb-3 text-warning">Connecte-toi pour pouvoir t'inscrire aux groupes. <a href="/login">Se connecter</a></div>
+          )}
 
           <div>
             {groups.map(g => (
               <Row key={g.group_number} className="align-items-center mb-2">
                 <Col xs={2}><strong>{g.group_number}</strong></Col>
-                <Col xs={3}><Badge bg={g.remaining > 0 ? 'success' : 'danger'}>{g.remaining} places</Badge></Col>
-                <Col xs={4}><small>{g.occupied}/{g.capacity} inscrits</small></Col>
+                <Col xs={4}><Badge bg={g.remaining > 0 ? 'success' : 'danger'}>{g.remaining} places</Badge></Col>
                 <Col xs={3} className="text-end">
                   {userGroup === g.group_number ? (
-                    <Button size="sm" variant="outline-danger" onClick={leaveGroup} disabled={actionRunning}>Se désinscrire</Button>
+                    <Button size="sm" variant="outline-danger" onClick={leaveGroup} disabled={!isSignedIn || actionRunning}>Se désinscrire</Button>
                   ) : (
-                    <Button size="sm" variant="primary" onClick={() => joinGroup(g.group_number)} disabled={actionRunning || g.remaining <= 0}>S'inscrire</Button>
+                    <Button size="sm" variant="primary" onClick={() => joinGroup(g.group_number)} disabled={!isSignedIn || actionRunning || (typeof g.remaining === 'number' && g.remaining <= 0)}>S'inscrire</Button>
                   )}
                 </Col>
               </Row>
