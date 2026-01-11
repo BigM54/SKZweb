@@ -13,6 +13,7 @@ export default function NavBarComponent() {
   const [profilCanvasOpen, setProfilCanvasOpen] = useState(false);
   const [authCanvasOpen, setAuthCanvasOpen] = useState(false);
   const [presentationCanvasOpen, setPresentationCanvasOpen] = useState(false);
+  const [defisCanvasOpen, setDefisCanvasOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
@@ -79,12 +80,10 @@ export default function NavBarComponent() {
         Aide
       </Nav.Link>
       <Nav.Link
-        as={Link}
-        to="/defis-mountain-valley"
-        onClick={() => setSidebarOpen(false)}
+        as="button"
         className="nav-btn"
-        style={{ textAlign: "left", width: "100%" }}
-        active={pathname === '/defis-mountain-valley'}
+        style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
+        onClick={() => { setSidebarOpen(false); setDefisCanvasOpen(true); }}
       >
         Défis Mountain Valley
       </Nav.Link>
@@ -197,7 +196,7 @@ export default function NavBarComponent() {
   return (
     <>
       {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
-      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && (
+      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && !defisCanvasOpen && (
           <Button
             onClick={() => setSidebarOpen(true)}
             className="burger-btn-skz"
@@ -371,8 +370,26 @@ export default function NavBarComponent() {
               </Nav>
             </Offcanvas.Body>
           </Offcanvas>
-        </>
-      )}
+
+          {/* Offcanvas Défis Mountain Valley */}
+          <Offcanvas
+            show={defisCanvasOpen}
+            onHide={() => setDefisCanvasOpen(false)}
+            placement="start"
+            className="p-4"
+            style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
+          >
+            <Offcanvas.Header closeButton closeVariant="white">
+              <Offcanvas.Title>Défis Mountain Valley</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="flex-column mobile-nav">
+                <Nav.Link as={Link} to="/defis-mountain-valley" onClick={() => setDefisCanvasOpen(false)} className="nav-btn">
+                  Accéder aux défis
+                </Nav.Link>
+              </Nav>
+            </Offcanvas.Body>
+          </Offcanvas>
 
       {/* Navbar desktop */}
       {!isMobile && (
