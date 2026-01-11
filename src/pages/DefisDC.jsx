@@ -108,7 +108,15 @@ export default function DefisDC() {
 
   return (
     <Container className="py-4">
-      <h3 className="mb-3">Mon SKZ — Défis Monthey Valley</h3>
+      <h3 className="mb-3">🏔️ Défis Mountain Valley</h3>
+
+      <div className="mb-4 p-3 rounded" style={{ backgroundColor: '#f8f9fa', borderLeft: '4px solid #dc3545' }}>
+        <p className="mb-2"><strong>⏱️ Moins de 24h</strong> pour réaliser un maximum de défis.</p>
+        <p className="mb-2"><strong>🎁 L'événement sponsorisé par DC</strong> avec de nombreux cadeaux à gagner.</p>
+        <p className="mb-2"><strong>💰 +5 000€ de lots à gagner</strong></p>
+        <p className="mb-2"><strong>👥 Inscris-toi avec ta team de 3 à 5 personnes max.</strong></p>
+        <p className="mb-0"><em>Soyez ambitieux en restant prudent !</em></p>
+      </div>
 
       {loading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 120 }}>
