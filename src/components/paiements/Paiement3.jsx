@@ -196,7 +196,7 @@ export default function Paiement3() {
             </div>
             <div className="mt-3">
               <a
-                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/paiement-3-skz"
+                href="https://www.helloasso.com/associations/union-des-eleves-arts-et-metiers-ueam/paiements/skz-ajustement-3eme-paiement"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary"
