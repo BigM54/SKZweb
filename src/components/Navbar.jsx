@@ -13,7 +13,7 @@ export default function NavBarComponent() {
   const [profilCanvasOpen, setProfilCanvasOpen] = useState(false);
   const [authCanvasOpen, setAuthCanvasOpen] = useState(false);
   const [presentationCanvasOpen, setPresentationCanvasOpen] = useState(false);
-  const [defisCanvasOpen, setDefisCanvasOpen] = useState(false);
+  const [monSkzCanvasOpen, setMonSkzCanvasOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
@@ -83,9 +83,9 @@ export default function NavBarComponent() {
         as="button"
         className="nav-btn"
         style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
-        onClick={() => { setSidebarOpen(false); setDefisCanvasOpen(true); }}
+        onClick={() => { setSidebarOpen(false); setMonSkzCanvasOpen(true); }}
       >
-        Défis Mountain Valley
+        Mon SKZ
       </Nav.Link>
     </Nav>
   );
@@ -196,7 +196,7 @@ export default function NavBarComponent() {
   return (
     <>
       {/* Bouton burger visible uniquement sur mobile et caché si un Offcanvas est ouvert */}
-      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && !defisCanvasOpen && (
+      {isMobile && !sidebarOpen && !aideCanvasOpen && !profilCanvasOpen && !authCanvasOpen && !presentationCanvasOpen && !monSkzCanvasOpen && (
           <Button
             onClick={() => setSidebarOpen(true)}
             className="burger-btn-skz"
@@ -371,25 +371,63 @@ export default function NavBarComponent() {
             </Offcanvas.Body>
           </Offcanvas>
 
-          {/* Offcanvas Défis Mountain Valley */}
+          {/* Offcanvas Mon SKZ */}
           <Offcanvas
-            show={defisCanvasOpen}
-            onHide={() => setDefisCanvasOpen(false)}
+            show={monSkzCanvasOpen}
+            onHide={() => setMonSkzCanvasOpen(false)}
             placement="start"
             className="p-4"
             style={{ backgroundColor: '#0d1c31', color: 'white', width: '600px', fontSize: '1.5rem' }}
           >
             <Offcanvas.Header closeButton closeVariant="white">
-              <Offcanvas.Title>Défis Mountain Valley</Offcanvas.Title>
+              <Offcanvas.Title>Mon SKZ</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="flex-column mobile-nav">
-                <Nav.Link as={Link} to="/defis-mountain-valley" onClick={() => setDefisCanvasOpen(false)} className="nav-btn">
-                  Accéder aux défis
-                </Nav.Link>
+                {isSignedIn ? (
+                  <>
+                    <Nav.Link as={Link} to="/formulaire" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      📋 Mes Choix
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/paiements" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      💳 Mes Paiements
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/qrcode" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      📱 Mon QR Code
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/defis-mountain-valley" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      🏔️ Défis Mountain Valley
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/mescousins" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      👥 Mes Cousins
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/mesinfos" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      👤 Mon Profil
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/resto-biproms" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      🍽️ Resto Biprom's
+                    </Nav.Link>
+                    {isAdmin && (
+                      <Nav.Link as={Link} to="/admin" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                        ⚙️ Admin Panel
+                      </Nav.Link>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Nav.Link as={Link} to="/login" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      🔐 Connexion
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/register" onClick={() => setMonSkzCanvasOpen(false)} className="nav-btn">
+                      ✍️ Inscription
+                    </Nav.Link>
+                  </>
+                )}
               </Nav>
             </Offcanvas.Body>
           </Offcanvas>
+        </>
+      )}
 
       {/* Navbar desktop */}
       {!isMobile && (
