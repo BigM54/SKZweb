@@ -3,7 +3,7 @@ import { Container, Card, Spinner, Alert, Button } from 'react-bootstrap';
 import { createClient } from '@supabase/supabase-js';
 import { useAuth, useUser } from '@clerk/clerk-react';
 
-export default function MonSkz() {
+export default function RestoBiproms() {
   const { getToken } = useAuth();
   const { user } = useUser();
 

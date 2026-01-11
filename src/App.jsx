@@ -27,6 +27,7 @@ const MesCousins = lazy(() => import('./pages/MesCousins'));
 const MesInformations = lazy(() => import('./components/formulaires/MesInformations'));
 const Tarifs = lazy(() => import('./pages/Tarifs'));
 const VSS = lazy(() => import('./pages/VSS'));
+const DefisDC = lazy(() => import('./pages/DefisDC'));
 
 function App() {
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -84,6 +85,7 @@ function App() {
                 <Route path="/qrcode" element={<QrCodePage />} />
                 <Route path="/mescousins" element={<MesCousins />} />
                 <Route path="/resto-biproms" element={<RestoBiproms />} />
+                <Route path="/defis-mountain-valley" element={<DefisDC />} />
                 <Route path="/mesinfos" element={<MesInformations />} />
                 <Route path="/tarifs" element={<Tarifs />} />
                 <Route path="/vss" element={<VSS />} />

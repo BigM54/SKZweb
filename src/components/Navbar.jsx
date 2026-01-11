@@ -78,26 +78,16 @@ export default function NavBarComponent() {
       >
         Aide
       </Nav.Link>
-      {!isSignedIn && (
-        <Nav.Link
-          as="button"
-          className="nav-btn"
-          style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
-          onClick={() => { setSidebarOpen(false); setAuthCanvasOpen(true); }}
-        >
-          Mon SKZ
-        </Nav.Link>
-      )}
-      {isSignedIn && (
-        <Nav.Link
-          as="button"
-          className="nav-btn"
-          style={{ textAlign: "left", background: "none", border: "none", width: "100%" }}
-          onClick={() => { setSidebarOpen(false); setProfilCanvasOpen(true); }}
-        >
-          Mon SKZ
-        </Nav.Link>
-      )}
+      <Nav.Link
+        as={Link}
+        to="/defis-mountain-valley"
+        onClick={() => setSidebarOpen(false)}
+        className="nav-btn"
+        style={{ textAlign: "left", width: "100%" }}
+        active={pathname === '/defis-mountain-valley'}
+      >
+        Défis Mountain Valley
+      </Nav.Link>
     </Nav>
   );
 
@@ -168,6 +158,8 @@ export default function NavBarComponent() {
           onMouseLeave={() => setAuthDropdownOpen(false)}
           onToggle={() => {}}
         >
+          <NavDropdown.Item as={Link} to="/defis-mountain-valley">Défis Mountain Valley</NavDropdown.Item>
+          <NavDropdown.Divider />
           <NavDropdown.Item as={Link} to="/login">Connexion</NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/register">Inscription</NavDropdown.Item>
         </NavDropdown>
@@ -183,6 +175,8 @@ export default function NavBarComponent() {
           onMouseLeave={() => setProfilDropdownOpen(false)}
           onToggle={() => {}}
         >
+            <NavDropdown.Item as={Link} to="/defis-mountain-valley">Défis Mountain Valley</NavDropdown.Item>
+            <NavDropdown.Divider />
             <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
@@ -300,6 +294,9 @@ export default function NavBarComponent() {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="flex-column mobile-nav">
+                    <Nav.Link as={Link} to="/defis-mountain-valley" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
+                      Défis Mountain Valley
+                    </Nav.Link>
                 <Nav.Link as={Link} to="/formulaire" onClick={() => setProfilCanvasOpen(false)} className="nav-btn">
                   Mes Choix
                 </Nav.Link>
