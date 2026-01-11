@@ -175,11 +175,10 @@ export default function NavBarComponent() {
           onMouseLeave={() => setProfilDropdownOpen(false)}
           onToggle={() => {}}
         >
-            <NavDropdown.Item as={Link} to="/defis-mountain-valley">Défis Mountain Valley</NavDropdown.Item>
-            <NavDropdown.Divider />
             <NavDropdown.Item as={Link} to="/formulaire">Mes Choix</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/paiements">Mes Paiements</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/qrcode">Mon QR Code</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/defis-mountain-valley">Défis Mountain Valley</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/mescousins">Mes Cousins</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/mesinfos">Mon Profil</NavDropdown.Item>
             <NavDropdown.Item as={Link} to="/resto-biproms">Resto Biprom's</NavDropdown.Item>

@@ -42,7 +42,7 @@ export default function DefisDC() {
 
       // get user's group if present
       if (userId) {
-        const { data: mdata, error: merr } = await supabase.from('defis_memberships').select('group_number').eq('user_id', userId).maybeSingle();
+        const { data: mdata, error: merr } = await supabase.from('defis_memberships').select('group_number').eq('id', userId).maybeSingle();
         if (merr) {
           // not fatal
           console.warn('error fetching membership', merr.message || merr);
