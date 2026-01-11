@@ -21,6 +21,7 @@ export default function VSS() {
         <Card.Body>
           <p>Des référent·es formé·es sont disponibles à tout moment pendant nos événements. Tu peux les contacter :</p>
           <ul>
+            <li>Soit par notre plateforme de signalement de façon anonyme ou non : <a href="https://ueam.fillout.com/t/cPfzFopZPnus" target="_blank" rel="noopener noreferrer">cliquez ici</a></li>
             <li>Soit par leur numéro de téléphone perso :</li>
           </ul>
           <ul>
