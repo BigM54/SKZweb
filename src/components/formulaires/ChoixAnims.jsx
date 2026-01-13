@@ -106,9 +106,10 @@ export default function ChoixAnims() {
 
   // Get link for an anim (check if _FA suffix for waitlist)
   function getLinkForAnim(animName) {
-    if (!linkMap[animName]) return null;
+    const cleanName = animName.replace('_FA', ''); // enlever le suffix pour chercher dans la map
+    if (!linkMap[cleanName]) return null;
     const isWaitlist = animName.endsWith('_FA');
-    return isWaitlist ? linkMap[animName].lien_attente : linkMap[animName].lien;
+    return isWaitlist ? linkMap[cleanName].lien_attente : linkMap[cleanName].lien;
   }
 
   if (!disclamerAccepted) {
