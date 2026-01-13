@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Button, Spinner, Alert, Table } from 'react-bootstrap';
 import { useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -161,50 +161,93 @@ export default function ChoixAnims() {
           {/* Public anims section */}
           <div className="mb-4">
             <h5>📢 Animations publiques</h5>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
-              {PUBLIC_ANIMS.map(animName => {
-                const link = getLinkForAnim(animName);
-                return (
-                  <Button
-                    key={animName}
-                    variant="success"
-                    onClick={() => openLink(link)}
-                    disabled={!link}
-                    size="sm"
-                  >
-                    {animName}
-                  </Button>
-                );
-              })}
-            </div>
+            <Table striped bordered hover>
+              <tbody>
+                {PUBLIC_ANIMS.map(animName => {
+                  const link = getLinkForAnim(animName);
+                  return (
+                    <tr key={animName}>
+                      <td>{animName}</td>
+                      <td className="text-end">
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => openLink(link)}
+                          disabled={!link}
+                        >
+                          💬 WhatsApp
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
           </div>
 
           {/* User's selected anims section */}
           {userAnims.length > 0 ? (
             <div>
-              <h5>🎯 Tes animations sélectionnées</h5>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                {userAnims.map(animName => {
-                  const link = getLinkForAnim(animName);
-                  const isWaitlist = animName.endsWith('_FA');
-                  return (
-                    <Button
-                      key={animName}
-                      variant={isWaitlist ? 'warning' : 'primary'}
-                      onClick={() => openLink(link)}
-                      disabled={!link}
-                      size="sm"
-                      title={isWaitlist ? 'Liste d\'attente' : 'Confirmé'}
-                    >
-                      {animName.replace('_FA', '')} {isWaitlist && '(Attente)'}
-                    </Button>
-                  );
-                })}
-              </div>
-              {userAnims.some(a => a.endsWith('_FA')) && (
-                <p className="text-muted small mt-3">
-                  ℹ️ Les animations avec "(Attente)" sont en liste d'attente.
-                </p>
+              {/* Accepted anims */}
+              {userAnims.filter(a => !a.endsWith('_FA')).length > 0 && (
+                <div className="mb-4">
+                  <h5>✅ Animations acceptées</h5>
+                  <Table striped bordered hover>
+                    <tbody>
+                      {userAnims
+                        .filter(a => !a.endsWith('_FA'))
+                        .map(animName => {
+                          const link = getLinkForAnim(animName);
+                          return (
+                            <tr key={animName}>
+                              <td>{animName}</td>
+                              <td className="text-end">
+                                <Button
+                                  variant="primary"
+                                  size="sm"
+                                  onClick={() => openLink(link)}
+                                  disabled={!link}
+                                >
+                                  💬 WhatsApp
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </Table>
+                </div>
+              )}
+
+              {/* Waitlist anims */}
+              {userAnims.filter(a => a.endsWith('_FA')).length > 0 && (
+                <div className="mb-4">
+                  <h5>⏳ Animations en attente</h5>
+                  <Table striped bordered hover>
+                    <tbody>
+                      {userAnims
+                        .filter(a => a.endsWith('_FA'))
+                        .map(animName => {
+                          const link = getLinkForAnim(animName);
+                          return (
+                            <tr key={animName}>
+                              <td>{animName.replace('_FA', '')}</td>
+                              <td className="text-end">
+                                <Button
+                                  variant="warning"
+                                  size="sm"
+                                  onClick={() => openLink(link)}
+                                  disabled={!link}
+                                >
+                                  💬 WhatsApp
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </Table>
+                </div>
               )}
             </div>
           ) : (
