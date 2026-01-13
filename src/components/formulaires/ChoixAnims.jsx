@@ -55,7 +55,7 @@ export default function ChoixAnims() {
     setLoading(true);
     try {
       // Load link map from lien_anims
-      const { data: liens, error: lienError } = await supabase.from('lien_anims').select('anims, lien, lien_attente');
+      const { data: liens, error: lienError } = await supabase.from('lien_whatsapp').select('anims, lien, lien_attente');
       if (lienError) throw lienError;
 
       const map = {};
