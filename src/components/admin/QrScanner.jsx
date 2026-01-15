@@ -9,37 +9,37 @@ const fieldMap = {
   forfait: {
     table: 'profils',
     fields: ['bucque', 'nums', 'prenom', 'nom', 'email'],
-    confirmField: 'confirmed_forfait',
+    recupField: 'forfait',
   },
   pack_apers: {
     table: 'options',
     fields: ['saucisson', 'fromage', 'biere'],
-    confirmField: 'confirmed',
+    recupField: 'pack_apers',
   },
   pack_goodies: {
     table: 'options',
     fields: ['masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid'],
-    confirmField: 'confirmed',
+    recupField: 'pack_apers',
   },
   pack_bouffe: {
     table: 'residence',
     fields: [],
-    confirmField: 'confirmed_pack_bouffe',
+    recupField: 'pack_bouffe',
   },
   location_assurance: {
     table: 'options',
     fields: ['pack_location', 'materiel_location', 'casque', 'assurance'],
-    confirmField: 'confirmed',
+    recupField: 'pack_apers',
   },
   viennoiserie: {
     table: 'options',
     fields: ['pain', 'croissant', 'pain_choco'],
-    confirmField: 'Date_boulangerie',
+    recupField: 'boulangerie',
   },
   resto: {
     table: 'resto',
     fields: ['tabagns'],
-    confirmField: 'confirmed',
+    recupField: 'forfait',
   },
 };
 
@@ -119,7 +119,7 @@ const [scanResult, setScanResult] = useState('');
             {
               const { data: profilsData, error: profilsError } = await supabase
                 .from('profils')
-                .select('email, bucque, prenom, nom, confirmed_forfait')
+                .select('email, bucque, prenom, nom')
                 .eq('id', decodedText)
                 .single();
               if (profilsError || !profilsData) {
@@ -154,7 +154,12 @@ const [scanResult, setScanResult] = useState('');
                 message += '\n\n⚠️ FRAUDE ATTENTION';
                 variant = 'danger';
               }
-              if (profilsData.confirmed_forfait) {
+              const { data: recupData } = await supabase
+                .from('pack_recup')
+                .select('forfait')
+                .eq('id', decodedText)
+                .single();
+              if (recupData?.forfait) {
                 message += '\n\n✅ Déjà récupéré.';
               } else {
                 setPendingConfirmation({ type, data: profilsData, decodedText });
@@ -185,7 +190,12 @@ const [scanResult, setScanResult] = useState('');
                 regimeMap[r.id] = r.regime;
               });
               message = `Régimes des résidents:\nResponsable: ${regimeMap[residenceData.responsable] || '—'}\nRésident 1: ${regimeMap[residenceData.resident1] || '—'}\nRésident 2: ${regimeMap[residenceData.resident2] || '—'}\nRésident 3: ${regimeMap[residenceData.resident3] || '—'}\nRésident 4: ${regimeMap[residenceData.resident4] || '—'}`;
-              if (residenceData.confirmed_pack_bouffe) {
+              const { data: recupDataBouffe } = await supabase
+                .from('pack_recup')
+                .select('pack_bouffe')
+                .eq('id', decodedText)
+                .single();
+              if (recupDataBouffe?.pack_bouffe) {
                 message += '\n\n✅ Déjà récupéré.';
               } else {
                 setPendingConfirmation({ type, data: residenceData, decodedText });
@@ -198,7 +208,7 @@ const [scanResult, setScanResult] = useState('');
             {
               const { data: restoData, error: restoError } = await supabase
                 .from('resto')
-                .select('tabagns, paiement, confirmed')
+                .select('tabagns, paiement')
                 .eq('id', decodedText)
                 .single();
               if (restoError || !restoData) {
@@ -212,7 +222,12 @@ const [scanResult, setScanResult] = useState('');
                 break;
               }
               message = `Tabagns: ${restoData.tabagns}`;
-              if (restoData.confirmed) {
+              const { data: recupDataResto } = await supabase
+                .from('pack_recup')
+                .select('forfait')
+                .eq('id', decodedText)
+                .single();
+              if (recupDataResto?.forfait) {
                 message += '\n\n✅ Déjà récupéré.';
               } else {
                 setPendingConfirmation({ type, data: restoData, decodedText });
@@ -235,7 +250,12 @@ const [scanResult, setScanResult] = useState('');
                 message = '❌ Données non trouvées';
                 variant = 'danger';
               } else {
-                if (data.Date_boulangerie === today) {
+                const { data: recupDataPain } = await supabase
+                  .from('pack_recup')
+                  .select('boulangerie')
+                  .eq('id', decodedText)
+                  .single();
+                if (recupDataPain?.boulangerie === today) {
                   message = `❌ La commande de viennoiserie a déjà été récupérée aujourd'hui (${today}).`;
                   variant = 'danger';
                 } else {
@@ -250,7 +270,7 @@ const [scanResult, setScanResult] = useState('');
             {
               const { data: stdData, error: stdError } = await supabase
                 .from(config.table)
-                .select([...config.fields, config.confirmField].join(','))
+                .select([...config.fields].join(','))
                 .eq('id', decodedText)
                 .single();
               data = stdData;
@@ -261,7 +281,12 @@ const [scanResult, setScanResult] = useState('');
               } else {
                 message = config.fields.map((f) => `${f}: ${data[f] ?? 'N/A'}`).join('\n');
                 message = `✅ Informations ${type} :\n${message}`;
-                if (data[config.confirmField]) {
+                const { data: recupDataDefault } = await supabase
+                  .from('pack_recup')
+                  .select(config.recupField)
+                  .eq('id', decodedText)
+                  .single();
+                if (recupDataDefault?.[config.recupField]) {
                   message += '\n\n✅ Déjà récupéré.';
                 } else {
                   setPendingConfirmation({ type, data, decodedText });
@@ -321,22 +346,21 @@ const [scanResult, setScanResult] = useState('');
     });
 
     let updateData = {};
-    let table = fieldMap[type].table;
     let successMessage = '';
 
     if (type === 'viennoiserie') {
       const today = new Date().toISOString().slice(0, 10);
-      updateData = { Date_boulangerie: today };
+      updateData = { [fieldMap[type].recupField]: today };
       successMessage = `✅ Commande confirmée et récupérée !\nPain: ${data.pain}\nCroissant: ${data.croissant}\nPain choco: ${data.pain_choco}\nDate enregistrée: ${today}`;
     } else {
-      updateData = { [fieldMap[type].confirmField]: true };
+      updateData = { [fieldMap[type].recupField]: true };
       successMessage = `✅ Récupération confirmée pour ${type}.`;
     }
 
     const { error: updateError } = await supabase
-      .from(table)
+      .from('pack_recup')
       .update(updateData)
-      .eq(type === 'pack_bouffe' ? 'chambre' : 'id', decodedText);
+      .eq('id', decodedText);
 
     if (updateError) {
       setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour.</Alert>);
