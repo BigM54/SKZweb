@@ -445,7 +445,7 @@ const [scanResult, setScanResult] = useState('');
             width: '500px',
             height: '500px',
             border: '1px solid #ccc',
-            margin: '0 auto',
+            marginBottom: '4rem',
         }}
       />
     </div>
