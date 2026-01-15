@@ -39,7 +39,7 @@ const fieldMap = {
   resto: {
     table: 'resto',
     fields: ['tabagns'],
-    recupField: 'forfait',
+    recupField: 'resto',
   },
 };
 
