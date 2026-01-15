@@ -24,14 +24,6 @@ function QrCode({ style }) {
                 color: "#003250",
                 type: "square"
             },
-            image: "/skz_logo_low_res.png",
-            imageOptions: {
-              crossOrigin: "anonymous",
-              saveAsBlob: true,
-              hideBackgroundDots: true,
-              imageSize: 0.7,
-              margin: 0,
-            },
             backgroundOptions: {
                 color: "#fff"
             }
