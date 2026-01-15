@@ -254,11 +254,14 @@ const [scanResult, setScanResult] = useState('');
         await html5QrCode.resume();
       },
       (err) => {
-        if (
+        if (err.includes('No MultiFormat Readers were able to detect the code')) {
+          setScanResult(<Alert variant="warning">⚠️ QR code non détecté ou invalide. Assurez-vous que le QR code est bien visible et valide.</Alert>);
+        } else if (
           !err.includes('NotFoundException') &&
           !err.includes('IndexSizeError')
         ) {
           console.warn('Erreur de scan :', err);
+          setScanResult(<Alert variant="danger">❌ Erreur de scan : {err}</Alert>);
         }
       }
     );
