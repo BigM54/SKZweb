@@ -23,7 +23,7 @@ const fieldMap = {
   },
   pack_bouffe: {
     table: 'residence',
-    fields: ['regime1', 'regime2', 'regime3', 'regime4', 'regime5'],
+    fields: [],
     confirmField: 'confirmed_pack_bouffe',
   },
   location_assurance: {
@@ -119,7 +119,7 @@ const [scanResult, setScanResult] = useState('');
             {
               const { data: profilsData, error: profilsError } = await supabase
                 .from('profils')
-                .select('email, confirmed_forfait')
+                .select('email, bucque, prenom, nom, confirmed_forfait')
                 .eq('id', decodedText)
                 .single();
               if (profilsError || !profilsData) {
@@ -127,19 +127,31 @@ const [scanResult, setScanResult] = useState('');
                 variant = 'danger';
                 break;
               }
+              const { data: optionsData } = await supabase
+                .from('options')
+                .select('taille_pull, type_forfait')
+                .eq('id', decodedText)
+                .single();
               const { data: paymentsData, error: paymentsError } = await supabase
-                .from('paiements')
-                .select('montant, status')
-                .eq('email', profilsData.email);
+                .from('Paiements')
+                .select('acompteStatut, paiement1Statut, paiement2Statut, paiement3Recu, paiement3Montant, Fraude')
+                .eq('email', profilsData.email)
+                .single();
               if (paymentsError) {
                 message = '❌ Erreur récupération paiements';
                 variant = 'danger';
                 break;
               }
-              const allPaid = paymentsData.every(p => p.status === 'paid');
-              message = `Paiements:\n${paymentsData.map(p => `${p.montant}€ - ${p.status}`).join('\n')}`;
-              if (!allPaid) {
+              const totalToPay = (Number(paymentsData?.paiement3Montant) || 0) + 425;
+              const totalPaid = (paymentsData?.acompteStatut ? 25 : 0) + (paymentsData?.paiement1Statut ? 200 : 0) + (paymentsData?.paiement2Statut ? 200 : 0) + (Number(paymentsData?.paiement3Recu) || 0);
+              const remaining = Math.max(0, totalToPay - totalPaid);
+              message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\nPaiements:\nAcompte: ${paymentsData?.acompteStatut ? 'Payé' : 'Non payé'}\nPaiement 1: ${paymentsData?.paiement1Statut ? 'Payé' : 'Non payé'}\nPaiement 2: ${paymentsData?.paiement2Statut ? 'Payé' : 'Non payé'}\nPaiement 3: ${paymentsData?.paiement3Recu || 0}€ / ${paymentsData?.paiement3Montant || 0}€\nTotal à payer: ${totalToPay}€\nTotal payé: ${totalPaid}€\nReste: ${remaining}€\n\n🎽 Taille Pull: ${optionsData?.taille_pull || '—'}\n🎟️ Forfait: ${optionsData?.type_forfait || '—'}`;
+              if (remaining > 0) {
                 message += '\n\n❌ Tous les paiements ne sont pas effectués !';
+                variant = 'danger';
+              }
+              if (paymentsData?.Fraude) {
+                message += '\n\n⚠️ FRAUDE ATTENTION';
                 variant = 'danger';
               }
               if (profilsData.confirmed_forfait) {
@@ -155,15 +167,24 @@ const [scanResult, setScanResult] = useState('');
             {
               const { data: residenceData, error: residenceError } = await supabase
                 .from('residence')
-                .select('regime1, regime2, regime3, regime4, regime5, confirmed_pack_bouffe')
-                .eq('id', decodedText)
+                .select('responsable, resident1, resident2, resident3, resident4, confirmed_pack_bouffe')
+                .eq('chambre', decodedText)
                 .single();
               if (residenceError || !residenceData) {
                 message = '❌ Données non trouvées';
                 variant = 'danger';
                 break;
               }
-              message = `Régimes des résidents:\n1: ${residenceData.regime1}\n2: ${residenceData.regime2}\n3: ${residenceData.regime3}\n4: ${residenceData.regime4}\n5: ${residenceData.regime5}`;
+              const residentIds = [residenceData.responsable, residenceData.resident1, residenceData.resident2, residenceData.resident3, residenceData.resident4].filter(Boolean);
+              const { data: regimesData } = await supabase
+                .from('options')
+                .select('id, regime')
+                .in('id', residentIds);
+              const regimeMap = {};
+              regimesData?.forEach(r => {
+                regimeMap[r.id] = r.regime;
+              });
+              message = `Régimes des résidents:\nResponsable: ${regimeMap[residenceData.responsable] || '—'}\nRésident 1: ${regimeMap[residenceData.resident1] || '—'}\nRésident 2: ${regimeMap[residenceData.resident2] || '—'}\nRésident 3: ${regimeMap[residenceData.resident3] || '—'}\nRésident 4: ${regimeMap[residenceData.resident4] || '—'}`;
               if (residenceData.confirmed_pack_bouffe) {
                 message += '\n\n✅ Déjà récupéré.';
               } else {
@@ -315,7 +336,7 @@ const [scanResult, setScanResult] = useState('');
     const { error: updateError } = await supabase
       .from(table)
       .update(updateData)
-      .eq('id', decodedText);
+      .eq(type === 'pack_bouffe' ? 'chambre' : 'id', decodedText);
 
     if (updateError) {
       setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour.</Alert>);
