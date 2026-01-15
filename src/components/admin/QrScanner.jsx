@@ -56,6 +56,8 @@ const [scanResult, setScanResult] = useState('');
   useEffect(() => {
     typeRef.current = selectedType;
   }, [selectedType]);
+
+  useEffect(() => {
     scannerRef.current = new Html5Qrcode('reader');
 
     return () => {
