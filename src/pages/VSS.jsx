@@ -41,7 +41,7 @@ export default function VSS() {
             <li><strong><a href="tel:3919">3919</a></strong> – Violences Femmes Info (Gratuit, anonyme, 24h/24 – 7j/7)</li>
             <li><strong><a href="tel:17">17</a></strong> – Police / Gendarmerie (urgence)</li>
             <li><strong><a href="tel:112">112</a></strong> – Numéro d'urgence européen</li>
-            <li><strong><a href="tel:0800005696">0 800 005 696</a></strong> – Violences LGBTphobes</li>
+            <li><strong><a href="tel:0800004134">0 800 00 41 34</a></strong> – Violences LGBTphobes</li>
           </ul>
           <p>Ensemble, faisons de Skioz'Arts un espace sûr pour toutes et tous. Si vous avez un doute, un malaise ou une question : parlez-en.</p>
         </Card.Body>
