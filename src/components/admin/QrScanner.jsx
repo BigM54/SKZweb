@@ -177,15 +177,16 @@ const [scanResult, setScanResult] = useState('');
             break;
           case 'pack_bouffe':
             {
-              const { data: residenceData, error: residenceError } = await supabase
+              const { data: residenceDataArray, error: residenceError } = await supabase
                 .from('residence')
                 .select('kgibs, responsable, resident1, resident2, resident3, resident4')
                 .or(`responsable.eq.${decodedText},resident1.eq.${decodedText},resident2.eq.${decodedText},resident3.eq.${decodedText},resident4.eq.${decodedText}`);
-              if (residenceError || !residenceData) {
+              if (residenceError || !residenceDataArray || residenceDataArray.length === 0) {
                 message = '❌ Données non trouvées';
                 variant = 'danger';
                 break;
               }
+              const residenceData = residenceDataArray[0];
               const residentIds = [residenceData.responsable, residenceData.resident1, residenceData.resident2, residenceData.resident3, residenceData.resident4].filter(Boolean);
               const { data: regimesData } = await supabase
                 .from('options')
