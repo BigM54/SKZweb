@@ -166,7 +166,8 @@ const [scanResult, setScanResult] = useState('');
                 .eq('id', decodedText)
                 .single();
               if (recupData?.forfait) {
-                message += '\n\n✅ Déjà récupéré.';
+                message += '\n\n❌ Déjà récupéré.';
+                variant = 'danger';
               } else {
                 setPendingConfirmation({ type, data: profilsData, decodedText });
                 message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
@@ -202,7 +203,8 @@ const [scanResult, setScanResult] = useState('');
                 .eq('id', decodedText)
                 .single();
               if (recupDataBouffe?.pack_bouffe) {
-                message += '\n\n✅ Déjà récupéré.';
+                message += '\n\n❌ Déjà récupéré.';
+                variant = 'danger';
               } else {
                 setPendingConfirmation({ type, data: residenceData, decodedText });
                 message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
@@ -234,7 +236,8 @@ const [scanResult, setScanResult] = useState('');
                 .eq('id', decodedText)
                 .single();
               if (recupDataResto?.forfait) {
-                message += '\n\n✅ Déjà récupéré.';
+                message += '\n\n❌ Déjà récupéré.';
+                variant = 'danger';
               } else {
                 setPendingConfirmation({ type, data: restoData, decodedText });
                 message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
@@ -293,7 +296,8 @@ const [scanResult, setScanResult] = useState('');
                   .eq('id', decodedText)
                   .single();
                 if (recupDataDefault?.[config.recupField]) {
-                  message += '\n\n✅ Déjà récupéré.';
+                  message += '\n\n❌ Déjà récupéré.';
+                  variant = 'danger';
                 } else {
                   setPendingConfirmation({ type, data, decodedText });
                   message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
@@ -424,7 +428,7 @@ const [scanResult, setScanResult] = useState('');
         style={{
             width: '100%',
             maxWidth: '400px',
-            aspectRatio: '4 / 3',
+            aspectRatio: '1',
             border: '1px solid #ccc',
             margin: '0 auto',
         }}
