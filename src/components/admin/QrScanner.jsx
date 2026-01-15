@@ -145,14 +145,20 @@ const [scanResult, setScanResult] = useState('');
               const totalToPay = (Number(paymentsData?.paiement3Montant) || 0) + 425;
               const totalPaid = (paymentsData?.acompteStatut ? 25 : 0) + (paymentsData?.paiement1Statut ? 200 : 0) + (paymentsData?.paiement2Statut ? 200 : 0) + (Number(paymentsData?.paiement3Recu) || 0);
               const remaining = Math.max(0, totalToPay - totalPaid);
-              message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\nPaiements:\nAcompte: ${paymentsData?.acompteStatut ? 'Payé' : 'Non payé'}\nPaiement 1: ${paymentsData?.paiement1Statut ? 'Payé' : 'Non payé'}\nPaiement 2: ${paymentsData?.paiement2Statut ? 'Payé' : 'Non payé'}\nPaiement 3: ${paymentsData?.paiement3Recu || 0}€ / ${paymentsData?.paiement3Montant || 0}€\nTotal à payer: ${totalToPay}€\nTotal payé: ${totalPaid}€\nReste: ${remaining}€\n\n🎽 Taille Pull: ${optionsData?.taille_pull || '—'}\n🎟️ Forfait: ${optionsData?.type_forfait || '—'}`;
-              if (remaining > 0) {
-                message += '\n\n❌ Tous les paiements ne sont pas effectués !';
-                variant = 'danger';
-              }
-              if (paymentsData?.Fraude) {
-                message += '\n\n⚠️ FRAUDE ATTENTION';
-                variant = 'danger';
+              const paymentsOk = remaining === 0 && !paymentsData?.Fraude;
+
+              if (paymentsOk) {
+                message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\n🎽 Taille Pull: ${optionsData?.taille_pull || '—'}\n🎟️ Forfait: ${optionsData?.type_forfait || '—'}`;
+              } else {
+                message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\nPaiements:\nAcompte: ${paymentsData?.acompteStatut ? 'Payé' : 'Non payé'}\nPaiement 1: ${paymentsData?.paiement1Statut ? 'Payé' : 'Non payé'}\nPaiement 2: ${paymentsData?.paiement2Statut ? 'Payé' : 'Non payé'}\nPaiement 3: ${paymentsData?.paiement3Recu || 0}€ / ${paymentsData?.paiement3Montant || 0}€\nTotal à payer: ${totalToPay}€\nTotal payé: ${totalPaid}€\nReste: ${remaining}€`;
+                if (remaining > 0) {
+                  message += '\n\n❌ Tous les paiements ne sont pas effectués !';
+                  variant = 'danger';
+                }
+                if (paymentsData?.Fraude) {
+                  message += '\n\n⚠️ FRAUDE ATTENTION';
+                  variant = 'danger';
+                }
               }
               const { data: recupData } = await supabase
                 .from('pack_recup')
