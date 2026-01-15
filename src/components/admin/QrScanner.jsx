@@ -356,17 +356,16 @@ const [scanResult, setScanResult] = useState('');
 
     if (type === 'viennoiserie') {
       const today = new Date().toISOString().slice(0, 10);
-      updateData = { [fieldMap[type].recupField]: today };
+      updateData = { id: decodedText, [fieldMap[type].recupField]: today };
       successMessage = `✅ Commande confirmée et récupérée !\nPain: ${data.pain}\nCroissant: ${data.croissant}\nPain choco: ${data.pain_choco}\nDate enregistrée: ${today}`;
     } else {
-      updateData = { [fieldMap[type].recupField]: true };
+      updateData = { id: decodedText, [fieldMap[type].recupField]: true };
       successMessage = `✅ Récupération confirmée pour ${type}.`;
     }
 
     const { error: updateError } = await supabase
       .from('pack_recup')
-      .upsert(updateData)
-      .eq('id', decodedText);
+      .upsert(updateData);
 
     if (updateError) {
       setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour.</Alert>);
