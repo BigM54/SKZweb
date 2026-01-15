@@ -441,7 +441,7 @@ const [scanResult, setScanResult] = useState('');
       <div
         id="reader"
         style={{
-            width: '100%',
+            width: '300px',
             height: '300px',
             border: '1px solid #ccc',
             margin: '0 auto',
