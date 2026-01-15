@@ -96,7 +96,7 @@ const [scanResult, setScanResult] = useState('');
     try {
       await html5QrCode.start(
         { facingMode: 'environment' },
-        { fps: 10, qrbox: 250 },
+        { fps: 10, qrbox: 400 },
         async (decodedText) => {
           await html5QrCode.pause();
 
