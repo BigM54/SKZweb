@@ -179,9 +179,8 @@ const [scanResult, setScanResult] = useState('');
             {
               const { data: residenceData, error: residenceError } = await supabase
                 .from('residence')
-                .select('responsable, resident1, resident2, resident3, resident4, confirmed_pack_bouffe')
-                .eq('chambre', decodedText)
-                .single();
+                .select('kgibs, responsable, resident1, resident2, resident3, resident4')
+                .or(`responsable.eq.${decodedText},resident1.eq.${decodedText},resident2.eq.${decodedText},resident3.eq.${decodedText},resident4.eq.${decodedText}`);
               if (residenceError || !residenceData) {
                 message = '❌ Données non trouvées';
                 variant = 'danger';
@@ -197,12 +196,12 @@ const [scanResult, setScanResult] = useState('');
                 regimeMap[r.id] = r.regime;
               });
               message = `Régimes des résidents:\nResponsable: ${regimeMap[residenceData.responsable] || '—'}\nRésident 1: ${regimeMap[residenceData.resident1] || '—'}\nRésident 2: ${regimeMap[residenceData.resident2] || '—'}\nRésident 3: ${regimeMap[residenceData.resident3] || '—'}\nRésident 4: ${regimeMap[residenceData.resident4] || '—'}`;
-              const { data: recupDataBouffe } = await supabase
+              const { data: recupDataList } = await supabase
                 .from('pack_recup')
-                .select('pack_bouffe')
-                .eq('id', decodedText)
-                .single();
-              if (recupDataBouffe?.pack_bouffe) {
+                .select('id, pack_bouffe')
+                .in('id', residentIds);
+              const alreadyRecup = recupDataList.some(r => r.pack_bouffe);
+              if (alreadyRecup) {
                 message += '\n\n❌ Déjà récupéré.';
                 variant = 'danger';
               } else {
@@ -362,17 +361,33 @@ const [scanResult, setScanResult] = useState('');
       const today = new Date().toISOString().slice(0, 10);
       updateData = { id: decodedText, [fieldMap[type].recupField]: today };
       successMessage = `✅ Commande confirmée et récupérée !\nPain: ${data.pain}\nCroissant: ${data.croissant}\nPain choco: ${data.pain_choco}\nDate enregistrée: ${today}`;
+    } else if (type === 'pack_bouffe') {
+      const residentIds = [data.responsable, data.resident1, data.resident2, data.resident3, data.resident4].filter(Boolean);
+      for (const residentId of residentIds) {
+        const { error } = await supabase
+          .from('pack_recup')
+          .upsert({ id: residentId, pack_bouffe: true });
+        if (error) {
+          setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour pour ${residentId}.</Alert>);
+          return;
+        }
+      }
+      successMessage = `✅ Pack bouffe confirmé pour la chambre ${data.kgibs}.`;
     } else {
       updateData = { id: decodedText, [fieldMap[type].recupField]: true };
       successMessage = `✅ Récupération confirmée pour ${type}.`;
     }
 
-    const { error: updateError } = await supabase
-      .from('pack_recup')
-      .upsert(updateData);
+    if (type !== 'pack_bouffe') {
+      const { error: updateError } = await supabase
+        .from('pack_recup')
+        .upsert(updateData);
 
-    if (updateError) {
-      setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour.</Alert>);
+      if (updateError) {
+        setScanResult(<Alert variant="danger">❌ Erreur lors de la mise à jour.</Alert>);
+      } else {
+        setScanResult(<Alert variant="success">{successMessage}</Alert>);
+      }
     } else {
       setScanResult(<Alert variant="success">{successMessage}</Alert>);
     }
@@ -427,8 +442,7 @@ const [scanResult, setScanResult] = useState('');
         id="reader"
         style={{
             width: '100%',
-            maxWidth: '400px',
-            aspectRatio: '1',
+            height: '70vh',
             border: '1px solid #ccc',
             margin: '0 auto',
         }}
