@@ -359,7 +359,7 @@ const [scanResult, setScanResult] = useState('');
 
     const { error: updateError } = await supabase
       .from('pack_recup')
-      .update(updateData)
+      .upsert(updateData)
       .eq('id', decodedText);
 
     if (updateError) {
