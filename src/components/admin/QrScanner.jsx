@@ -9,7 +9,7 @@ const fieldMap = {
   forfait: {
     table: 'profils',
     fields: ['bucque', 'nums', 'prenom', 'nom', 'email'],
-    recupField: 'forfait',
+    recupField: 'null',
   },
   pack_apers: {
     table: 'options',
@@ -29,7 +29,7 @@ const fieldMap = {
   location_assurance: {
     table: 'options',
     fields: ['pack_location', 'materiel_location', 'casque', 'assurance'],
-    recupField: 'pack_apers',
+    recupField: 'none',
   },
   viennoiserie: {
     table: 'options',
@@ -214,10 +214,20 @@ const [scanResult, setScanResult] = useState('');
             break;
           case 'resto':
             {
+              const { data: profilsData, error: profilsError } = await supabase
+                .from('profils')
+                .select('email')
+                .eq('id', decodedText)
+                .single();
+              if (profilsError || !profilsData) {
+                message = '❌ Données non trouvées';
+                variant = 'danger';
+                break;
+              }
               const { data: restoData, error: restoError } = await supabase
                 .from('resto')
                 .select('tabagns, paiement')
-                .eq('id', decodedText)
+                .eq('email', profilsData.email)
                 .single();
               if (restoError || !restoData) {
                 message = '❌ Données non trouvées';
@@ -225,17 +235,17 @@ const [scanResult, setScanResult] = useState('');
                 break;
               }
               if (!restoData.paiement) {
-                message = '❌ Paiement non effectué';
+                message = '❌ Paiement non effectué à temps';
                 variant = 'danger';
                 break;
               }
               message = `Tabagns: ${restoData.tabagns}`;
               const { data: recupDataResto } = await supabase
                 .from('pack_recup')
-                .select('forfait')
+                .select(config.recupField)
                 .eq('id', decodedText)
                 .single();
-              if (recupDataResto?.forfait) {
+              if (recupDataResto?.[config.recupField]) {
                 message += '\n\n❌ Déjà récupéré.';
                 variant = 'danger';
               } else {
