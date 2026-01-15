@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { FormGroup, Label, Input } from 'reactstrap';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import React, { useEffect, useRef, useState } from 'react';
+import { FormGroup, Label, Input, Button } from 'reactstrap';
+import { Html5Qrcode } from 'html5-qrcode';
 import { useAuth } from '@clerk/clerk-react';
 import { createClient } from '@supabase/supabase-js';
 import { Alert } from 'react-bootstrap';
@@ -44,274 +44,44 @@ const fieldMap = {
 };
 
 function QrScanner() {
-  const [scanResult, setScanResult] = useState('');
+const hasStartedRef = useRef(false);
+const [scanResult, setScanResult] = useState('');
   const [selectedType, setSelectedType] = useState('forfait');
+  const [scanning, setScanning] = useState(false);
+  const [pendingConfirmation, setPendingConfirmation] = useState(null);
+  const typeRef = useRef('forfait');
+  const scannerRef = useRef(null);
   const { getToken } = useAuth();
 
   useEffect(() => {
-    const onScanSuccess = async (decodedText, decodedResult) => {
-      const type = selectedType;
-      const config = fieldMap[type];
-      const token = await getToken({ template: 'supabase' });
+    typeRef.current = selectedType;
+  }, [selectedType]);
 
-      const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
-        global: {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      });
-
-      let message = '';
-      let variant = 'success';
-      let data, error;
-
-      switch (type) {
-        case 'forfait':
-          {
-            const { data: profilsData, error: profilsError } = await supabase
-              .from('profils')
-              .select('email, bucque, prenom, nom')
-              .eq('id', decodedText)
-              .single();
-            if (profilsError || !profilsData) {
-              message = '❌ Données non trouvées';
-              variant = 'danger';
-              break;
-            }
-            const { data: optionsData } = await supabase
-              .from('options')
-              .select('taille_pull, type_forfait')
-              .eq('id', decodedText)
-              .single();
-            const { data: paymentsData, error: paymentsError } = await supabase
-              .from('Paiements')
-              .select('acompteStatut, paiement1Statut, paiement2Statut, paiement3Recu, paiement3Montant, Fraude')
-              .eq('email', profilsData.email)
-              .single();
-            if (paymentsError) {
-              message = '❌ Erreur récupération paiements';
-              variant = 'danger';
-              break;
-            }
-            const totalToPay = (Number(paymentsData?.paiement3Montant) || 0) + 425;
-            const totalPaid = (paymentsData?.acompteStatut ? 25 : 0) + (paymentsData?.paiement1Statut ? 200 : 0) + (paymentsData?.paiement2Statut ? 200 : 0) + (Number(paymentsData?.paiement3Recu) || 0);
-            const remaining = Math.max(0, totalToPay - totalPaid);
-            const paymentsOk = remaining === 0 && !paymentsData?.Fraude;
-
-            if (paymentsOk) {
-              message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\n🎽 Taille Pull: ${optionsData?.taille_pull || '—'}\n🎟️ Forfait: ${optionsData?.type_forfait || '—'}`;
-            } else {
-              message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\nPaiements:\nAcompte: ${paymentsData?.acompteStatut ? 'Payé' : 'Non payé'}\nPaiement 1: ${paymentsData?.paiement1Statut ? 'Payé' : 'Non payé'}\nPaiement 2: ${paymentsData?.paiement2Statut ? 'Payé' : 'Non payé'}\nPaiement 3: ${paymentsData?.paiement3Recu || 0}€ / ${paymentsData?.paiement3Montant || 0}€\nTotal à payer: ${totalToPay}€\nTotal payé: ${totalPaid}€\nReste: ${remaining}€`;
-              if (remaining > 0) {
-                message += '\n\n❌ Tous les paiements ne sont pas effectués !';
-                variant = 'danger';
-                break;
-              }
-              if (paymentsData?.Fraude) {
-                message += '\n\n⚠️ FRAUDE ATTENTION';
-                variant = 'danger';
-                break;
-              }
-            }
-            const { data: recupData } = await supabase
-              .from('pack_recup')
-              .select('forfait')
-              .eq('id', decodedText)
-              .single();
-            if (recupData?.forfait) {
-              message += '\n\n❌ Déjà récupéré.';
-              variant = 'danger';
-            } else {
-              // Auto confirm
-              const { error: updateError } = await supabase
-                .from('pack_recup')
-                .upsert({ id: decodedText, forfait: true });
-              if (updateError) {
-                message = '❌ Erreur lors de la mise à jour.';
-                variant = 'danger';
-              } else {
-                message += '\n\n✅ Récupération confirmée.';
-              }
-            }
-          }
-          break;
-        case 'pack_bouffe':
-          {
-            const { data: residenceData, error: residenceError } = await supabase
-              .from('residence')
-              .select('kgibs, responsable, resident1, resident2, resident3, resident4')
-              .or(`responsable.eq.${decodedText},resident1.eq.${decodedText},resident2.eq.${decodedText},resident3.eq.${decodedText},resident4.eq.${decodedText}`);
-            if (residenceError || !residenceData) {
-              message = '❌ Données non trouvées';
-              variant = 'danger';
-              break;
-            }
-            const residentIds = [residenceData.responsable, residenceData.resident1, residenceData.resident2, residenceData.resident3, residenceData.resident4].filter(Boolean);
-            const { data: regimesData } = await supabase
-              .from('options')
-              .select('id, regime')
-              .in('id', residentIds);
-            const regimeMap = {};
-            regimesData?.forEach(r => {
-              regimeMap[r.id] = r.regime;
-            });
-            message = `Régimes des résidents:\nResponsable: ${regimeMap[residenceData.responsable] || '—'}\nRésident 1: ${regimeMap[residenceData.resident1] || '—'}\nRésident 2: ${regimeMap[residenceData.resident2] || '—'}\nRésident 3: ${regimeMap[residenceData.resident3] || '—'}\nRésident 4: ${regimeMap[residenceData.resident4] || '—'}`;
-            const { data: recupDataList } = await supabase
-              .from('pack_recup')
-              .select('id, pack_bouffe')
-              .in('id', residentIds);
-            const alreadyRecup = recupDataList.some(r => r.pack_bouffe);
-            if (alreadyRecup) {
-              message += '\n\n❌ Déjà récupéré.';
-              variant = 'danger';
-            } else {
-              // Auto confirm for all
-              for (const residentId of residentIds) {
-                const { error } = await supabase
-                  .from('pack_recup')
-                  .upsert({ id: residentId, pack_bouffe: true });
-                if (error) {
-                  message = `❌ Erreur lors de la mise à jour pour ${residentId}.`;
-                  variant = 'danger';
-                  break;
-                }
-              }
-              if (variant !== 'danger') {
-                message += `\n\n✅ Pack bouffe confirmé pour la chambre ${residenceData.kgibs}.`;
-              }
-            }
-          }
-          break;
-        case 'resto':
-          {
-            const { data: restoData, error: restoError } = await supabase
-              .from('resto')
-              .select('tabagns, paiement')
-              .eq('id', decodedText)
-              .single();
-            if (restoError || !restoData) {
-              message = '❌ Données non trouvées';
-              variant = 'danger';
-              break;
-            }
-            if (!restoData.paiement) {
-              message = '❌ Paiement non effectué';
-              variant = 'danger';
-              break;
-            }
-            message = `Tabagns: ${restoData.tabagns}`;
-            const { data: recupDataResto } = await supabase
-              .from('pack_recup')
-              .select('forfait')
-              .eq('id', decodedText)
-              .single();
-            if (recupDataResto?.forfait) {
-              message += '\n\n❌ Déjà récupéré.';
-              variant = 'danger';
-            } else {
-              const { error: updateError } = await supabase
-                .from('pack_recup')
-                .upsert({ id: decodedText, forfait: true });
-              if (updateError) {
-                message = '❌ Erreur lors de la mise à jour.';
-                variant = 'danger';
-              } else {
-                message += '\n\n✅ Récupération confirmée.';
-              }
-            }
-          }
-          break;
-        case 'viennoiserie':
-          {
-            const today = new Date().toISOString().slice(0, 10);
-            const { data: optionsData, error: optionsError } = await supabase
-              .from('options')
-              .select([...config.fields, 'Date_boulangerie'].join(','))
-              .eq('id', decodedText)
-              .single();
-            data = optionsData;
-            error = optionsError;
-            if (error || !data) {
-              message = '❌ Données non trouvées';
-              variant = 'danger';
-            } else {
-              const { data: recupDataPain } = await supabase
-                .from('pack_recup')
-                .select('boulangerie')
-                .eq('id', decodedText)
-                .single();
-              if (recupDataPain?.boulangerie === today) {
-                message = `❌ La commande de viennoiserie a déjà été récupérée aujourd'hui (${today}).`;
-                variant = 'danger';
-              } else {
-                const { error: updateError } = await supabase
-                  .from('pack_recup')
-                  .upsert({ id: decodedText, boulangerie: today });
-                if (updateError) {
-                  message = '❌ Erreur lors de la mise à jour.';
-                  variant = 'danger';
-                } else {
-                  message = `✅ Commande confirmée et récupérée !\nPain: ${data.pain}\nCroissant: ${data.croissant}\nPain choco: ${data.pain_choco}\nDate enregistrée: ${today}`;
-                }
-              }
-            }
-          }
-          break;
-        default:
-          {
-            const { data: stdData, error: stdError } = await supabase
-              .from(config.table)
-              .select([...config.fields].join(','))
-              .eq('id', decodedText)
-              .single();
-            data = stdData;
-            error = stdError;
-            if (error || !data) {
-              message = '❌ Données non trouvées';
-              variant = 'danger';
-            } else {
-              message = config.fields.map((f) => `${f}: ${data[f] ?? 'N/A'}`).join('\n');
-              message = `✅ Informations ${type} :\n${message}`;
-              const { data: recupDataDefault } = await supabase
-                .from('pack_recup')
-                .select(config.recupField)
-                .eq('id', decodedText)
-                .single();
-              if (recupDataDefault?.[config.recupField]) {
-                message += '\n\n❌ Déjà récupéré.';
-                variant = 'danger';
-              } else {
-                const { error: updateError } = await supabase
-                  .from('pack_recup')
-                  .upsert({ id: decodedText, [config.recupField]: true });
-                if (updateError) {
-                  message = '❌ Erreur lors de la mise à jour.';
-                  variant = 'danger';
-                } else {
-                  message += '\n\n✅ Récupération confirmée.';
-                }
-              }
-            }
-          }
-          break;
-      }
-
-      setScanResult(<Alert variant={variant}>{message.split('\n').map((line, i) => <div key={i}>{line}</div>)}</Alert>);
-    };
-
-    const onScanFailure = (error) => {
-      console.warn(`Code scan error = ${error}`);
-    };
-
-    const html5QrcodeScanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: {width: 250, height: 250} },
-      false);
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+  useEffect(() => {
+    scannerRef.current = new Html5Qrcode('reader');
 
     return () => {
-      html5QrcodeScanner.clear();
+        const cleanup = async () => {
+        if (scannerRef.current && hasStartedRef.current) {
+            try {
+            await scannerRef.current.stop();      // ⬅️ Stop obligatoire avant
+            } catch (err) {
+            console.warn('Erreur lors du stop :', err.message);
+            }
+
+            try {
+            await scannerRef.current.clear();     // ⬅️ Ensuite seulement clear
+            } catch (err) {
+            console.warn('Erreur lors du clear :', err.message);
+            }
+
+            hasStartedRef.current = false;
+        }
+        };
+
+        cleanup();
     };
-  }, [selectedType, getToken]);
+    }, []);
 
 
   const startScan = async () => {
@@ -645,13 +415,38 @@ function QrScanner() {
         </Input>
       </FormGroup>
 
+      <div className="d-flex gap-3 mb-3">
+        <Button color="success" onClick={startScan} disabled={scanning}>
+          Start Scan
+        </Button>
+        <Button color="danger" onClick={stopScan} disabled={!scanning}>
+          Stop Scan
+        </Button>
+      </div>
+
+      {pendingConfirmation && (
+        <div className="d-flex gap-3 mb-3">
+          <Button color="warning" onClick={confirmPickup}>
+            Confirmer la récupération
+          </Button>
+        </div>
+      )}
+
     {scanResult && (
         <div style={{ marginBottom: '1rem' }}>
             {scanResult}
         </div>
     )}
 
-      <div id="reader" />
+      <div
+        id="reader"
+        style={{
+            width: '100%',
+            height: '300px',
+            border: '1px solid #ccc',
+            margin: '0 auto',
+        }}
+      />
     </div>
   );
 }
