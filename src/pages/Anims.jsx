@@ -447,7 +447,7 @@ export default function Animations() {
       image: "/derby_luge.png",
       color: "danger",
       competition: true,
-      sponso: "Red Bull",
+      sponso: null,
       date: "lundi 19 janvier",
       time: "16h45",
       rdv: "RDV Village SKZ (La Plagne Bellcote)",
