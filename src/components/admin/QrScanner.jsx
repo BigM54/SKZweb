@@ -49,12 +49,18 @@ const [scanResult, setScanResult] = useState('');
   const [selectedType, setSelectedType] = useState('forfait');
   const [scanning, setScanning] = useState(false);
   const [pendingConfirmation, setPendingConfirmation] = useState(null);
+  const [sansJeu, setSansJeu] = useState(false);
+  const [sansBanane, setSansBanane] = useState(false);
   const typeRef = useRef('forfait');
   const scannerRef = useRef(null);
   const { getToken } = useAuth();
 
   useEffect(() => {
     typeRef.current = selectedType;
+    if (selectedType !== 'pack_goodies') {
+      setSansJeu(false);
+      setSansBanane(false);
+    }
   }, [selectedType]);
 
   useEffect(() => {
@@ -316,7 +322,7 @@ const [scanResult, setScanResult] = useState('');
                   message += '\n\n❌ Déjà récupéré.';
                   variant = 'danger';
                 } else {
-                  setPendingConfirmation({ type, data, decodedText });
+                  setPendingConfirmation({ type, data, decodedText, sansJeu, sansBanane });
                   message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
                   variant = 'warning';
                 }
@@ -393,6 +399,10 @@ const [scanResult, setScanResult] = useState('');
       successMessage = `✅ Pack bouffe confirmé pour la chambre ${data.kgibs}.`;
     } else {
       updateData = { id: decodedText, [fieldMap[type].recupField]: true };
+      if (type === 'pack_goodies') {
+        updateData.sans_jeu = pendingConfirmation.sansJeu;
+        updateData.sans_banane = pendingConfirmation.sansBanane;
+      }
       successMessage = `✅ Récupération confirmée pour ${type}.`;
     }
 
@@ -411,6 +421,10 @@ const [scanResult, setScanResult] = useState('');
     }
 
     setPendingConfirmation(null);
+    if (type === 'pack_goodies') {
+      setSansJeu(false);
+      setSansBanane(false);
+    }
   };
 
   return (
@@ -432,6 +446,21 @@ const [scanResult, setScanResult] = useState('');
           <option value="resto">Resto</option>
         </Input>
       </FormGroup>
+
+      {selectedType === 'pack_goodies' && (
+        <div>
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" checked={sansJeu} onChange={(e) => setSansJeu(e.target.checked)} /> Sans jeu
+            </Label>
+          </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" checked={sansBanane} onChange={(e) => setSansBanane(e.target.checked)} /> Sans banane
+            </Label>
+          </FormGroup>
+        </div>
+      )}
 
       <div className="d-flex gap-3 mb-3">
         <Button color="success" onClick={startScan} disabled={scanning}>
