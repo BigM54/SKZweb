@@ -298,6 +298,34 @@ const [scanResult, setScanResult] = useState('');
               }
             }
             break;
+          case 'pack_apers':
+            {
+              const { data: optionsData, error: optionsError } = await supabase
+                .from('options')
+                .select('saucisson, fromage, biere')
+                .eq('id', decodedText)
+                .single();
+              if (optionsError || !optionsData) {
+                message = '❌ Données non trouvées';
+                variant = 'danger';
+              } else {
+                message = `✅ Informations pack apéro :\nSaucisson: ${optionsData.saucisson ?? 'N/A'}\nFromage: ${optionsData.fromage ?? 'N/A'}\nBière: ${optionsData.biere ?? 'N/A'}`;
+                const { data: recupDataApers } = await supabase
+                  .from('pack_recup')
+                  .select('pack_apers')
+                  .eq('id', decodedText)
+                  .single();
+                if (recupDataApers?.pack_apers) {
+                  message += '\n\n❌ Déjà récupéré.';
+                  variant = 'danger';
+                } else {
+                  setPendingConfirmation({ type, data: optionsData, decodedText });
+                  message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
+                  variant = 'warning';
+                }
+              }
+            }
+            break;
           default:
             {
               const { data: stdData, error: stdError } = await supabase
