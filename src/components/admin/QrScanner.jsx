@@ -149,12 +149,12 @@ const [scanResult, setScanResult] = useState('');
 
               if (paymentsOk) {
                 message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\n🎽 Taille Pull: ${optionsData?.taille_pull || '—'}\n🎟️ Forfait: ${optionsData?.type_forfait || '—'}`;
-                if (optionsData?.bus === 'p3') {
+                if (optionsData?.bus) {
                   message += `\n🚌 Bus: ${optionsData.bus}`;
                 }
               } else {
                 message = `👤 ${profilsData.prenom} ${profilsData.nom} (${profilsData.bucque})\n\n🎽 Taille Pull: ${optionsData?.taille_pull || '—'}\n🎟️ Forfait: ${optionsData?.type_forfait || '—'}`;
-                if (optionsData?.bus === 'p3') {
+                if (optionsData?.bus) {
                   message += `\n🚌 Bus: ${optionsData.bus}`;
                 }
                 message += `\n\nPaiements:\nAcompte: ${paymentsData?.acompteStatut ? 'Payé' : 'Non payé'}\nPaiement 1: ${paymentsData?.paiement1Statut ? 'Payé' : 'Non payé'}\nPaiement 2: ${paymentsData?.paiement2Statut ? 'Payé' : 'Non payé'}\nPaiement 3: ${paymentsData?.paiement3Recu || 0}€ / ${paymentsData?.paiement3Montant || 0}€\nTotal à payer: ${totalToPay}€\nTotal payé: ${totalPaid}€\nReste: ${remaining}€`;
