@@ -9,7 +9,7 @@ const fieldMap = {
   forfait: {
     table: 'profils',
     fields: ['bucque', 'nums', 'prenom', 'nom', 'email'],
-    recupField: 'null',
+    recupField: 'forfait',
   },
   pack_apers: {
     table: 'options',
@@ -19,7 +19,7 @@ const fieldMap = {
   pack_goodies: {
     table: 'options',
     fields: ['masque', 'pack_fumeur', 'pack_soiree', 'pack_grand_froid'],
-    recupField: 'pack_apers',
+    recupField: 'pack_goodies',
   },
   pack_bouffe: {
     table: 'residence',
