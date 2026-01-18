@@ -41,6 +41,11 @@ const fieldMap = {
     fields: ['tabagns'],
     recupField: 'resto',
   },
+  anims: {
+    table: 'resultats_anims',
+    fields: ['1', '2', '3', '4', '5', '6', '7'],
+    recupField: 'none',
+  },
 };
 
 function QrScanner() {
@@ -268,6 +273,31 @@ const [scanResult, setScanResult] = useState('');
               }
             }
             break;
+          case 'anims':
+            {
+              const { data: animsData, error: animsError } = await supabase
+                .from('resultats_anims')
+                .select('"1", "2", "3", "4", "5", "6", "7"')
+                .eq('id', decodedText)
+                .single();
+
+              if (animsError || !animsData) {
+                message = '❌ Données non trouvées';
+                variant = 'danger';
+              } else {
+                const animList = ['1', '2', '3', '4', '5', '6', '7']
+                  .map((key) => animsData[key])
+                  .filter(Boolean);
+
+                if (animList.length === 0) {
+                  message = 'ℹ️ Aucune anim enregistrée.';
+                } else {
+                  message = `🎯 Anims inscrites:\n${animList.join('\n')}`;
+                }
+                variant = 'success';
+              }
+            }
+            break;
           case 'viennoiserie':
             {
               const today = new Date().toISOString().slice(0, 10);
@@ -472,6 +502,7 @@ const [scanResult, setScanResult] = useState('');
           <option value="location_assurance">Location Assurance</option>
           <option value="viennoiserie">Viennoiserie</option>
           <option value="resto">Resto</option>
+          <option value="anims">Anims</option>
         </Input>
       </FormGroup>
 
