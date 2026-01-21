@@ -591,7 +591,14 @@ const [scanResult, setScanResult] = useState('');
               onChange={(e) => setSelectedTabagns(e.target.value)}
             >
               <option value="">-- Sélectionner --</option>
-              <option value="tabagns">Tabagns</option>
+              <option value="sibers">Siber's</option>
+              <option value="kin">KIN</option>
+              <option value="cluns">Clun's</option>
+              <option value="p3">P3</option>
+              <option value="boquette">Boquette</option>
+              <option value="bordels">Bordel's</option>
+              <option value="birse">Birse</option>
+              <option value="chalons">Chalon's</option>
               <option value="alterns">Alterns</option>
             </Input>
           </FormGroup>
