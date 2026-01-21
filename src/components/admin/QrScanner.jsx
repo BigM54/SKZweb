@@ -614,7 +614,7 @@ const [scanResult, setScanResult] = useState('');
                 <ul>
                   {nonScannedList.map((person, idx) => (
                     <li key={idx}>
-                      {person.nom} {person.prenom} - {person.nums}
+                      {person.nom} {person.prenom} - {person.numero}
                     </li>
                   ))}
                 </ul>
