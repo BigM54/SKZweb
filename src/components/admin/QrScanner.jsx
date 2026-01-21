@@ -56,6 +56,8 @@ const [scanResult, setScanResult] = useState('');
   const [pendingConfirmation, setPendingConfirmation] = useState(null);
   const [sansJeu, setSansJeu] = useState(false);
   const [sansBanane, setSansBanane] = useState(false);
+  const [selectedTabagns, setSelectedTabagns] = useState('');
+  const [nonScannedList, setNonScannedList] = useState(null);
   const typeRef = useRef('forfait');
   const scannerRef = useRef(null);
   const { getToken } = useAuth();
@@ -65,6 +67,10 @@ const [scanResult, setScanResult] = useState('');
     if (selectedType !== 'pack_goodies') {
       setSansJeu(false);
       setSansBanane(false);
+    }
+    if (selectedType !== 'resto') {
+      setNonScannedList(null);
+      setSelectedTabagns('');
     }
   }, [selectedType]);
 
@@ -485,6 +491,59 @@ const [scanResult, setScanResult] = useState('');
     }
   };
 
+  const fetchNonScannedResto = async () => {
+    if (!selectedTabagns) {
+      window.alert('Veuillez sélectionner un tabagns');
+      return;
+    }
+
+    const token = await getToken({ template: 'supabase' });
+    const supabase = createClient('https://vwwnyxyglihmsabvbmgs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3d255eHlnbGlobXNhYnZibWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTUyOTYsImV4cCI6MjA2NTIzMTI5Nn0.cSj6J4XFwhP9reokdBqdDKbNgl03ywfwmyBbx0J1udw', {
+      global: {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    });
+
+    const { data, error } = await supabase
+      .from('profils')
+      .select('nom, prenom, nums, id, email')
+      .eq('pack_recup.resto', false)
+      .eq('resto.tabagns', selectedTabagns)
+      .eq('resto.paiement', true);
+
+    if (error) {
+      const { data: restoData } = await supabase
+        .from('resto')
+        .select('email, tabagns, paiement')
+        .eq('tabagns', selectedTabagns)
+        .eq('paiement', true);
+
+      if (!restoData || restoData.length === 0) {
+        setNonScannedList([]);
+        return;
+      }
+
+      const emails = restoData.map(r => r.email);
+      const { data: profilsData } = await supabase
+        .from('profils')
+        .select('nom, prenom, nums, id, email')
+        .in('email', emails);
+
+      const ids = profilsData?.map(p => p.id) || [];
+      const { data: recupData } = await supabase
+        .from('pack_recup')
+        .select('id, resto')
+        .in('id', ids);
+
+      const scannedIds = new Set(recupData?.filter(r => r.resto).map(r => r.id) || []);
+      const nonScanned = profilsData?.filter(p => !scannedIds.has(p.id)) || [];
+
+      setNonScannedList(nonScanned);
+    } else {
+      setNonScannedList(data || []);
+    }
+  };
+
   return (
     <div className="p-4">
       <FormGroup>
@@ -518,6 +577,43 @@ const [scanResult, setScanResult] = useState('');
               <Input type="checkbox" checked={sansBanane} onChange={(e) => setSansBanane(e.target.checked)} /> Sans banane
             </Label>
           </FormGroup>
+        </div>
+      )}
+
+      {selectedType === 'resto' && (
+        <div>
+          <FormGroup>
+            <Label for="tabagnsSelect">Choisir un tabagns</Label>
+            <Input
+              type="select"
+              id="tabagnsSelect"
+              value={selectedTabagns}
+              onChange={(e) => setSelectedTabagns(e.target.value)}
+            >
+              <option value="">-- Sélectionner --</option>
+              <option value="tabagns">Tabagns</option>
+              <option value="alterns">Alterns</option>
+            </Input>
+          </FormGroup>
+          <Button color="info" onClick={fetchNonScannedResto} disabled={!selectedTabagns}>
+            Voir les non-scannés
+          </Button>
+          {nonScannedList && (
+            <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid #ccc', borderRadius: '5px' }}>
+              <h5>Personnes non scannées ({nonScannedList.length})</h5>
+              {nonScannedList.length === 0 ? (
+                <p>Tous les participants ont été scannés !</p>
+              ) : (
+                <ul>
+                  {nonScannedList.map((person, idx) => (
+                    <li key={idx}>
+                      {person.nom} {person.prenom} - {person.nums}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
       )}
 
