@@ -46,6 +46,11 @@ const fieldMap = {
     fields: ['1', '2', '3', '4', '5', '6', '7'],
     recupField: 'none',
   },
+  pack_jeu: {
+    table: 'options',
+    fields: ['pack_jeu'],
+    recupField: 'sans_jeu',
+  },
 };
 
 function QrScanner() {
@@ -276,6 +281,34 @@ const [scanResult, setScanResult] = useState('');
                 setPendingConfirmation({ type, data: restoData, decodedText });
                 message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
                 variant = 'warning';
+              }
+            }
+            break;
+          case 'pack_jeu':
+            {
+              const { data: optionsData, error: optionsError } = await supabase
+                .from('options')
+                .select('pack_jeu')
+                .eq('id', decodedText)
+                .single();
+              if (optionsError || !optionsData) {
+                message = '❌ Données non trouvées';
+                variant = 'danger';
+              } else {
+                message = `✅ Informations pack jeu :\nPack jeu: ${optionsData.pack_jeu ?? 'N/A'}`;
+                const { data: recupDataJeu } = await supabase
+                  .from('pack_recup')
+                  .select('sans_jeu')
+                  .eq('id', decodedText)
+                  .single();
+                if (recupDataJeu?.sans_jeu) {
+                  message += '\n\n❌ Déjà passé.';
+                  variant = 'danger';
+                } else {
+                  setPendingConfirmation({ type, data: optionsData, decodedText });
+                  message += '\n\nCliquez sur "Confirmer la récupération" pour valider.';
+                  variant = 'warning';
+                }
               }
             }
             break;
@@ -562,6 +595,7 @@ const [scanResult, setScanResult] = useState('');
           <option value="viennoiserie">Viennoiserie</option>
           <option value="resto">Resto</option>
           <option value="anims">Anims</option>
+          <option value="pack_jeu">Pack Jeu</option>
         </Input>
       </FormGroup>
 

@@ -15,10 +15,10 @@ create table if not exists public.defis_group_slots (
   remaining int not null
 );
 
--- Initialize groups 1..50 with 5 remaining each
+-- Initialize groups 1..75 with 5 remaining each
 insert into public.defis_group_slots (group_number, remaining)
 select gs, 5
-from generate_series(1,50) gs
+from generate_series(1,75) gs
 on conflict (group_number) do nothing;
 
 -- RPC to join a group atomically
