@@ -110,12 +110,12 @@ export default function DefisDC() {
     <Container className="py-4">
       <h3 className="mb-3">🏔️ Défis Mountain Valley</h3>
 
-      <div className="mb-4 p-3 rounded" style={{ backgroundColor: '#f8f9fa', borderLeft: '4px solid #dc3545' }}>
+      <div className="mb-4 p-3 rounded" style={{ backgroundColor: '#fff3cd', borderLeft: '4px solid #ffc107' }}>
+        <p className="mb-2"><strong>🏁 Les défis ont commencé !</strong></p>
         <p className="mb-2"><strong>⏱️ Moins de 24h</strong> pour réaliser un maximum de défis.</p>
         <p className="mb-2"><strong>🎁 L'événement sponsorisé par DC</strong> avec de nombreux cadeaux à gagner.</p>
         <p className="mb-2"><strong>💰 +3 500€ de lots à gagner</strong></p>
-        <p className="mb-2"><strong>👥 Inscris-toi avec ta team de 3 à 5 personnes max.</strong></p>
-        <p className="mb-0"><em>Soyez ambitieux en restant prudent !</em></p>
+        <p className="mb-0" style={{ color: '#dc3545', fontWeight: 'bold' }}>⚠️ Les inscriptions sont fermées</p>
       </div>
 
       {loading ? (
@@ -125,9 +125,9 @@ export default function DefisDC() {
       ) : (
         <div>
           <p>Ton groupe actuel: {userGroup ? <strong>{userGroup}</strong> : 'Aucun'}</p>
-          {!isSignedIn && (
-            <div className="mb-3 text-warning">Connecte-toi pour pouvoir t'inscrire aux groupes. <a href="/login">Se connecter</a></div>
-          )}
+          <div className="mb-3 alert alert-warning">
+            ⚠️ Les inscriptions sont fermées, les défis ont commencé !
+          </div>
 
           <div>
             {groups.map(g => (
@@ -136,9 +136,9 @@ export default function DefisDC() {
                 <Col xs={4}><Badge bg={g.remaining > 0 ? 'success' : 'danger'}>{g.remaining} places</Badge></Col>
                 <Col xs={3} className="text-end">
                   {userGroup === g.group_number ? (
-                    <Button size="sm" variant="outline-danger" onClick={leaveGroup} disabled={!isSignedIn || actionRunning}>Se désinscrire</Button>
+                    <Button size="sm" variant="outline-danger" disabled>Se désinscrire</Button>
                   ) : (
-                    <Button size="sm" variant="primary" onClick={() => joinGroup(g.group_number)} disabled={!isSignedIn || actionRunning || (typeof g.remaining === 'number' && g.remaining <= 0)}>S'inscrire</Button>
+                    <Button size="sm" variant="primary" disabled>S'inscrire</Button>
                   )}
                 </Col>
               </Row>
